@@ -1,0 +1,987 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Image Laser</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com data:; script-src 'self' 'unsafe-inline'">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout : colonne centrée façon atelier — aperçu avant/après en vedette, ligne de cotes, panneau « Affiner », puis cartes de réglages en grille. Thème unique bleu nuit, choisi volontairement. */
+:root {
+  --bg-top: #0a1838;
+  --bg-bot: #1f4596;
+  --glass: rgba(18, 36, 82, .72);
+  --glass-2: rgba(28, 54, 118, .6);
+  --line: rgba(140, 175, 255, .2);
+  --ink: #eef3ff;
+  --muted: #9fb3dc;
+  --accent: #3d8bff;
+  --accent-ink: #ffffff;
+  --accent-soft: rgba(61, 139, 255, .2);
+  --check-a: #f3f5fa;
+  --check-b: #dfe5f0;
+  --ok: #6be3a6;
+  --err: #ff9b8a;
+  --font-display: "Archivo", "Segoe UI", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; }
+img { max-width: 100%; }
+html { background: var(--bg-top); }
+body { min-height: 100vh; background: linear-gradient(180deg, var(--bg-top) 0%, #12295e 45%, var(--bg-bot) 100%) fixed; color: var(--ink); font-family: var(--font-body); font-size: 14px; line-height: 1.45; -webkit-font-smoothing: antialiased; }
+
+.appbar { background: rgba(8, 18, 44, .85); border-bottom: 1px solid var(--line); backdrop-filter: blur(10px); }
+.appbar-in { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; gap: 14px; padding-block: 12px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.mark { width: 32px; height: 32px; border-radius: 9px; background: linear-gradient(135deg, #5aa2ff, #2a64e8); display: grid; place-items: center; flex: none; box-shadow: 0 4px 14px rgba(61,139,255,.45); }
+.mark svg { width: 18px; height: 18px; }
+.brand h1 { font: 800 1.15rem/1.1 var(--font-display); letter-spacing: .01em; margin: 0; }
+.brand small { display: block; font: 400 .72rem var(--font-mono); color: var(--muted); letter-spacing: .04em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.spacer { flex: 1; }
+.btn-top { border: 1.5px solid var(--ink); background: transparent; color: var(--ink); font: 600 .86rem var(--font-body); padding: 8px 14px; border-radius: 8px; cursor: pointer; display: inline-flex; gap: 8px; align-items: center; white-space: nowrap; }
+.btn-top svg { width: 16px; height: 16px; }
+
+.main { max-width: 1000px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; padding-block: 18px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+/* Scène */
+.stage { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.toolbar { display: flex; gap: 8px; align-items: center; justify-content: center; flex-wrap: wrap; }
+.tgroup { display: inline-flex; align-items: center; gap: 2px; padding: 3px; background: var(--glass); border: 1px solid var(--line); border-radius: 10px; }
+.tgroup button, .ibtn { border: 0; background: transparent; color: var(--muted); font: 500 .8rem var(--font-body); padding: 7px 11px; border-radius: 7px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+.tgroup button:hover { color: var(--ink); }
+.tgroup button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.ibtn svg { width: 16px; height: 16px; }
+.viewport { position: relative; display: grid; place-items: center; padding: 14px; min-height: 300px; border-radius: 14px;
+  background: var(--glass); border: 1px solid var(--line); }
+.compare, .cropper { position: relative; max-width: 100%; line-height: 0; border-radius: 6px; overflow: hidden; box-shadow: 0 18px 40px rgba(0,0,0,.45);
+  background-color: var(--check-a); background-image: linear-gradient(45deg, var(--check-b) 25%, transparent 25%, transparent 75%, var(--check-b) 75%), linear-gradient(45deg, var(--check-b) 25%, transparent 25%, transparent 75%, var(--check-b) 75%);
+  background-size: 18px 18px; background-position: 0 0, 9px 9px; }
+.compare { cursor: ew-resize; touch-action: none; user-select: none; -webkit-user-select: none; }
+.compare.loupe-on { cursor: none; }
+.compare canvas, .cropper canvas { display: block; max-width: 100%; height: auto; max-height: 66vh; width: auto; }
+#cOrig { position: absolute; inset: 0; width: 100%; height: 100%; max-height: none; }
+.split-line { position: absolute; top: 0; bottom: 0; width: 3px; background: var(--accent); pointer-events: none; box-shadow: 0 0 10px rgba(61,139,255,.6); }
+.split-knob { position: absolute; top: 50%; left: 50%; width: 42px; height: 42px; transform: translate(-50%, -50%); border-radius: 50%; background: var(--accent); box-shadow: 0 4px 14px rgba(0,0,0,.4); display: grid; place-items: center; }
+.split-knob svg { width: 22px; height: 22px; }
+.pill { position: absolute; bottom: 12px; font: 700 .7rem var(--font-display); letter-spacing: .08em; color: #fff; background: rgba(40, 50, 70, .72); padding: 5px 10px; border-radius: 5px; line-height: 1.2; pointer-events: none; }
+.pill.l { left: 12px; } .pill.r { right: 12px; }
+.loupe { position: absolute; width: 170px; height: 170px; border-radius: 50%; border: 3px solid var(--accent); box-shadow: 0 0 0 2px rgba(255,255,255,.55), 0 10px 28px rgba(0,0,0,.45); pointer-events: none; background: #fff; }
+.loupe::after { content: ""; position: absolute; left: 50%; top: 50%; width: 22px; height: 22px; transform: translate(-50%, -50%);
+  background: linear-gradient(var(--accent), var(--accent)) center / 2px 100% no-repeat, linear-gradient(var(--accent), var(--accent)) center / 100% 2px no-repeat; }
+#cLoupe { width: 100%; height: 100%; border-radius: 50%; max-height: none; display: block; }
+.cropper { touch-action: none; user-select: none; -webkit-user-select: none; }
+.cbox { position: absolute; border: 1.5px solid #fff; box-shadow: 0 0 0 9999px rgba(6,12,28,.62); cursor: move; }
+.cbox.round { border-radius: 50%; }
+.cbox::before, .cbox::after { content: ""; position: absolute; inset: 33.3% 0; border-block: 1px solid rgba(255,255,255,.35); pointer-events: none; }
+.cbox::after { inset: 0 33.3%; border-block: 0; border-inline: 1px solid rgba(255,255,255,.35); }
+.cbox.round::before, .cbox.round::after { display: none; }
+.hdl { position: absolute; width: 28px; height: 28px; }
+.hdl::after { content: ""; position: absolute; inset: 8px; background: #fff; border-radius: 50%; box-shadow: 0 0 0 3px var(--accent); }
+.hdl.nw { left: -14px; top: -14px; cursor: nwse-resize; } .hdl.ne { right: -14px; top: -14px; cursor: nesw-resize; }
+.hdl.sw { left: -14px; bottom: -14px; cursor: nesw-resize; } .hdl.se { right: -14px; bottom: -14px; cursor: nwse-resize; }
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.dims { text-align: center; margin: 0; font: 500 .84rem var(--font-body); color: var(--ink); font-variant-numeric: tabular-nums; }
+.dims .ms { color: var(--muted); font: 400 .74rem var(--font-mono); margin-left: 8px; }
+.fname { text-align: center; font: 400 .74rem var(--font-mono); color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Cartes */
+.card { background: var(--glass); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; min-width: 0; backdrop-filter: blur(6px); }
+.card-head, details.card > summary { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 13px 16px; font: 700 .74rem var(--font-display); text-transform: uppercase; letter-spacing: .1em; color: var(--muted); }
+details.card > summary { list-style: none; cursor: pointer; }
+details.card > summary::-webkit-details-marker { display: none; }
+details.card > summary::after { content: ""; width: 7px; height: 7px; border-right: 1.5px solid var(--muted); border-bottom: 1.5px solid var(--muted); transform: rotate(45deg); margin-top: -3px; }
+details.card[open] > summary::after { transform: rotate(-135deg); margin-top: 3px; }
+details.card > summary .sub { margin-left: auto; font: 400 .72rem var(--font-mono); text-transform: none; letter-spacing: 0; }
+.body { padding: 0 16px 16px; display: flex; flex-direction: column; gap: 12px; }
+.cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; align-items: start; }
+@media (max-width: 760px) { .cards { grid-template-columns: minmax(0, 1fr); } }
+.sliders { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 28px; }
+@media (max-width: 620px) { .sliders { grid-template-columns: minmax(0, 1fr); } }
+.sl { display: flex; flex-direction: column; gap: 2px; }
+.sl .top { display: flex; justify-content: space-between; align-items: baseline; font: 600 .84rem var(--font-body); }
+.sl output { font: 500 .78rem var(--font-mono); color: var(--accent); font-variant-numeric: tabular-nums; }
+.row { display: flex; flex-direction: column; gap: 2px; }
+.row .top { display: flex; justify-content: space-between; align-items: baseline; font: 600 .84rem var(--font-body); }
+.row output { font: 500 .78rem var(--font-mono); color: var(--accent); }
+input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 24px; background: transparent; cursor: pointer; }
+input[type=range]::-webkit-slider-runnable-track { height: 4px; border-radius: 4px; background: rgba(160, 190, 255, .28); }
+input[type=range]::-moz-range-track { height: 4px; border-radius: 4px; background: rgba(160, 190, 255, .28); }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--accent); border: 2px solid #fff; margin-top: -6px; box-shadow: 0 2px 6px rgba(0,0,0,.35); }
+input[type=range]::-moz-range-thumb { width: 12px; height: 12px; border-radius: 50%; background: var(--accent); border: 2px solid #fff; }
+.drop { border: 1.5px dashed rgba(160,190,255,.45); background: var(--glass-2); border-radius: 12px; padding: 18px; display: flex; align-items: center; gap: 14px; color: var(--muted); font-size: .84rem; cursor: pointer; text-align: left; }
+.drop svg { width: 30px; height: 30px; flex: none; color: var(--accent); }
+.drop strong { display: block; color: var(--ink); font-weight: 600; font-size: .92rem; }
+.drop.over { border-color: var(--accent); background: var(--accent-soft); }
+.mats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+.mat { display: flex; align-items: center; gap: 9px; border: 1px solid var(--line); background: var(--glass-2); color: var(--ink); border-radius: 9px; padding: 8px 9px; font: 500 .82rem var(--font-body); text-align: left; cursor: pointer; min-width: 0; }
+.mat i { flex: none; width: 22px; height: 22px; border-radius: 6px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.18), inset 0 -6px 8px rgba(0,0,0,.2); }
+.mat span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mat[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.field { display: flex; flex-direction: column; gap: 5px; font-size: .76rem; color: var(--muted); min-width: 0; }
+.field input, .field select { font: 500 .86rem var(--font-body); color: var(--ink); background: rgba(8, 18, 44, .55); border: 1px solid var(--line); border-radius: 8px; padding: 9px 10px; width: 100%; }
+.field select option { background: #13285a; }
+.checks { display: flex; flex-wrap: wrap; gap: 8px; }
+.checks label { display: inline-flex; gap: 7px; align-items: center; cursor: pointer; font-size: .8rem; background: var(--glass-2); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px 6px 9px; }
+.checks input { accent-color: var(--accent); width: 15px; height: 15px; margin: 0; }
+.checks label:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
+.tools { display: flex; gap: 6px; flex-wrap: wrap; }
+.btn { border: 1px solid var(--line); background: var(--glass-2); color: var(--ink); border-radius: 8px; padding: 8px 12px; font: 500 .8rem var(--font-body); cursor: pointer; }
+.btn.ghost { border-color: var(--line); background: transparent; color: var(--muted); padding: 5px 10px; font-size: .74rem; text-transform: none; letter-spacing: 0; font-family: var(--font-body); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font: 700 .95rem var(--font-display); letter-spacing: .02em; padding: 14px 16px; width: 100%; border-radius: 10px; box-shadow: 0 8px 22px rgba(61,139,255,.4); }
+.seg { display: flex; padding: 3px; gap: 3px; background: rgba(8, 18, 44, .55); border: 1px solid var(--line); border-radius: 10px; }
+.seg button { flex: 1; border: 0; background: transparent; color: var(--muted); font: 500 .8rem var(--font-body); padding: 9px 6px; border-radius: 7px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-visible, summary:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.hint { font-size: .76rem; color: var(--muted); margin: 0; line-height: 1.5; }
+.status { font-size: .82rem; color: var(--ok); min-height: 1.2em; margin: 0; text-align: center; }
+.status.err { color: var(--err); }
+.save-fallback { display: flex; flex-direction: column; gap: 8px; }
+.save-fallback img { border-radius: 8px; max-height: 240px; object-fit: contain; background: #fff; }
+.note { font-size: .76rem; color: var(--muted); margin: 0; text-align: center; line-height: 1.5; }
+@media (max-width: 520px) { .brand small { display: none; } .btn-top span { display: none; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+/* Bandeau machine */
+.machine { display: flex; align-items: center; gap: 18px; padding: 14px 18px; background: var(--glass); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+.machine svg { width: 230px; max-width: 46%; height: auto; flex: none; }
+.machine h2 { margin: 0 0 4px; font: 800 1.25rem/1.15 var(--font-display); text-wrap: balance; }
+.machine p { margin: 0; color: var(--muted); font-size: .84rem; max-width: 46ch; }
+.machine .specs { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.machine .specs span { font: 500 .72rem var(--font-mono); color: var(--ink); background: var(--glass-2); border: 1px solid var(--line); border-radius: 999px; padding: 3px 9px; }
+@media (max-width: 560px) { .machine { flex-direction: column; align-items: flex-start; } .machine svg { width: 100%; max-width: 320px; } }
+.gantry { animation: gantry 6s ease-in-out infinite alternate; }
+.head { animation: head 1.5s ease-in-out infinite alternate; }
+.beam { animation: beam .35s steps(2) infinite; }
+.burn { stroke-dasharray: 200; stroke-dashoffset: 200; animation: burn 6s linear infinite; }
+@keyframes gantry { from { transform: translateY(0); } to { transform: translateY(46px); } }
+@keyframes head { from { transform: translateX(0); } to { transform: translateX(120px); } }
+@keyframes beam { 50% { opacity: .55; } }
+@keyframes burn { to { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) { .gantry, .head, .beam, .burn { animation: none; } .burn { stroke-dashoffset: 0; } }
+
+/* Abonnement */
+.plan { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); background: var(--glass); color: var(--ink); font: 600 .8rem var(--font-body); padding: 7px 12px; border-radius: 999px; cursor: pointer; white-space: nowrap; }
+.plan .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+.plan.pro { border-color: var(--accent); background: var(--accent-soft); }
+.plan.pro .dot { background: var(--ok); box-shadow: 0 0 8px var(--ok); }
+.modal { position: fixed; inset: 0; z-index: 50; background: rgba(4, 10, 26, .72); display: grid; place-items: center; padding: 16px; backdrop-filter: blur(4px); }
+.sheet { width: min(460px, 100%); background: linear-gradient(180deg, #16306b, #0e2050); border: 1px solid var(--line); border-radius: 18px; padding: 22px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 30px 80px rgba(0,0,0,.5); }
+.sheet h3 { margin: 0; font: 800 1.35rem/1.2 var(--font-display); text-wrap: balance; }
+.sheet .lead { margin: 0; color: var(--muted); font-size: .88rem; }
+.sheet ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 7px; font-size: .88rem; }
+.sheet li { display: flex; gap: 9px; align-items: baseline; }
+.sheet li::before { content: "✓"; color: var(--ok); font-weight: 700; }
+.price { font: 800 1.6rem var(--font-display); }
+.price small { font: 500 .8rem var(--font-body); color: var(--muted); margin-left: 6px; }
+.keyrow { display: flex; gap: 8px; }
+.keyrow input { flex: 1; min-width: 0; font: 500 .86rem var(--font-mono); color: var(--ink); background: rgba(8,18,44,.6); border: 1px solid var(--line); border-radius: 8px; padding: 10px; }
+.sep { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: .76rem; }
+.sep::before, .sep::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.msg { margin: 0; font-size: .82rem; min-height: 1.2em; }
+.msg.err { color: var(--err); } .msg.ok { color: var(--ok); }
+.close { align-self: center; }
+</style>
+</head>
+<body>
+
+
+<header class="appbar">
+  <div class="appbar-in">
+    <div class="brand">
+      <div class="mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M12 2v9"/><path d="M8 11h8l-4 5z" fill="#fff"/><path d="M4 21h16"/><path d="M9 19l3-3 3 3"/></svg>
+      </div>
+      <div><h1>Image Laser</h1><small>Préparation de fichiers · xTool S1</small></div>
+    </div>
+    <div class="spacer"></div>
+    <button class="plan" id="planBtn"><span class="dot"></span><span id="planTxt">Gratuit</span></button>
+    <button class="btn-top" id="exportTop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg><span>Exporter</span></button>
+  </div>
+</header>
+
+<div class="main">
+  <section class="machine" aria-label="Graveur laser">
+    <svg viewBox="0 0 260 170" role="img" aria-label="Illustration d'un graveur laser fermé en train de graver">
+      <defs>
+        <linearGradient id="body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a4252"/><stop offset="1" stop-color="#1c212b"/></linearGradient>
+        <linearGradient id="lid" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7fb3ff" stop-opacity=".35"/><stop offset="1" stop-color="#2a64e8" stop-opacity=".18"/></linearGradient>
+        <linearGradient id="wood" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#e6c896"/><stop offset="1" stop-color="#cfa66c"/></linearGradient>
+      </defs>
+      <ellipse cx="130" cy="160" rx="118" ry="7" fill="#000" opacity=".35"/>
+      <rect x="14" y="20" width="232" height="134" rx="12" fill="url(#body)" stroke="#59627a" stroke-width="1.5"/>
+      <rect x="14" y="128" width="232" height="26" rx="0" fill="#151920"/>
+      <rect x="14" y="140" width="232" height="14" rx="12" fill="#151920"/>
+      <rect x="28" y="134" width="60" height="6" rx="3" fill="#2b3240"/>
+      <circle cx="226" cy="137" r="5" fill="#3d8bff"/><circle cx="226" cy="137" r="9" fill="none" stroke="#3d8bff" stroke-opacity=".35" stroke-width="2"/>
+      <rect x="28" y="32" width="204" height="90" rx="6" fill="#0d1118"/>
+      <rect x="62" y="56" width="136" height="60" rx="2" fill="url(#wood)"/>
+      <g stroke="#4a2e17" stroke-width="2.2" stroke-linecap="round" fill="none" opacity=".9">
+        <path class="burn" d="M76 68h108M76 76h108M76 84h108M76 92h108M76 100h108"/>
+      </g>
+      <rect x="34" y="36" width="5" height="82" rx="2" fill="#4b5468"/><rect x="221" y="36" width="5" height="82" rx="2" fill="#4b5468"/>
+      <g class="gantry">
+        <rect x="32" y="44" width="196" height="9" rx="3" fill="#5b6479"/>
+        <g class="head">
+          <rect x="60" y="38" width="22" height="22" rx="4" fill="#e9edf4"/>
+          <rect x="66" y="58" width="10" height="5" rx="1.5" fill="#9aa4b6"/>
+          <circle cx="71" cy="45" r="2" fill="#3d8bff"/>
+          <g class="beam"><line x1="71" y1="63" x2="71" y2="68" stroke="#ff4d4d" stroke-width="2"/><circle cx="71" cy="68" r="3" fill="#ffd6d6"/><circle cx="71" cy="68" r="6" fill="#ff4d4d" opacity=".35"/></g>
+        </g>
+      </g>
+      <path d="M22 26h216a6 6 0 0 1 6 6v92H16V32a6 6 0 0 1 6-6z" fill="url(#lid)" stroke="#9cc0ff" stroke-opacity=".35"/>
+      <path d="M40 30l40 0-50 90h-4z" fill="#fff" opacity=".08"/>
+    </svg>
+    <div>
+      <h2>Prépare tes fichiers pour ton graveur</h2>
+      <p>Charge une photo ou un logo, choisis le matériau, puis exporte un fichier prêt à graver dans xTool Creative Space.</p>
+      <div class="specs"><span>Laser diode 20 W</span><span>254–508 DPI</span><span>PNG · SVG</span></div>
+    </div>
+  </section>
+  <section class="stage" aria-label="Aperçu">
+    <div class="toolbar">
+      <div class="tgroup" role="group" aria-label="Rendu de l'aperçu">
+        <button id="vMat" aria-pressed="true">Sur matériau</button>
+        <button id="vBw" aria-pressed="false">Fichier N&amp;B</button>
+      </div>
+      <div class="tgroup" role="group" aria-label="Outils">
+        <button class="ibtn" id="loupeBtn" aria-pressed="false" title="Loupe"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/><path d="M11 8v6M8 11h6"/></svg>Loupe</button>
+        <button class="ibtn" id="cropBtn" aria-pressed="false" title="Recadrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M18 22V8a2 2 0 0 0-2-2H2"/></svg><span id="cropLbl">Recadrer</span></button>
+      </div>
+      <div class="tgroup" role="group" aria-label="Orientation">
+        <button class="ibtn" id="rotL" title="Rotation à gauche" aria-label="Rotation à gauche"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg></button>
+        <button class="ibtn" id="rotR" title="Rotation à droite" aria-label="Rotation à droite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg></button>
+        <button class="ibtn" id="flipH" title="Miroir" aria-label="Miroir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M8 7L3 17h5z"/><path d="M16 7l5 10h-5z"/></svg></button>
+      </div>
+    </div>
+    <div class="viewport">
+      <div class="compare" id="compare">
+        <canvas id="cOut"></canvas>
+        <canvas id="cOrig"></canvas>
+        <div class="split-line" id="splitLine"><div class="split-knob"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7l-5 5 5 5"/><path d="M15 7l5 5-5 5"/></svg></div></div>
+        <span class="pill l">AVANT</span><span class="pill r">APRÈS</span>
+        <div class="loupe" id="loupe" hidden><canvas id="cLoupe" width="340" height="340"></canvas></div>
+      </div>
+      <div class="cropper" id="cropper" hidden>
+        <canvas id="cCrop"></canvas>
+        <div class="cbox" id="cbox">
+          <span class="hdl nw" data-h="nw"></span><span class="hdl ne" data-h="ne"></span>
+          <span class="hdl sw" data-h="sw"></span><span class="hdl se" data-h="se"></span>
+        </div>
+      </div>
+    </div>
+    <div class="vh" id="splitWrap"><input type="range" id="split" min="0" max="100" value="50" aria-label="Comparer avant et après"></div>
+    <p class="dims"><span id="roMm">—</span> <span id="roDpiWrap">@ <span id="roDpi">—</span></span> (<span id="roPx">—</span>)<span class="ms" id="roMs"></span></p>
+    <div class="fname" id="srcName">Image d'exemple</div>
+  </section>
+
+  <section class="card" aria-label="Affiner ce résultat">
+    <div class="card-head">Affiner ce résultat ?<button class="btn ghost" id="reset">↺ Tout réinitialiser</button></div>
+    <div class="body">
+      <div class="sliders">
+        <div class="sl"><div class="top"><label for="bri">Luminosité</label><output id="oBri">0</output></div><input type="range" id="bri" min="-100" max="100" value="0"></div>
+        <div class="sl"><div class="top"><label for="con">Contraste</label><output id="oCon">0</output></div><input type="range" id="con" min="-100" max="100" value="0"></div>
+        <div class="sl"><div class="top"><label for="gam">Gamma</label><output id="oGam">1.00</output></div><input type="range" id="gam" min="30" max="300" value="100"></div>
+        <div class="sl"><div class="top"><label for="shp">Netteté</label><output id="oShp">0.0</output></div><input type="range" id="shp" min="0" max="300" value="0"></div>
+        <div class="row" id="thrRow"><div class="top"><label for="thr">Seuil</label><output id="oThr">128</output></div><input type="range" id="thr" min="1" max="254" value="128"></div>
+        <div class="row" id="spkRow" hidden><div class="top"><label for="spk">Ignorer les taches</label><output id="oSpk">12</output></div><input type="range" id="spk" min="0" max="200" value="12"></div>
+      </div>
+      <label class="field" id="algoField">Tramage
+        <select id="algo">
+          <option value="jarvis">Jarvis-Judice-Ninke · photo, détails fins</option>
+          <option value="stucki">Stucki · photo, net</option>
+          <option value="floyd">Floyd-Steinberg · polyvalent</option>
+          <option value="atkinson">Atkinson · contrasté, ardoise</option>
+          <option value="sierra">Sierra · doux</option>
+          <option value="burkes">Burkes · rapide et propre</option>
+          <option value="bayer4">Bayer 4×4 · motif régulier</option>
+          <option value="bayer8">Bayer 8×8 · demi-teinte</option>
+          <option value="threshold">Seuil simple · logos, texte</option>
+          <option value="gray">Niveaux de gris · sans tramage</option>
+        </select>
+      </label>
+      <div class="checks">
+        <label><input type="checkbox" id="inv"> Inverser</label>
+        <label id="serpLbl"><input type="checkbox" id="serp" checked> Serpentin</label>
+        <label><input type="checkbox" id="bgw"> Blanc pur</label>
+        <label id="smoothLbl" hidden><input type="checkbox" id="smooth" checked> Lisser</label>
+        <label id="outlineLbl" hidden><input type="checkbox" id="outline"> Contour seul</label>
+      </div>
+    </div>
+  </section>
+
+  <div class="cards">
+    <details class="card" open>
+      <summary>Image source</summary>
+      <div class="body">
+        <div class="drop" id="drop" tabindex="0" role="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+          <div><strong>Charger une photo</strong>ou la glisser ici · JPG, PNG, WebP</div>
+        </div>
+        <input type="file" id="file" accept="image/*" hidden>
+      </div>
+    </details>
+
+    <details class="card" open>
+      <summary>Sortie</summary>
+      <div class="body">
+        <div class="seg" role="group" aria-label="Type de fichier">
+          <button id="mPng" aria-pressed="true">Photo · PNG</button>
+          <button id="mSvg" aria-pressed="false">Texte / logo · SVG</button>
+        </div>
+        <div class="two">
+          <label class="field">Largeur (mm)<input type="number" id="wmm" min="5" max="500" step="1" value="100"></label>
+          <label class="field" id="dpiField">Résolution
+            <select id="dpi">
+              <option value="254">254 DPI · 10 l/mm</option>
+              <option value="318">318 DPI</option>
+              <option value="381">381 DPI · 15 l/mm</option>
+              <option value="423">423 DPI</option>
+              <option value="508">508 DPI · 20 l/mm</option>
+            </select>
+          </label>
+        </div>
+      </div>
+    </details>
+
+    <details class="card" open>
+      <summary>Matériau</summary>
+      <div class="body"><div class="mats" id="mats"></div></div>
+    </details>
+
+    <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
+      <details class="card" id="cropCard">
+        <summary>Recadrage <span class="sub" id="cropSub">Image entière</span></summary>
+        <div class="body">
+          <div class="two">
+            <label class="field">Format
+              <select id="ratio">
+                <option value="0">Libre</option>
+                <option value="1">Carré 1:1</option>
+                <option value="1.3333">Paysage 4:3</option>
+                <option value="0.75">Portrait 3:4</option>
+                <option value="1.5">Paysage 3:2</option>
+                <option value="0.6667">Portrait 2:3</option>
+                <option value="1.7778">Large 16:9</option>
+              </select>
+            </label>
+            <label class="field">Forme
+              <select id="shape">
+                <option value="rect">Rectangle</option>
+                <option value="round">Rond / ovale</option>
+              </select>
+            </label>
+          </div>
+          <div class="tools"><button class="btn" id="cropReset">Image entière</button></div>
+          <p class="hint" id="cropHint" hidden>Déplace le cadre ou tire ses coins, puis touche « Terminer » au-dessus de l'image.</p>
+        </div>
+      </details>
+      <details class="card">
+        <summary>Fond</summary>
+        <div class="body">
+          <div class="checks"><label><input type="checkbox" id="bgOn"> Supprimer le fond</label></div>
+          <div class="row" id="tolRow" hidden><div class="top"><label for="tol">Tolérance</label><output id="oTol">45</output></div><input type="range" id="tol" min="5" max="140" value="45"></div>
+          <p class="hint">Efface la couleur qui touche les bords : idéal pour un mur, un drap ou un ciel uni. Les zones effacées ne seront pas gravées.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <section class="card"><div class="body" style="padding-top:16px">
+    <button class="btn primary" id="export">Enregistrer le PNG pour xTool</button>
+    <p class="status" id="status" role="status"></p>
+    <button class="btn ghost" id="showFile" hidden style="align-self:center">Afficher dans l'Explorateur</button>
+    <div id="fallback" hidden></div>
+    <p class="hint" id="tipPng">Dans xTool Creative Space, importe le PNG et choisis le traitement « Aucun » : l'image est déjà tramée. La taille est lue depuis le DPI du fichier.</p>
+    <p class="hint" id="tipSvg" hidden>Le SVG s'importe à la taille exacte en mm. Choisis « Gravure » pour marquer le motif, ou coche « Contour seul » et choisis « Découpe » pour découper la forme.</p>
+  </div></section>
+  <p class="note">Les réglages de chaque matériau sont des points de départ. Fais toujours un essai sur une chute : la puissance et la vitesse se règlent dans xTool Creative Space.</p>
+</div>
+
+
+<div class="modal" id="planModal" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="planTitle">
+    <div id="planFree">
+      <h3 id="planTitle">Passe à Image Laser Pro</h3>
+      <p class="lead" id="planLead">Tu as utilisé tes exports gratuits du jour.</p>
+    </div>
+    <ul id="planFeatures">
+      <li>Exports PNG et SVG illimités</li>
+      <li>Tous les matériaux et modes de tramage</li>
+      <li>Recadrage, suppression du fond et vectorisation</li>
+      <li>Mises à jour incluses</li>
+    </ul>
+    <div class="price" id="planPrice">—</div>
+    <button class="btn primary" id="buyBtn">S'abonner</button>
+    <div class="sep">Déjà abonné ?</div>
+    <div class="keyrow"><input id="keyInput" placeholder="Clé de licence reçue par e-mail" autocomplete="off" spellcheck="false"><button class="btn" id="activateBtn">Activer</button></div>
+    <div id="planPro" hidden>
+      <ul><li id="proLine">Abonnement actif</li></ul>
+      <div class="tools" style="margin-top:12px"><button class="btn" id="portalBtn">Gérer mon abonnement</button><button class="btn" id="deactBtn">Désactiver sur ce PC</button></div>
+    </div>
+    <p class="msg" id="planMsg" role="status"></p>
+    <button class="btn ghost close" id="closePlan">Fermer</button>
+  </div>
+</div>
+<script>
+(() => {
+  const MATS = {
+    peuplier: { name: "Contreplaqué", base: "#e3c79a", burn: "#4a2e17", s: { bri: 10, con: 20, gam: 120, shp: 80, algo: "jarvis", inv: false, dpi: 318, bgw: true } },
+    boisdur:  { name: "Bois dur",     base: "#b98a5a", burn: "#2b1a0d", s: { bri: 15, con: 30, gam: 130, shp: 100, algo: "stucki", inv: false, dpi: 318, bgw: true } },
+    mdf:      { name: "MDF",          base: "#a7835c", burn: "#2a1c10", s: { bri: 20, con: 25, gam: 120, shp: 60, algo: "jarvis", inv: false, dpi: 254, bgw: true } },
+    ardoise:  { name: "Ardoise",      base: "#2e3236", burn: "#c9ccce", s: { bri: -5, con: 40, gam: 90, shp: 120, algo: "atkinson", inv: true, dpi: 318, bgw: false } },
+    carreau:  { name: "Carreau peint",base: "#1d1d1f", burn: "#f1efe9", s: { bri: 0, con: 35, gam: 100, shp: 120, algo: "floyd", inv: true, dpi: 381, bgw: false } },
+    acry:     { name: "Acrylique noir",base: "#121316", burn: "#dfe2e6", s: { bri: 0, con: 30, gam: 100, shp: 90, algo: "jarvis", inv: true, dpi: 381, bgw: false } },
+    cuir:     { name: "Cuir",         base: "#8a5a36", burn: "#2a160a", s: { bri: 20, con: 15, gam: 140, shp: 50, algo: "sierra", inv: false, dpi: 254, bgw: true } },
+    alu:      { name: "Alu anodisé",  base: "#2b3b52", burn: "#e8edf2", s: { bri: 0, con: 30, gam: 100, shp: 100, algo: "bayer8", inv: true, dpi: 381, bgw: false } },
+    liege:    { name: "Liège",        base: "#c49a6c", burn: "#3c2614", s: { bri: 25, con: 35, gam: 140, shp: 40, algo: "atkinson", inv: false, dpi: 254, bgw: true } },
+    toilenoir:{ name: "Toile peinte en noir", base: "#1b1b1c", burn: "#f3f0e9", s: { bri: 0, con: 35, gam: 95, shp: 100, algo: "jarvis", inv: true, dpi: 318, bgw: false } },
+    toile:    { name: "Toile blanche", base: "#efece4", burn: "#3a2a1c", s: { bri: 15, con: 25, gam: 120, shp: 60, algo: "floyd", inv: false, dpi: 254, bgw: true } },
+    carton:   { name: "Carton / papier", base: "#d8c3a0", burn: "#51351c", s: { bri: 20, con: 20, gam: 130, shp: 60, algo: "floyd", inv: false, dpi: 254, bgw: true } },
+  };
+  const $ = id => document.getElementById(id);
+  const els = ["bri","con","gam","shp","thr","spk","tol","algo","inv","serp","bgw","wmm","dpi","bgOn","smooth","outline","ratio","shape"].reduce((o,k)=>(o[k]=$(k),o),{});
+  let mat = "peuplier", view = "mat", mode = "png", src = null, rot = 0, flip = false;
+  let outBW = null, outW = 0, outH = 0, svgPath = "", timer = 0;
+  let orient = null, orientKey = "";
+  let box = { x: 0, y: 0, w: 1, h: 1 }, cropping = false;
+
+  // ---------- Image d'exemple
+  function sample() {
+    const c = document.createElement("canvas"); c.width = 900; c.height = 680;
+    const g = c.getContext("2d");
+    let gr = g.createLinearGradient(0, 0, 0, 680); gr.addColorStop(0, "#1b2433"); gr.addColorStop(1, "#7f8ea3");
+    g.fillStyle = gr; g.fillRect(0, 0, 900, 680);
+    for (let i = 0; i < 160; i++) { g.fillStyle = `rgba(255,255,255,${Math.random()*.8})`; g.fillRect(Math.random()*900, Math.random()*360, 2, 2); }
+    gr = g.createRadialGradient(390, 230, 20, 450, 290, 210); gr.addColorStop(0, "#fbfaf4"); gr.addColorStop(.7, "#b9b6ab"); gr.addColorStop(1, "#4d4b46");
+    g.fillStyle = gr; g.beginPath(); g.arc(450, 290, 200, 0, Math.PI*2); g.fill();
+    [[400,220,38],[520,300,26],[430,370,46],[350,300,18],[510,200,15],[560,380,20]].forEach(([x,y,r]) => {
+      const cg = g.createRadialGradient(x+r*.3, y+r*.3, 1, x, y, r); cg.addColorStop(0, "rgba(60,58,52,.55)"); cg.addColorStop(1, "rgba(60,58,52,0)");
+      g.fillStyle = cg; g.beginPath(); g.arc(x, y, r, 0, Math.PI*2); g.fill();
+    });
+    g.fillStyle = "#11151b"; g.beginPath(); g.moveTo(0, 680); g.lineTo(0, 540);
+    for (let x = 0; x <= 900; x += 30) g.lineTo(x, 540 - Math.sin(x/90)*40 - Math.cos(x/37)*14); g.lineTo(900, 680); g.fill();
+    g.fillStyle = "#e9e4d6"; g.font = "600 44px Georgia, serif"; g.textAlign = "center"; g.fillText("Nuit de pleine lune", 450, 640);
+    return c;
+  }
+
+  // ---------- Matériaux
+  const matsEl = $("mats");
+  Object.entries(MATS).forEach(([k, m]) => {
+    const b = document.createElement("button"); b.className = "mat"; b.id = "mat-" + k;
+    b.innerHTML = `<i style="background:${m.base}"></i><span>${m.name}</span>`;
+    b.addEventListener("click", () => { mat = k; applyPreset(); });
+    matsEl.appendChild(b);
+  });
+  function applyPreset() {
+    const s = MATS[mat].s;
+    els.bri.value = s.bri; els.con.value = s.con; els.gam.value = s.gam; els.shp.value = s.shp;
+    els.algo.value = s.algo; els.inv.checked = s.inv; els.dpi.value = s.dpi; els.bgw.checked = s.bgw; els.thr.value = 128;
+    if (mode === "svg") { els.shp.value = 0; els.bri.value = 0; els.con.value = 0; els.gam.value = 100; }
+    document.querySelectorAll(".mat").forEach(b => b.setAttribute("aria-pressed", b.id === "mat-" + mat));
+    schedule();
+  }
+
+  // ---------- Chargement
+  function loadFile(f) {
+    if (!f || !f.type.startsWith("image/")) { setStatus("Ce fichier n'est pas une image. Choisis un JPG, PNG ou WebP.", true); return; }
+    const url = URL.createObjectURL(f), img = new Image();
+    img.onload = () => { src = img; rot = 0; flip = false; resetBox(); $("srcName").textContent = f.name || "Image collée"; setStatus(""); schedule(); };
+    img.onerror = () => setStatus("Impossible de lire cette image. Essaie un autre format.", true);
+    img.src = url;
+  }
+  $("drop").addEventListener("click", () => $("file").click());
+  $("drop").addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); $("file").click(); } });
+  $("file").addEventListener("change", e => loadFile(e.target.files[0]));
+  ["dragenter","dragover"].forEach(t => $("drop").addEventListener(t, e => { e.preventDefault(); $("drop").classList.add("over"); }));
+  ["dragleave","drop"].forEach(t => $("drop").addEventListener(t, e => { e.preventDefault(); $("drop").classList.remove("over"); }));
+  $("drop").addEventListener("drop", e => loadFile(e.dataTransfer.files[0]));
+  document.addEventListener("paste", e => { const it = [...(e.clipboardData?.items || [])].find(i => i.type.startsWith("image/")); if (it) loadFile(it.getAsFile()); });
+  $("rotL").onclick = () => { rot = (rot + 3) % 4; resetBox(); schedule(); };
+  $("rotR").onclick = () => { rot = (rot + 1) % 4; resetBox(); schedule(); };
+  $("flipH").onclick = () => { flip = !flip; box.x = 1 - box.x - box.w; schedule(); };
+  $("reset").onclick = applyPreset;
+
+  // ---------- Orientation (mise en cache)
+  function getOrient() {
+    const img = src || sampleCanvas;
+    const key = (src ? src.src : "sample") + "|" + rot + "|" + flip;
+    if (orient && orientKey === key) return orient;
+    const iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
+    const k = Math.min(1, 4200 / Math.max(iw, ih));
+    const sw = Math.round(iw * k), sh = Math.round(ih * k);
+    const c = document.createElement("canvas"); c.width = rot % 2 ? sh : sw; c.height = rot % 2 ? sw : sh;
+    const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, c.width, c.height); g.imageSmoothingQuality = "high";
+    g.translate(c.width/2, c.height/2); g.rotate(rot * Math.PI/2); if (flip) g.scale(-1, 1);
+    g.drawImage(img, -sw/2, -sh/2, sw, sh);
+    orient = c; orientKey = key;
+    return c;
+  }
+
+  // ---------- Recadrage
+  const ratioVal = () => +els.ratio.value;
+  function resetBox() { box = { x: 0, y: 0, w: 1, h: 1 }; orient = null; fitRatio(); }
+  function fitRatio() {
+    const r = ratioVal(); if (!r) return drawBox();
+    const o = getOrient(), k = r * o.height / o.width;
+    let w = Math.min(1, k), h = w / k; if (h > 1) { h = 1; w = k; }
+    box = { x: (1 - w) / 2, y: (1 - h) / 2, w, h };
+    drawBox();
+  }
+  function drawBox() {
+    try { updCropSub(); } catch (e) {}
+    const b = $("cbox");
+    b.style.left = box.x*100 + "%"; b.style.top = box.y*100 + "%"; b.style.width = box.w*100 + "%"; b.style.height = box.h*100 + "%";
+    b.classList.toggle("round", els.shape.value === "round");
+  }
+  function showCropper(on) {
+    cropping = on;
+    $("cropBtn").setAttribute("aria-pressed", on); $("cropLbl").textContent = on ? "Terminer" : "Recadrer"; if (on) $("cropCard").open = true;
+    $("cropper").hidden = !on; $("compare").hidden = on; $("splitWrap").hidden = on; $("cropHint").hidden = !on;
+    if (on) {
+      const o = getOrient(), c = $("cCrop"), k = Math.min(1, 1400 / Math.max(o.width, o.height));
+      c.width = Math.round(o.width*k); c.height = Math.round(o.height*k);
+      c.getContext("2d").drawImage(o, 0, 0, c.width, c.height);
+      drawBox();
+    } else schedule();
+  }
+  $("cropBtn").onclick = () => showCropper(!cropping);
+  $("cropReset").onclick = () => { els.ratio.value = "0"; els.shape.value = "rect"; box = { x: 0, y: 0, w: 1, h: 1 }; drawBox(); schedule(); };
+  els.ratio.addEventListener("change", () => { fitRatio(); schedule(); });
+  els.shape.addEventListener("change", () => { drawBox(); schedule(); });
+
+  let drag = null;
+  $("cropper").addEventListener("pointerdown", e => {
+    const h = e.target.dataset?.h || (e.target.id === "cbox" ? "move" : null);
+    if (!h) return;
+    e.preventDefault();
+    $("cropper").setPointerCapture(e.pointerId);
+    drag = { h, x: e.clientX, y: e.clientY, b: { ...box } };
+  });
+  $("cropper").addEventListener("pointermove", e => {
+    if (!drag) return;
+    const r = $("cCrop").getBoundingClientRect(), o = getOrient();
+    const dx = (e.clientX - drag.x) / r.width, dy = (e.clientY - drag.y) / r.height, b = drag.b;
+    if (drag.h === "move") {
+      box.x = Math.min(1 - b.w, Math.max(0, b.x + dx)); box.y = Math.min(1 - b.h, Math.max(0, b.y + dy));
+    } else {
+      const h = drag.h, west = h.includes("w"), north = h.includes("n");
+      const ax = west ? b.x + b.w : b.x, ay = north ? b.y + b.h : b.y;
+      const cx = (west ? b.x : b.x + b.w) + dx, cy = (north ? b.y : b.y + b.h) + dy;
+      const maxW = west ? ax : 1 - ax, maxH = north ? ay : 1 - ay;
+      let w = Math.min(Math.max(west ? ax - cx : cx - ax, .05), maxW);
+      let hh = Math.min(Math.max(north ? ay - cy : cy - ay, .05), maxH);
+      const rr = ratioVal();
+      if (rr) { hh = w * o.width / (o.height * rr); if (hh > maxH) { hh = maxH; w = hh * o.height * rr / o.width; } }
+      box = { x: west ? ax - w : ax, y: north ? ay - hh : ay, w, h: hh };
+    }
+    drawBox();
+  });
+  const endDrag = () => { if (drag) { drag = null; updCropSub(); schedule(); } };
+  function updCropSub() { const full = box.w > .999 && box.h > .999 && els.shape.value === "rect"; $("cropSub").textContent = full ? "Image entière" : `${Math.round(box.w*100)} × ${Math.round(box.h*100)} %${els.shape.value === "round" ? " · rond" : ""}`; }
+  $("cropper").addEventListener("pointerup", endDrag);
+  $("cropper").addEventListener("pointercancel", endDrag);
+
+  // ---------- Contrôles
+  const fmt = { bri: v => v, con: v => v, gam: v => (v/100).toFixed(2), shp: v => (v/100).toFixed(1), thr: v => v, spk: v => v, tol: v => v };
+  ["bri","con","gam","shp","thr","spk","tol"].forEach(k => els[k].addEventListener("input", schedule));
+  ["algo","inv","serp","bgw","dpi","bgOn","smooth","outline"].forEach(k => els[k].addEventListener("change", schedule));
+  els.wmm.addEventListener("input", schedule);
+  $("vMat").onclick = () => setView("mat"); $("vBw").onclick = () => setView("bw");
+  function setView(v) { view = v; $("vMat").setAttribute("aria-pressed", v === "mat"); $("vBw").setAttribute("aria-pressed", v === "bw"); paintOut(); }
+  $("mPng").onclick = () => setMode("png"); $("mSvg").onclick = () => setMode("svg");
+  function setMode(m) {
+    mode = m;
+    $("mPng").setAttribute("aria-pressed", m === "png"); $("mSvg").setAttribute("aria-pressed", m === "svg");
+    $("export").textContent = m === "png" ? "Enregistrer le PNG pour xTool" : "Enregistrer le SVG pour xTool";
+    $("tipPng").hidden = m !== "png"; $("tipSvg").hidden = m !== "svg";
+    if (m === "svg") { els.shp.value = 0; els.bgw.checked = true; }
+    schedule();
+  }
+  const split = $("split");
+  split.addEventListener("input", updateSplit);
+  function updateSplit() {
+    const p = +split.value;
+    $("cOrig").style.clipPath = `inset(0 ${100 - p}% 0 0)`;
+    $("splitLine").style.left = `calc(${p}% - 1px)`;
+    $("splitLine").hidden = false;
+  }
+
+  function schedule() {
+    ["bri","con","gam","shp","thr","spk","tol"].forEach(k => $("o" + k[0].toUpperCase() + k.slice(1)).textContent = fmt[k](+els[k].value));
+    const svg = mode === "svg";
+    $("thrRow").hidden = !(svg || els.algo.value === "threshold");
+    $("algoField").hidden = svg; $("serpLbl").hidden = svg; $("dpiField").hidden = svg; $("roDpiWrap").hidden = svg;
+    $("spkRow").hidden = !svg; $("smoothLbl").hidden = !svg; $("outlineLbl").hidden = !svg;
+    $("tolRow").hidden = !els.bgOn.checked;
+    if (cropping) return;
+    clearTimeout(timer); timer = setTimeout(process, svg ? 120 : 60);
+  }
+
+  // ---------- Tramage
+  const KERNELS = {
+    floyd:   [[1,0,7],[-1,1,3],[0,1,5],[1,1,1]],
+    atkinson:[[1,0,1],[2,0,1],[-1,1,1],[0,1,1],[1,1,1],[0,2,1]],
+    jarvis:  [[1,0,7],[2,0,5],[-2,1,3],[-1,1,5],[0,1,7],[1,1,5],[2,1,3],[-2,2,1],[-1,2,3],[0,2,5],[1,2,3],[2,2,1]],
+    stucki:  [[1,0,8],[2,0,4],[-2,1,2],[-1,1,4],[0,1,8],[1,1,4],[2,1,2],[-2,2,1],[-1,2,2],[0,2,4],[1,2,2],[2,2,1]],
+    sierra:  [[1,0,5],[2,0,3],[-2,1,2],[-1,1,4],[0,1,5],[1,1,4],[2,1,2],[-1,2,2],[0,2,3],[1,2,2]],
+    burkes:  [[1,0,8],[2,0,4],[-2,1,2],[-1,1,4],[0,1,8],[1,1,4],[2,1,2]],
+  };
+  const DIV = { floyd: 16, atkinson: 8, jarvis: 48, stucki: 42, sierra: 32, burkes: 32 };
+  function bayer(n) {
+    let m = [[0]];
+    while (m.length < n) { const s = m.length, r = []; for (let y = 0; y < s*2; y++) { r[y] = []; for (let x = 0; x < s*2; x++) { r[y][x] = m[y % s][x % s] * 4 + [[0,2],[3,1]][y >= s ? 1 : 0][x >= s ? 1 : 0]; } } m = r; }
+    return m;
+  }
+  const B4 = bayer(4), B8 = bayer(8);
+
+  // ---------- Suppression du fond (remplissage depuis les bords)
+  function bgMask(d, W, H, tol, mask) {
+    const N = W*H, rs = [], gs = [], bs = [];
+    const take = i => { rs.push(d[i*4]); gs.push(d[i*4+1]); bs.push(d[i*4+2]); };
+    const step = Math.max(1, Math.floor((W + H) / 400));
+    for (let x = 0; x < W; x += step) { take(x); take((H-1)*W + x); }
+    for (let y = 0; y < H; y += step) { take(y*W); take(y*W + W - 1); }
+    const med = a => a.sort((p, q) => p - q)[a.length >> 1];
+    const R = med(rs), G = med(gs), B = med(bs), t2 = tol * tol;
+    const near = i => { const j = i*4, dr = d[j]-R, dg = d[j+1]-G, db = d[j+2]-B; return dr*dr + dg*dg + db*db < t2; };
+    const q = new Int32Array(N); let qh = 0, qt = 0;
+    const push = i => { if (!mask[i] && near(i)) { mask[i] = 1; q[qt++] = i; } };
+    for (let x = 0; x < W; x++) { push(x); push((H-1)*W + x); }
+    for (let y = 0; y < H; y++) { push(y*W); push(y*W + W - 1); }
+    while (qh < qt) {
+      const i = q[qh++], x = i % W;
+      if (x > 0) push(i - 1); if (x < W - 1) push(i + 1);
+      if (i >= W) push(i - W); if (i < N - W) push(i + W);
+    }
+  }
+
+  // ---------- Vectorisation (contours de pixels → courbes)
+  function trace(bits, W, H, minArea, smooth) {
+    const VW = W + 1, next = new Map();
+    const add = (a, b) => { let l = next.get(a); if (!l) next.set(a, l = []); l.push(b); };
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      const i = y*W + x; if (!bits[i]) continue;
+      const tl = y*VW + x, tr = tl + 1, bl = tl + VW, br = bl + 1;
+      if (y === 0 || !bits[i - W]) add(tl, tr);
+      if (x === W - 1 || !bits[i + 1]) add(tr, br);
+      if (y === H - 1 || !bits[i + W]) add(br, bl);
+      if (x === 0 || !bits[i - 1]) add(bl, tl);
+    }
+    const parts = [];
+    for (const [a, l] of next) {
+      while (l.length) {
+        let prev = a, cur = l.pop(); const pts = [a]; let guard = 0;
+        while (cur !== a && guard++ < 5e6) {
+          pts.push(cur);
+          const nl = next.get(cur); if (!nl || !nl.length) break;
+          let pick = 0;
+          if (nl.length > 1) {
+            const dx = cur % VW - prev % VW, dy = ((cur / VW) | 0) - ((prev / VW) | 0);
+            const pref = [[-dy, dx], [dx, dy], [dy, -dx]];
+            search: for (const [px, py] of pref) for (let k = 0; k < nl.length; k++) {
+              const n = nl[k]; if (n % VW - cur % VW === px && ((n / VW) | 0) - ((cur / VW) | 0) === py) { pick = k; break search; }
+            }
+          }
+          prev = cur; cur = nl.splice(pick, 1)[0];
+        }
+        let p = pts.map(k => [k % VW, (k / VW) | 0]);
+        p = collinear(p);
+        if (Math.abs(area(p)) < minArea || p.length < 3) continue;
+        p = rdpClosed(p, smooth ? 0.9 : 0.6);
+        if (p.length >= 3) parts.push(pathOf(p, smooth));
+      }
+    }
+    return parts.join("");
+  }
+  function collinear(p) {
+    const o = [], n = p.length;
+    for (let i = 0; i < n; i++) {
+      const a = p[(i - 1 + n) % n], b = p[i], c = p[(i + 1) % n];
+      if ((b[0]-a[0])*(c[1]-b[1]) - (b[1]-a[1])*(c[0]-b[0]) !== 0) o.push(b);
+    }
+    return o;
+  }
+  function area(p) { let s = 0; for (let i = 0, n = p.length; i < n; i++) { const a = p[i], b = p[(i+1)%n]; s += a[0]*b[1] - b[0]*a[1]; } return s / 2; }
+  function rdp(p, eps) {
+    if (p.length < 3) return p;
+    const [ax, ay] = p[0], [bx, by] = p[p.length-1], L = Math.hypot(bx-ax, by-ay) || 1;
+    let md = 0, mi = 0;
+    for (let i = 1; i < p.length - 1; i++) { const d = Math.abs((by-ay)*p[i][0] - (bx-ax)*p[i][1] + bx*ay - by*ax) / L; if (d > md) { md = d; mi = i; } }
+    if (md <= eps) return [p[0], p[p.length-1]];
+    const l = rdp(p.slice(0, mi + 1), eps), r = rdp(p.slice(mi), eps);
+    return l.slice(0, -1).concat(r);
+  }
+  function rdpClosed(p, eps) {
+    if (p.length < 5) return p;
+    let f = 0, fd = 0; for (let i = 1; i < p.length; i++) { const d = Math.hypot(p[i][0]-p[0][0], p[i][1]-p[0][1]); if (d > fd) { fd = d; f = i; } }
+    const a = rdp(p.slice(0, f + 1), eps), b = rdp(p.slice(f).concat([p[0]]), eps);
+    return a.slice(0, -1).concat(b.slice(0, -1));
+  }
+  const r2 = v => Math.round(v * 100) / 100;
+  function pathOf(p, smooth) {
+    const n = p.length;
+    if (!smooth) return "M" + p.map(q => r2(q[0]) + " " + r2(q[1])).join("L") + "Z";
+    const mid = i => { const a = p[i % n], b = p[(i + 1) % n]; return [(a[0]+b[0])/2, (a[1]+b[1])/2]; };
+    const m0 = mid(n - 1); let s = `M${r2(m0[0])} ${r2(m0[1])}`;
+    for (let i = 0; i < n; i++) {
+      const a = p[(i - 1 + n) % n], b = p[i], c = p[(i + 1) % n], m = mid(i);
+      const ux = b[0]-a[0], uy = b[1]-a[1], vx = c[0]-b[0], vy = c[1]-b[1];
+      const cos = (ux*vx + uy*vy) / ((Math.hypot(ux, uy) * Math.hypot(vx, vy)) || 1);
+      s += cos < 0.45 ? `L${r2(b[0])} ${r2(b[1])}L${r2(m[0])} ${r2(m[1])}` : `Q${r2(b[0])} ${r2(b[1])} ${r2(m[0])} ${r2(m[1])}`;
+    }
+    return s + "Z";
+  }
+
+  // ---------- Traitement principal
+  function process() {
+    const t0 = performance.now(), svg = mode === "svg";
+    const o = getOrient();
+    const sx = box.x * o.width, sy = box.y * o.height, sw = Math.max(1, box.w * o.width), sh = Math.max(1, box.h * o.height);
+    const dpi = +els.dpi.value, wmm = Math.min(500, Math.max(5, +els.wmm.value || 100));
+    let W = Math.round(wmm / 25.4 * dpi), H = Math.round(W * sh / sw);
+    const cap = svg ? 1600 : 4200;
+    if (svg) { W = cap; H = Math.round(W * sh / sw); }
+    if (W > cap || H > cap) { const k = cap / Math.max(W, H); W = Math.round(W*k); H = Math.round(H*k); }
+    W = Math.max(8, W); H = Math.max(8, H);
+    outW = W; outH = H;
+
+    const c = document.createElement("canvas"); c.width = W; c.height = H;
+    const g = c.getContext("2d", { willReadFrequently: true });
+    g.fillStyle = "#fff"; g.fillRect(0, 0, W, H); g.imageSmoothingQuality = "high";
+    g.drawImage(o, sx, sy, sw, sh, 0, 0, W, H);
+    const co = $("cOrig"); co.width = W; co.height = H; co.getContext("2d").drawImage(c, 0, 0);
+
+    const d = g.getImageData(0, 0, W, H).data, N = W * H;
+    const mask = new Uint8Array(N);
+    if (els.shape.value === "round") {
+      const cx = W/2, cy = H/2, rx2 = (W/2)**2, ry2 = (H/2)**2;
+      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (((x+.5-cx)**2)/rx2 + ((y+.5-cy)**2)/ry2 > 1) mask[y*W+x] = 1;
+    }
+    if (els.bgOn.checked) bgMask(d, W, H, +els.tol.value, mask);
+
+    let L = new Float32Array(N);
+    for (let i = 0, j = 0; i < N; i++, j += 4) { const a = d[j+3] / 255; L[i] = (0.299*d[j] + 0.587*d[j+1] + 0.114*d[j+2]) * a + 255 * (1 - a); }
+    const s = +els.shp.value / 100;
+    if (s > 0) {
+      const t = new Float32Array(N);
+      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+        let sum = 0, n = 0;
+        for (let dy = -1; dy <= 1; dy++) { const yy = y + dy; if (yy < 0 || yy >= H) continue;
+          for (let dx = -1; dx <= 1; dx++) { const xx = x + dx; if (xx < 0 || xx >= W) continue; sum += L[yy*W+xx]; n++; } }
+        const i = y*W + x; t[i] = L[i] + s * (L[i] - sum/n);
+      }
+      L = t;
+    }
+    const b = +els.bri.value * 2.55, cv = +els.con.value * 2.55, f = (259*(cv+255)) / (255*(259-cv)), gm = +els.gam.value / 100;
+    const inv = els.inv.checked, bgw = els.bgw.checked;
+    for (let i = 0; i < N; i++) {
+      if (mask[i]) { L[i] = 255; continue; }
+      let v = f * (L[i] + b - 128) + 128;
+      v = v < 0 ? 0 : v > 255 ? 255 : v;
+      v = 255 * Math.pow(v / 255, 1 / gm);
+      if (bgw && v > 242) v = 255;
+      L[i] = inv ? 255 - v : v;
+    }
+
+    const out = new Uint8ClampedArray(N);
+    if (svg) {
+      const t = +els.thr.value, bits = new Uint8Array(N);
+      for (let i = 0; i < N; i++) { bits[i] = !mask[i] && L[i] < t ? 1 : 0; out[i] = bits[i] ? 0 : 255; }
+      svgPath = trace(bits, W, H, +els.spk.value, els.smooth.checked);
+    } else {
+      const algo = els.algo.value;
+      if (algo === "gray") for (let i = 0; i < N; i++) out[i] = L[i];
+      else if (algo === "threshold") { const t = +els.thr.value; for (let i = 0; i < N; i++) out[i] = L[i] < t ? 0 : 255; }
+      else if (algo === "bayer4" || algo === "bayer8") {
+        const M = algo === "bayer4" ? B4 : B8, n = M.length, nn = n*n;
+        for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const i = y*W+x; out[i] = L[i] > (M[y%n][x%n] + .5) / nn * 255 ? 255 : 0; }
+      } else {
+        const K = KERNELS[algo], dv = DIV[algo], serp = els.serp.checked;
+        for (let y = 0; y < H; y++) {
+          const rev = serp && (y & 1);
+          for (let k = 0; k < W; k++) {
+            const x = rev ? W - 1 - k : k, i = y*W + x, old = L[i], nv = old < 128 ? 0 : 255, err = (old - nv) / dv;
+            out[i] = nv;
+            for (let q = 0; q < K.length; q++) {
+              const xx = x + (rev ? -K[q][0] : K[q][0]), yy = y + K[q][1];
+              if (xx >= 0 && xx < W && yy < H) L[yy*W + xx] += err * K[q][2];
+            }
+          }
+        }
+      }
+      for (let i = 0; i < N; i++) if (mask[i]) out[i] = 255;
+    }
+    outBW = out;
+    paintOut();
+    const realH = wmm * sh / sw;
+    $("roPx").textContent = svg ? `vectoriel, ${(svgPath.match(/Z/g) || []).length} formes` : `${W} × ${H} px`;
+    $("roMm").textContent = `${wmm.toFixed(1).replace(".0","")} × ${realH.toFixed(1)} mm`;
+    $("roDpi").textContent = `${dpi} DPI`;
+    $("roMs").textContent = `calcul ${Math.round(performance.now() - t0)} ms`;
+    $("fallback").hidden = true;
+  }
+
+  function hex(h) { return [1,3,5].map(i => parseInt(h.slice(i, i+2), 16)); }
+  function paintOut() {
+    if (!outBW) return;
+    const c = $("cOut"); c.width = outW; c.height = outH;
+    const g = c.getContext("2d"), m = MATS[mat];
+    if (mode === "svg") {
+      g.fillStyle = view === "bw" ? "#ffffff" : m.base; g.fillRect(0, 0, outW, outH);
+      if (els.shape.value === "round" && view !== "bw") { g.strokeStyle = "rgba(0,0,0,.25)"; g.lineWidth = 2; g.beginPath(); g.ellipse(outW/2, outH/2, outW/2-1, outH/2-1, 0, 0, Math.PI*2); g.stroke(); }
+      if (!svgPath) return;
+      const p = new Path2D(svgPath), col = view === "bw" ? "#000000" : m.burn;
+      if (els.outline.checked) { g.strokeStyle = col; g.lineWidth = Math.max(1.5, outW / 500); g.stroke(p); }
+      else { g.fillStyle = col; g.fill(p, "evenodd"); }
+      return;
+    }
+    const id = g.createImageData(outW, outH), px = id.data, base = hex(m.base), burn = hex(m.burn);
+    for (let i = 0, j = 0; i < outBW.length; i++, j += 4) {
+      const v = outBW[i];
+      if (view === "bw") { px[j] = px[j+1] = px[j+2] = v; }
+      else { const t = 1 - v/255; px[j] = base[0] + (burn[0]-base[0])*t; px[j+1] = base[1] + (burn[1]-base[1])*t; px[j+2] = base[2] + (burn[2]-base[2])*t; }
+      px[j+3] = 255;
+    }
+    g.putImageData(id, 0, 0);
+  }
+
+  // ---------- Export
+  const CRC = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+  function crc(bytes) { let c = 0xFFFFFFFF; for (const b of bytes) c = CRC[(c ^ b) & 255] ^ (c >>> 8); return (c ^ 0xFFFFFFFF) >>> 0; }
+  async function pngWithDpi(canvas, dpi) {
+    const blob = await new Promise(r => canvas.toBlob(r, "image/png"));
+    const srcB = new Uint8Array(await blob.arrayBuffer());
+    const ppm = Math.round(dpi / 0.0254);
+    const chunk = new Uint8Array(21), dv = new DataView(chunk.buffer);
+    dv.setUint32(0, 9); chunk.set([0x70,0x48,0x59,0x73], 4); dv.setUint32(8, ppm); dv.setUint32(12, ppm); chunk[16] = 1;
+    dv.setUint32(17, crc(chunk.subarray(4, 17)));
+    const at = 33, out = new Uint8Array(srcB.length + 21);
+    out.set(srcB.subarray(0, at), 0); out.set(chunk, at); out.set(srcB.subarray(at), at + 21);
+    return new Blob([out], { type: "image/png" });
+  }
+  function svgBlob() {
+    const wmm = Math.min(500, Math.max(5, +els.wmm.value || 100)), hmm = wmm * outH / outW;
+    const sw = r2(0.1 * outW / wmm);
+    const paint = els.outline.checked ? `fill="none" stroke="#000" stroke-width="${sw}"` : `fill="#000" fill-rule="evenodd"`;
+    const txt = `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="${wmm.toFixed(2)}mm" height="${hmm.toFixed(2)}mm" viewBox="0 0 ${outW} ${outH}"><path ${paint} d="${svgPath}"/></svg>`;
+    return new Blob([txt], { type: "image/svg+xml" });
+  }
+  function setStatus(msg, err) { const s = $("status"); s.textContent = msg; s.classList.toggle("err", !!err); }
+
+
+  let lastSaved = "";
+  $("showFile").onclick = () => lastSaved && window.laser.showFile(lastSaved);
+  $("export").addEventListener("click", async () => {
+    if (cropping) showCropper(false);
+    clearTimeout(timer); process();
+    if (!outBW) return;
+    const svg = mode === "svg";
+    if (svg && !svgPath) { setStatus("Aucune forme détectée. Baisse le seuil ou décoche « Inverser ».", true); return; }
+    let blob, dpi = +els.dpi.value;
+    if (svg) blob = svgBlob();
+    else {
+      const c = document.createElement("canvas"); c.width = outW; c.height = outH;
+      const g = c.getContext("2d"), id = g.createImageData(outW, outH);
+      for (let i = 0, j = 0; i < outBW.length; i++, j += 4) { id.data[j] = id.data[j+1] = id.data[j+2] = outBW[i]; id.data[j+3] = 255; }
+      g.putImageData(id, 0, 0);
+      blob = await pngWithDpi(c, dpi);
+    }
+    const base = ($("srcName").textContent || "gravure").replace(/\.[^.]+$/, "").replace(/[^\w\- ]+/g, "").trim() || "gravure";
+    const name = svg ? `${base}_vecteur_${Math.round(+els.wmm.value)}mm.svg` : `${base}_${MATS[mat].name.replace(/[^\w]+/g, "-")}_${dpi}dpi.png`;
+    if (!window.laser) { setStatus("Lance l'application Image Laser pour enregistrer.", true); return; }
+    const st = await window.laser.status();
+    if (!st.pro && st.remaining <= 0) { window.openPlan("limit"); return; }
+    const res = await window.laser.saveFile(name, new Uint8Array(await blob.arrayBuffer()));
+    window.renderPlan(res.state);
+    if (res.result === "saved") {
+      const left = res.state.pro ? "" : ` · ${res.state.remaining} export${res.state.remaining > 1 ? "s" : ""} gratuit${res.state.remaining > 1 ? "s" : ""} restant${res.state.remaining > 1 ? "s" : ""} aujourd'hui`;
+      setStatus("Enregistré : " + res.path.split(/[\\/]/).pop() + left);
+      lastSaved = res.path; $("showFile").hidden = false;
+    } else if (res.result === "limit") window.openPlan("limit");
+    else setStatus("Enregistrement annulé.");
+  });
+
+  const sampleCanvas = sample();
+  applyPreset();
+  updateSplit();
+})();
+  document.getElementById("exportTop").addEventListener("click", () => document.getElementById("export").click());
+  // ---------- Glisser l'avant/après et loupe
+  (() => {
+    const cmp = document.getElementById("compare"), sp = document.getElementById("split"), lp = document.getElementById("loupe"), lc = document.getElementById("cLoupe");
+    const lbtn = document.getElementById("loupeBtn");
+    let loupeOn = false, dragging = false;
+    lbtn.addEventListener("click", () => { loupeOn = !loupeOn; lbtn.setAttribute("aria-pressed", loupeOn); cmp.classList.toggle("loupe-on", loupeOn); lp.hidden = true; });
+    const setSplit = e => { const r = cmp.getBoundingClientRect(); sp.value = Math.max(0, Math.min(100, (e.clientX - r.left) / r.width * 100)); sp.dispatchEvent(new Event("input")); };
+    function lens(e) {
+      const r = cmp.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+      if (x < 0 || y < 0 || x > r.width || y > r.height) { lp.hidden = true; return; }
+      const src = (x / r.width * 100) < +sp.value ? document.getElementById("cOrig") : document.getElementById("cOut");
+      const k = src.width / r.width, zoom = 4, half = 85 / zoom * k;
+      const sx = x * k, sy = y * k, g = lc.getContext("2d");
+      g.imageSmoothingEnabled = false; g.fillStyle = "#fff"; g.fillRect(0, 0, lc.width, lc.height);
+      g.drawImage(src, sx - half, sy - half, half * 2, half * 2, 0, 0, lc.width, lc.height);
+      lp.style.left = (x - 85) + "px"; lp.style.top = (y - 85) + "px"; lp.hidden = false;
+    }
+    cmp.addEventListener("pointerdown", e => { cmp.setPointerCapture(e.pointerId); dragging = true; if (loupeOn) lens(e); else setSplit(e); });
+    cmp.addEventListener("pointermove", e => { if (loupeOn) { if (dragging || e.pointerType === "mouse") lens(e); } else if (dragging) setSplit(e); });
+    const up = e => { dragging = false; if (loupeOn && e.pointerType !== "mouse") lp.hidden = true; };
+    cmp.addEventListener("pointerup", up); cmp.addEventListener("pointercancel", up);
+    cmp.addEventListener("pointerleave", () => { if (!dragging) lp.hidden = true; });
+  })();
+  // ---------- Abonnement
+  (() => {
+    const $ = id => document.getElementById(id);
+    const modal = $("planModal");
+    let state = null;
+    window.renderPlan = st => {
+      if (!st) return; state = st;
+      $("planBtn").classList.toggle("pro", st.pro);
+      $("planTxt").textContent = st.pro ? "Pro" : `Gratuit · ${st.remaining}/${st.limit} aujourd'hui`;
+      $("planPrice").innerHTML = `${st.priceLabel.replace(/</g, "")}<small>sans engagement</small>`;
+      $("planFree").hidden = st.pro; $("planFeatures").hidden = st.pro; $("planPrice").hidden = st.pro; $("buyBtn").hidden = st.pro;
+      document.querySelector(".sep").hidden = st.pro; document.querySelector(".keyrow").hidden = st.pro;
+      $("planPro").hidden = !st.pro;
+      if (st.pro) $("proLine").textContent = `Abonnement actif${st.variant ? " · " + st.variant : ""} · clé ••••${st.last4}`;
+    };
+    window.openPlan = reason => {
+      $("planLead").textContent = reason === "limit" ? `Tu as utilisé tes ${state ? state.limit : 3} exports gratuits du jour. Ils reviennent demain, ou passe en illimité.` : "Exporte sans limite pour toutes tes gravures et tes ventes.";
+      if (state && state.status === "expired") $("planLead").textContent = "Ton abonnement a expiré. Renouvelle-le pour retrouver les exports illimités.";
+      $("planMsg").textContent = ""; modal.hidden = false;
+    };
+    const say = (t, ok) => { $("planMsg").textContent = t; $("planMsg").className = "msg " + (ok ? "ok" : "err"); };
+    $("planBtn").onclick = () => window.openPlan();
+    $("closePlan").onclick = () => { modal.hidden = true; };
+    modal.addEventListener("click", e => { if (e.target === modal) modal.hidden = true; });
+    document.addEventListener("keydown", e => { if (e.key === "Escape") modal.hidden = true; });
+    $("buyBtn").onclick = () => { window.laser?.openCheckout(); say("La page d'abonnement s'est ouverte dans ton navigateur. Colle ensuite ta clé ici.", true); };
+    $("portalBtn").onclick = () => window.laser?.openPortal();
+    $("activateBtn").onclick = async () => {
+      if (!window.laser) return;
+      $("activateBtn").disabled = true; $("activateBtn").textContent = "…";
+      const r = await window.laser.activate($("keyInput").value);
+      $("activateBtn").disabled = false; $("activateBtn").textContent = "Activer";
+      window.renderPlan(r.state); say(r.message, r.ok);
+      if (r.ok) $("keyInput").value = "";
+    };
+    $("deactBtn").onclick = async () => {
+      if ($("deactBtn").dataset.confirm !== "1") { $("deactBtn").dataset.confirm = "1"; $("deactBtn").textContent = "Confirmer la désactivation"; return; }
+      $("deactBtn").dataset.confirm = ""; $("deactBtn").textContent = "Désactiver sur ce PC";
+      const r = await window.laser.deactivate(); window.renderPlan(r.state); say(r.message, true);
+    };
+    if (window.laser) { window.laser.status().then(window.renderPlan); window.laser.refresh().then(window.renderPlan); }
+    else window.renderPlan({ pro: false, status: "none", remaining: 3, limit: 3, priceLabel: "—" });
+  })();
+</script>
+
+</body>
+</html>

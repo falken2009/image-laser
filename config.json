@@ -1,0 +1,10 @@
+{
+  "_aide": "Remplace les valeurs ci-dessous par celles de ta boutique Lemon Squeezy (voir LISEZMOI.md).",
+  "storeId": 0,
+  "productId": 0,
+  "checkoutUrl": "https://TA-BOUTIQUE.lemonsqueezy.com/buy/REMPLACER",
+  "portalUrl": "https://app.lemonsqueezy.com/my-orders",
+  "priceLabel": "9,99 € / mois",
+  "freeExportsPerDay": 3,
+  "offlineGraceDays": 7
+}

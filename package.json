@@ -1,0 +1,38 @@
+{
+  "name": "image-laser",
+  "productName": "Image Laser",
+  "version": "1.0.0",
+  "description": "Préparation d'images pour la gravure laser (PNG tramé et SVG)",
+  "main": "src/main.js",
+  "author": "Image Laser",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win --x64 --publish never"
+  },
+  "devDependencies": {
+    "electron": "33.2.1",
+    "electron-builder": "25.1.8"
+  },
+  "build": {
+    "appId": "fr.imagelaser.app",
+    "productName": "Image Laser",
+    "copyright": "© 2026 Image Laser",
+    "directories": { "output": "dist", "buildResources": "build" },
+    "files": ["src/**/*", "config.json", "package.json"],
+    "win": {
+      "target": [{ "target": "nsis", "arch": ["x64"] }],
+      "icon": "build/icon.png",
+      "artifactName": "Image-Laser-Setup-${version}.exe"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Image Laser",
+      "language": "1036"
+    }
+  }
+}
