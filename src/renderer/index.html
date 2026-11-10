@@ -364,6 +364,50 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
 .upbar.soft { background: rgba(255,255,255,.06); color: var(--muted); font-weight: 500; }
 .upbar button { border: 1.5px solid #fff; background: #fff; color: #b3121b; border-radius: 8px; padding: 5px 12px; font: 700 .8rem var(--font-body); cursor: pointer; }
 .ver { font: 400 .68rem var(--font-mono); color: var(--muted); margin-left: 6px; }
+
+/* Bibliothèque en rangées d'affiches + fiche détail */
+.lib-panel { width: min(1240px, 100%); background: #0c0c0e; }
+.lib-head #libSearch { flex: 1; min-width: 180px; max-width: 420px; margin-left: auto; }
+.row-t { display: flex; align-items: baseline; gap: 10px; margin: 14px 2px 8px; }
+.row-t h4 { margin: 0; font: 800 1.05rem var(--font-display); }
+.row-t span { font: 500 .74rem var(--font-mono); color: var(--muted); }
+.row-wrap { position: relative; }
+.row-s { display: flex; gap: 10px; overflow-x: auto; padding: 10px 2px 14px; scroll-snap-type: x proximity; scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
+.row-s.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); overflow: visible; }
+.tile { position: relative; flex: none; width: 230px; aspect-ratio: 16 / 10; border: 0; padding: 0; border-radius: 8px; overflow: hidden; background: #1a1a1d; cursor: pointer; scroll-snap-align: start; transition: transform .18s ease, box-shadow .18s ease; color: #fff; text-align: left; }
+.row-s.grid .tile { width: 100%; }
+.tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.tile .ph { position: absolute; inset: 0; }
+.tile .grad { position: absolute; inset: auto 0 0 0; padding: 26px 10px 8px; background: linear-gradient(180deg, transparent, rgba(0,0,0,.88)); display: flex; flex-direction: column; gap: 1px; }
+.tile .grad b { font: 700 .86rem var(--font-body); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tile .grad i { font: 400 .68rem var(--font-mono); font-style: normal; color: rgba(255,255,255,.75); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tile .kind { position: absolute; top: 7px; left: 7px; font: 700 .58rem var(--font-display); letter-spacing: .08em; text-transform: uppercase; background: rgba(0,0,0,.7); border-radius: 4px; padding: 2px 6px; }
+.tile .kind.real { background: var(--accent); left: auto; right: 7px; }
+.tile:hover, .tile:focus-visible { transform: scale(1.07); z-index: 3; box-shadow: 0 14px 34px rgba(0,0,0,.7), 0 0 0 2px var(--accent); outline: none; }
+.row-arrow { position: absolute; top: 10px; bottom: 14px; width: 38px; border: 0; background: rgba(0,0,0,.6); color: #fff; font-size: 1.4rem; cursor: pointer; z-index: 4; opacity: 0; transition: opacity .15s; }
+.row-arrow.l { left: 0; border-radius: 8px 0 0 8px; } .row-arrow.r { right: 0; border-radius: 0 8px 8px 0; }
+.row-wrap:hover .row-arrow { opacity: 1; }
+@media (hover: none) { .row-arrow { display: none; } }
+.dt-wrap { position: fixed; inset: 0; z-index: 70; background: rgba(0,0,0,.82); display: flex; justify-content: center; align-items: flex-start; overflow-y: auto;
+  padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.dt { position: relative; width: min(860px, 100%); background: #141316; border: 1px solid var(--line); border-radius: 14px; overflow: hidden; box-shadow: 0 30px 90px rgba(0,0,0,.8); }
+.dt-hero { position: relative; background: #000; display: block; width: 100%; border: 0; padding: 0; cursor: pointer; }
+.dt-hero img { width: 100%; max-height: 56vh; object-fit: contain; display: block; }
+.dt-hero .ph { height: 220px; }
+.dt-hero::after { content: ""; position: absolute; inset: auto 0 0 0; height: 90px; background: linear-gradient(180deg, transparent, #141316); pointer-events: none; }
+.dt-hero .kind { position: absolute; left: 14px; bottom: 14px; z-index: 1; font: 700 .64rem var(--font-display); letter-spacing: .08em; text-transform: uppercase; background: rgba(0,0,0,.75); color: #fff; border-radius: 4px; padding: 3px 8px; }
+.dt-hero .kind.real { background: var(--accent); }
+.dt-close { position: absolute; top: 10px; right: 10px; z-index: 2; width: 36px; height: 36px; border-radius: 50%; border: 0; background: rgba(0,0,0,.75); color: #fff; font-size: 1.1rem; cursor: pointer; }
+.dt-body { padding: 4px 20px 20px; display: flex; flex-direction: column; gap: 12px; }
+.dt-body h3 { margin: 0; font: 800 1.5rem/1.15 var(--font-display); overflow-wrap: anywhere; }
+.dt-sub { font: 500 .78rem var(--font-mono); color: var(--muted); }
+.facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.facts div { background: rgba(255,255,255,.04); border: 1px solid var(--line); border-radius: 9px; padding: 8px 10px; min-width: 0; }
+.facts span { display: block; font: 600 .62rem var(--font-display); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.facts b { font: 700 .92rem var(--font-body); overflow-wrap: anywhere; }
+.dt-note { margin: 0; font-size: .88rem; white-space: pre-line; background: rgba(255,255,255,.04); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; padding: 8px 12px; }
+.dt .act .btn.go { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; padding: 10px 18px; font-size: .9rem; }
+@media (prefers-reduced-motion: reduce) { .tile { transition: none; } .tile:hover { transform: none; } }
 </style>
 </head>
 <body>
@@ -803,17 +847,13 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
   <div class="lib-panel" role="dialog" aria-modal="true" aria-labelledby="libTitle">
     <div class="lib-head">
       <h3 id="libTitle">Bibliothèque</h3>
-      <div class="seg lib-tabs" role="group" aria-label="Rubrique">
-        <button id="tabSup" aria-pressed="true">Mes supports <span id="nSup"></span></button>
-        <button id="tabGrav" aria-pressed="false">Mes gravures <span id="nGrav"></span></button>
-      </div>
+      <input class="lib-in" id="libSearch" placeholder="Rechercher : nom, matériau, note…" autocomplete="off">
       <button class="btn" id="libClose">Fermer</button>
     </div>
-    <input class="lib-in" id="libSearch" placeholder="Rechercher : nom, matériau, note…" autocomplete="off">
     <p class="hint" id="libNote"></p>
-    <div class="lib-list" id="libSupView"></div>
-    <div class="lib-grid" id="libGravView" hidden></div>
+    <div id="libRows"></div>
   </div>
+  <div class="dt-wrap" id="libDetail" hidden></div>
 </div>
 <script>
 (() => {
@@ -1718,25 +1758,103 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
   }
   function renderLib() {
     const q = $("libSearch").value.trim().toLowerCase(), ok = t => !q || t.toLowerCase().includes(q);
-    $("nSup").textContent = supports.length ? `(${supports.length})` : ""; $("nGrav").textContent = gravures.length ? `(${gravures.length})` : "";
-    $("tabSup").setAttribute("aria-pressed", libTab === "sup"); $("tabGrav").setAttribute("aria-pressed", libTab === "grav");
-    $("libSupView").hidden = libTab !== "sup"; $("libGravView").hidden = libTab !== "grav";
+    const tile = (store, r) => {
+      const src = r.photo || r.thumb, st = r.settings || {}, sw = MATS[st.mat]?.base || "#2a2a2e";
+      const sub = store === "supports" ? [MATS[st.mat]?.name, st.laser ? `${st.laser.v} mm/s · ${st.laser.p} %` : ""].filter(Boolean).join(" · ") : [r.matName, r.size].filter(Boolean).join(" · ");
+      return `<button class="tile" data-store="${store}" data-id="${esc(r.id)}" aria-label="${esc(r.name)}">${src ? `<img src="${src}" alt="" loading="lazy">` : `<span class="ph" style="background:${esc(sw)}"></span>`}<span class="kind">${store === "supports" ? "Support" : "Gravure"}</span>${r.photo ? '<span class="kind real">Résultat réel</span>' : ""}<span class="grad"><b>${esc(r.name)}</b><i>${esc(sub)}</i></span></button>`;
+    };
+    const row = (title, store, list, grid) => list.length ? `<div class="row-t"><h4>${esc(title)}</h4><span>${list.length}</span></div><div class="row-wrap">${grid ? "" : '<button class="row-arrow l" data-dir="-1" aria-label="Précédent">‹</button><button class="row-arrow r" data-dir="1" aria-label="Suivant">›</button>'}<div class="row-s${grid ? " grid" : ""}">${list.map(r => tile(store, r)).join("")}</div></div>` : "";
     const sl = supports.filter(s => ok(`${s.name} ${s.note || ""} ${meta(s.settings)}`));
-    $("libSupView").innerHTML = sl.length ? sl.map(s => `<div class="sup" data-id="${esc(s.id)}">${picHtml(s, s.name)}<div style="min-width:0"><div class="nm">${esc(s.name)}</div><div class="mt">${esc(meta(s.settings))}</div>${s.note ? `<div class="nt">${esc(s.note)}</div>` : ""}</div><div class="act"><button class="btn sm" data-a="use">Utiliser</button><button class="btn sm" data-a="upd">Remplacer par les réglages actuels</button><button class="btn sm" data-a="edit">Modifier</button><button class="btn sm" data-a="photo">${s.photo ? "Changer la photo" : "Ajouter une photo"}</button>${s.photo ? '<button class="btn sm" data-a="unphoto">Retirer la photo</button>' : ""}<button class="btn sm danger" data-a="del">Supprimer</button></div></div>`).join("")
-      : `<div class="empty">${supports.length ? "Aucun support ne correspond à ta recherche." : "Aucun support enregistré pour l'instant.<br>Règle ton image et ton matériau, puis touche « ★ Enregistrer ces réglages comme support » sous le bouton d'export."}</div>`;
-    const gl = gravures.filter(g => ok(`${g.name} ${g.matName || ""} ${g.srcName || ""}`));
-    $("libGravView").innerHTML = gl.length ? gl.map(g => `<div class="grv" data-id="${esc(g.id)}">${picHtml(g, g.name)}<div class="in"><div class="nm">${esc(g.name)}</div><div class="mt">${esc(new Date(g.date).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" }))} · ${esc(g.matName)} · ${esc(g.size)}${g.settings?.laser ? ` · ${g.settings.laser.v} mm/s · ${g.settings.laser.p} %` : ""}</div><div class="act"><button class="btn sm" data-a="open">Rouvrir</button><button class="btn sm" data-a="save">Enregistrer le fichier</button><button class="btn sm" data-a="photo">${g.photo ? "Changer la photo" : "Photo du résultat"}</button>${g.photo ? '<button class="btn sm" data-a="unphoto">Retirer</button>' : ""}<button class="btn sm danger" data-a="del">Supprimer</button></div></div></div>`).join("")
-      : `<div class="empty">${gravures.length ? "Aucune gravure ne correspond à ta recherche." : "Aucune gravure gardée pour l'instant.<br>Chaque fichier exporté est ajouté ici automatiquement, avec sa photo d'origine et ses réglages. Ajoute ensuite une photo du résultat réel pour le retrouver d'un coup d'œil."}</div>`;
+    const gl = gravures.filter(g => ok(`${g.name} ${g.matName || ""} ${g.srcName || ""} ${g.note || ""}`));
+    let html = "";
+    if (!supports.length && !gravures.length) html = `<div class="empty">Ta bibliothèque est vide pour l'instant.<br>Enregistre un support avec « ★ Enregistrer ces réglages comme support », ou exporte une gravure : elle apparaîtra ici avec son image.</div>`;
+    else if (q) html = (row("Supports trouvés", "supports", sl, true) + row("Gravures trouvées", "gravures", gl, true)) || `<div class="empty">Rien ne correspond à « ${esc(q)} ».</div>`;
+    else {
+      html += row("Mes supports", "supports", sl);
+      html += row("Dernières gravures", "gravures", gl.slice(0, 15));
+      const byMat = {}; gl.forEach(g => { (byMat[g.matName || "Autre"] = byMat[g.matName || "Autre"] || []).push(g); });
+      const mats = Object.keys(byMat);
+      if (mats.length > 1) mats.forEach(m => { html += row("Sur " + m.toLowerCase(), "gravures", byMat[m]); });
+      const real = [...sl.map(r => ["supports", r]), ...gl.map(r => ["gravures", r])].filter(x => x[1].photo);
+      if (real.length) html += `<div class="row-t"><h4>Résultats réels</h4><span>${real.length}</span></div><div class="row-wrap"><div class="row-s">${real.map(x => tile(x[0], x[1])).join("")}</div></div>`;
+    }
+    $("libRows").innerHTML = html;
+    renderDetail();
   }
+  // ---- Fiche détail : s'ouvre en cliquant sur une image
+  let detail = null, dtEdit = false;
+  const ALGO_NAME = { jarvis: "Points fins (Jarvis)", stucki: "Points fins (Stucki)", floyd: "Floyd-Steinberg", atkinson: "Atkinson", sierra: "Sierra", burkes: "Burkes", bayer4: "Trame Bayer 4×4", bayer8: "Demi-teinte Bayer 8×8", threshold: "Sans points", gray: "Niveaux de gris" };
+  function renderDetail() {
+    const box = $("libDetail");
+    if (!detail) { box.hidden = true; box.innerHTML = ""; return; }
+    const list = detail.store === "supports" ? supports : gravures, r = list.find(x => x.id === detail.id);
+    if (!r) { detail = null; box.hidden = true; box.innerHTML = ""; return; }
+    const sup = detail.store === "supports", st = r.settings || {}, usePhoto = r.photo && !showReal.has(r.id + ":preview"), src = usePhoto ? r.photo : r.thumb;
+    const facts = [];
+    const f = (k, v) => { if (v !== undefined && v !== null && v !== "") facts.push(`<div><span>${k}</span><b>${esc(v)}</b></div>`); };
+    f("Matériau", MATS[st.mat]?.name || r.matName);
+    f("Machine", st.machine ? `${TECH[st.machine]?.name || "laser"} ${st.lw || ""} W` : "");
+    if (st.laser) { f("Vitesse", st.laser.v + " mm/s"); f("Puissance", st.laser.p + " %"); f("Passes", st.laser.passes || 1); }
+    f("Taille", r.size || (st.size && st.size.w ? `${Math.round(st.size.w)} × ${Math.round(st.size.h || 0)} mm` : st.v?.wmm ? st.v.wmm + " mm de large" : ""));
+    f("Fichier", st.mode === "svg" ? (st.c?.outline ? "SVG · découpe" : "SVG · gravure") : `PNG · ${st.v?.dpi || ""} DPI`);
+    if (st.mode !== "svg") f("Style", ALGO_NAME[st.v?.algo] || st.v?.algo);
+    f("Image", st.c?.inv ? "Inversée" : "Normale");
+    if (!sup) f("Fichier exporté", r.fileName);
+    const date = new Date(sup ? r.updated : r.date).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+    const editing = dtEdit ? `<input class="lib-in" id="dtName" value="${esc(r.name)}" maxlength="80"><textarea class="lib-in" id="dtNote" rows="3" placeholder="Note : mise au point, passes, marque de peinture, client…">${esc(r.note || "")}</textarea><div class="act"><button class="btn go" data-a="saveedit">Enregistrer</button><button class="btn" data-a="canceledit">Annuler</button></div>` : "";
+    box.innerHTML = `<div class="dt" role="dialog" aria-modal="true" aria-label="${esc(r.name)}">
+      <button class="dt-close" data-a="close" aria-label="Fermer la fiche">✕</button>
+      <button class="dt-hero" data-a="pic" title="${r.photo ? "Toucher pour alterner photo réelle / aperçu" : "Ajouter une photo du résultat"}">${src ? `<img src="${src}" alt="">` : `<div class="ph" style="background:${esc(MATS[st.mat]?.base || "#2a2a2e")}"></div>`}<span class="kind${usePhoto ? " real" : ""}">${r.photo ? (usePhoto ? "Résultat réel · toucher pour voir l'aperçu" : "Aperçu · toucher pour voir le résultat réel") : (sup ? "Support" : "Gravure")}</span></button>
+      <div class="dt-body">
+        ${dtEdit ? editing : `<h3>${esc(r.name)}</h3><div class="dt-sub">${sup ? "Support" : "Gravure"} · ${sup ? "modifié le" : "exportée le"} ${esc(date)}</div>
+        <div class="act">
+          <button class="btn go" data-a="${sup ? "use" : "open"}">${sup ? "▶ Utiliser ce support" : "▶ Rouvrir pour retoucher"}</button>
+          ${sup ? "" : '<button class="btn" data-a="save">Enregistrer le fichier</button>'}
+          <button class="btn" data-a="photo">${r.photo ? "Changer la photo" : "Ajouter une photo du résultat"}</button>
+          ${r.photo ? '<button class="btn" data-a="unphoto">Retirer la photo</button>' : ""}
+        </div>
+        ${r.note ? `<p class="dt-note">${esc(r.note)}</p>` : ""}
+        <div class="facts">${facts.join("")}</div>
+        <div class="act">
+          <button class="btn sm" data-a="edit">Modifier le nom et la note</button>
+          ${sup ? '<button class="btn sm" data-a="upd">Remplacer par les réglages actuels</button>' : ""}
+          <button class="btn sm danger" data-a="del">Supprimer</button>
+        </div>`}
+      </div></div>`;
+    box.hidden = false;
+  }
+  const closeDetail = () => { detail = null; dtEdit = false; renderDetail(); };
+  $("libRows").addEventListener("click", e => {
+    const ar = e.target.closest(".row-arrow");
+    if (ar) { const sc = ar.parentElement.querySelector(".row-s"); sc.scrollBy({ left: +ar.dataset.dir * sc.clientWidth * .8, behavior: "smooth" }); return; }
+    const t = e.target.closest(".tile"); if (!t) return;
+    detail = { store: t.dataset.store, id: t.dataset.id }; dtEdit = false; renderDetail();
+  });
+  $("libDetail").addEventListener("click", async e => {
+    if (e.target.id === "libDetail") { closeDetail(); return; }
+    const b = e.target.closest("[data-a]"); if (!b || !detail) return;
+    const store = detail.store, list = store === "supports" ? supports : gravures, r = list.find(x => x.id === detail.id); if (!r) return;
+    const a = b.dataset.a;
+    try {
+      if (a === "close") closeDetail();
+      else if (await picAction(a, store, r)) return;
+      else if (a === "use") { applySettings(r.settings); closeLib(); setStatus(`Support « ${r.name} » appliqué.`); }
+      else if (a === "open") reopen(r);
+      else if (a === "save") resaveFile(r);
+      else if (a === "edit") { dtEdit = true; renderDetail(); $("dtName").focus(); }
+      else if (a === "canceledit") { dtEdit = false; renderDetail(); }
+      else if (a === "saveedit") { r.name = $("dtName").value.trim() || r.name; r.note = $("dtNote").value.trim(); if (store === "supports") r.updated = Date.now(); await LIB.put(store, r); dtEdit = false; libLoad(); }
+      else if (a === "upd") { if (b.dataset.ok !== "1") { b.dataset.ok = "1"; b.textContent = "Confirmer le remplacement"; return; } r.settings = captureSettings(); r.thumb = thumbOf(); r.updated = Date.now(); await LIB.put(store, r); libMsg(`« ${r.name} » mis à jour.`); libLoad(); }
+      else if (a === "del") { if (b.dataset.ok !== "1") { b.dataset.ok = "1"; b.textContent = "Confirmer la suppression"; return; } await LIB.del(store, r.id); libMsg(`« ${r.name} » supprimé.`); detail = null; libLoad(); }
+    } catch (err) { libMsg("Action impossible : le stockage n'est pas disponible.", true); }
+  });
   const openLib = tab => { if (tab) libTab = tab; libMsg(""); $("lib").hidden = false; libLoad(); };
-  const closeLib = () => { $("lib").hidden = true; };
+  const closeLib = () => { detail = null; dtEdit = false; $("libDetail").hidden = true; $("lib").hidden = true; };
   $("libBtn").onclick = () => openLib();
   $("supAll").onclick = () => openLib("sup");
   $("libClose").onclick = closeLib;
   $("lib").addEventListener("click", e => { if (e.target.id === "lib") closeLib(); });
-  document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("lib").hidden) closeLib(); });
-  $("tabSup").onclick = () => { libTab = "sup"; renderLib(); };
-  $("tabGrav").onclick = () => { libTab = "grav"; renderLib(); };
+  document.addEventListener("keydown", e => { if (e.key !== "Escape" || $("lib").hidden) return; if (detail) closeDetail(); else closeLib(); });
   $("libSearch").addEventListener("input", renderLib);
   $("supSel").addEventListener("change", e => {
     const s = supports.find(x => x.id === e.target.value); e.target.value = "";
@@ -1754,24 +1872,6 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
     try { await LIB.put("supports", rec); $("supForm").hidden = true; $("supNote").value = ""; setStatus(`Support « ${name} » enregistré. Retrouve-le dans Matériau ou dans la Bibliothèque.`); libLoad(); }
     catch (e) { setStatus("Impossible d'enregistrer : le stockage n'est pas disponible ici.", true); }
   };
-  $("libSupView").addEventListener("click", async e => {
-    const b = e.target.closest("button[data-a]"); if (!b) return;
-    const el = b.closest(".sup"), s = supports.find(x => x.id === el.dataset.id); if (!s) return;
-    const a = b.dataset.a;
-    try {
-      if (await picAction(a, "supports", s)) return;
-      if (a === "use") { applySettings(s.settings); closeLib(); setStatus(`Support « ${s.name} » appliqué.`); }
-      else if (a === "upd") { if (b.dataset.ok !== "1") { b.dataset.ok = "1"; b.textContent = "Confirmer le remplacement"; return; } s.settings = captureSettings(); s.thumb = thumbOf(); s.updated = Date.now(); await LIB.put("supports", s); libMsg(`« ${s.name} » mis à jour.`); libLoad(); }
-      else if (a === "del") { if (b.dataset.ok !== "1") { b.dataset.ok = "1"; b.textContent = "Confirmer la suppression"; return; } await LIB.del("supports", s.id); libMsg(`« ${s.name} » supprimé.`); libLoad(); }
-      else if (a === "edit") {
-        el.innerHTML = `<div style="display:flex;flex-direction:column;gap:6px;min-width:0"><input class="lib-in" data-f="name" value="${esc(s.name)}"><textarea class="lib-in" data-f="note" rows="2" placeholder="Note : mise au point, passes, marque de peinture…">${esc(s.note || "")}</textarea></div><div class="act"><button class="btn sm" data-a="saveedit">Enregistrer</button><button class="btn sm" data-a="cancel">Annuler</button></div>`;
-        el.querySelector("[data-f=name]").focus();
-      }
-      else if (a === "saveedit") { s.name = el.querySelector("[data-f=name]").value.trim() || s.name; s.note = el.querySelector("[data-f=note]").value.trim(); s.updated = Date.now(); await LIB.put("supports", s); libLoad(); }
-      else if (a === "cancel") renderLib();
-    } catch (err) { libMsg("Action impossible : le stockage n'est pas disponible.", true); }
-  });
-
 
   function thumbOf(max) {
     const t = $("cOut"), k = Math.min(1, (max || 360) / Math.max(t.width, t.height, 1)), c = document.createElement("canvas");
@@ -1852,17 +1952,6 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
     try { await dl.save({ filename: g.fileName, data: g.file }); libMsg("Enregistré : " + g.fileName); }
     catch (e) { if (!e || e.code !== "declined") libMsg("Enregistrement impossible. Réessaie.", true); }
   }
-  $("libGravView").addEventListener("click", async e => {
-    const b = e.target.closest("button[data-a]"); if (!b) return;
-    const el = b.closest(".grv"), g = gravures.find(x => x.id === el.dataset.id); if (!g) return;
-    const a = b.dataset.a;
-    try {
-      if (await picAction(a, "gravures", g)) return;
-      if (a === "open") reopen(g);
-      else if (a === "save") resaveFile(g);
-      else if (a === "del") { if (b.dataset.ok !== "1") { b.dataset.ok = "1"; b.textContent = "Confirmer"; return; } await LIB.del("gravures", g.id); libMsg(`« ${g.name} » supprimé.`); libLoad(); }
-    } catch (err) { libMsg("Action impossible : le stockage n'est pas disponible.", true); }
-  });
   libLoad();
 
 
