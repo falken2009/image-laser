@@ -87,7 +87,7 @@ Sous le bouton d'enregistrement, choisis ton logiciel puis touche **Envoyer vers
 - Laser Pix enregistre le fichier dans `Images\Laser Pix\`, ouvre le logiciel avec ce fichier et affiche le fichier dans l'Explorateur.
 - Laser Pix cherche xTool Creative Space, LightBurn et LaserGRBL dans leurs dossiers d'installation habituels. S'il ne les trouve pas, il te demande où est leur fichier `.exe`, une seule fois.
 - **Autre logiciel…** permet d'ajouter n'importe quel logiciel : celui d'Atomstack, de Glowforge, RDWorks…
-- Si le logiciel s'ouvre sans afficher l'image, glisse le fichier depuis l'Explorateur dans sa fenêtre. Certains logiciels n'acceptent pas l'ouverture directe.
+- Certains logiciels, comme xTool Creative Space, s'ouvrent sans charger l'image : ils n'acceptent pas les fichiers envoyés par un autre programme. Dans ce cas, utilise la case rouge **Glisse-moi dans le logiciel du graveur** : maintiens le clic dessus et dépose-la dans la fenêtre du logiciel. Le fichier arrive à la bonne taille.
 
 Un envoi compte comme un export dans la version gratuite. La puissance, la vitesse et le lancement de la gravure restent dans le logiciel du graveur.
 

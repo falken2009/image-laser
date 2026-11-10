@@ -19,10 +19,25 @@
     "appId": "fr.laserpix.app",
     "productName": "Laser Pix",
     "copyright": "© 2026 Laser Pix",
-    "directories": { "output": "dist", "buildResources": "build" },
-    "files": ["src/**/*", "config.json", "package.json"],
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "src/**/*",
+      "config.json",
+      "package.json",
+      "build/icon.png"
+    ],
     "win": {
-      "target": [{ "target": "nsis", "arch": ["x64"] }],
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
       "icon": "build/icon.png",
       "artifactName": "Laser-Pix-Setup-${version}.exe"
     },

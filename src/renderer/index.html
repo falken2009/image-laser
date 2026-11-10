@@ -312,6 +312,14 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
 .sizerow { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 8px; align-items: end; }
 .lockbtn { width: 38px; height: 38px; border-radius: 8px; border: 1px solid var(--line); background: rgba(0,0,0,.45); color: var(--muted); display: grid; place-items: center; cursor: pointer; }
 .lockbtn[aria-pressed="true"] { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+
+.dragout { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1.5px dashed var(--accent); border-radius: 10px; background: var(--accent-soft); cursor: grab; user-select: none; -webkit-user-select: none; }
+.dragout:active { cursor: grabbing; }
+.dragout canvas { width: 72px; height: 54px; border-radius: 6px; background: #000; flex: none; }
+.dragout b { display: block; font: 700 .86rem var(--font-body); }
+.dragout span { font-size: .76rem; color: var(--muted); }
+.pw-out > div { cursor: pointer; }
+.pw-out > div:hover { border-color: var(--accent); }
 </style>
 </head>
 <body>
@@ -581,13 +589,14 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
           <b>Pour un résultat parfait : grille de test</b>
           <p class="hint" id="pwGrid"></p>
         </div>
-        <details class="pw-cal">
-          <summary>J'ai fait le test : enregistrer le meilleur réglage</summary>
+        <details class="pw-cal" id="pwCal">
+          <summary>Régler moi-même la vitesse et la puissance</summary>
           <div class="two" style="margin-top:8px">
-            <label class="field">Vitesse retenue (mm/s)<input type="number" id="calV" min="1" max="10000" step="1"></label>
-            <label class="field">Puissance retenue (%)<input type="number" id="calP" min="1" max="100" step="1"></label>
+            <label class="field">Vitesse (mm/s)<input type="number" id="calV" min="1" max="10000" step="1"></label>
+            <label class="field">Puissance (%)<input type="number" id="calP" min="1" max="100" step="1"></label>
           </div>
-          <div class="tools" style="margin-top:8px"><button class="btn" id="calSave">Enregistrer pour ce matériau</button><button class="btn ghost" id="calForget" hidden>Oublier mon réglage</button></div>
+          <div class="tools" style="margin-top:8px"><button class="btn" id="calSave">Appliquer et garder pour ce matériau</button><button class="btn ghost" id="calForget" hidden>Revenir au calcul automatique</button></div>
+          <p class="hint" style="margin-top:6px">Entre tes propres valeurs (par exemple la meilleure case de ta grille de test) : elles remplacent le calcul pour ce matériau et cette puissance de laser, et s'adaptent ensuite si tu changes de résolution ou d'épaisseur.</p>
         </details>
         <p class="hint">Valeurs de départ calculées pour ta machine, ton matériau et ta résolution. Chaque planche et chaque laser sont un peu différents : le test sur une chute reste indispensable. Mets la mise au point à la bonne hauteur et l'assistance d'air en marche pour la découpe.</p>
       </div>
@@ -704,6 +713,10 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
       <input class="lib-in" id="supName" placeholder="Nom du support (ex. Toile noire 30×40 Action)">
       <textarea class="lib-in" id="supNote" rows="2" placeholder="Note : mise au point au centre, 2 passes, marque de peinture…"></textarea>
       <div class="tools"><button class="btn primary" id="supOk" style="width:auto;padding:9px 14px;font-size:.84rem">Enregistrer le support</button><button class="btn" id="supCancel">Annuler</button></div>
+    </div>
+    <div class="dragout" id="dragOut" draggable="true" hidden title="Maintiens et glisse dans la fenêtre de xTool Creative Space, LightBurn…">
+      <canvas id="dragThumb" width="72" height="54"></canvas>
+      <div><b>Glisse-moi dans le logiciel du graveur</b><span id="dragState">Maintiens le clic sur cette case et dépose-la dans la fenêtre du logiciel.</span></div>
     </div>
     <p class="status" id="status" role="status"></p>
     <button class="btn ghost" id="showFile" hidden style="align-self:center">Afficher dans l'Explorateur</button>
@@ -1568,9 +1581,11 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
   $("calSave").onclick = () => {
     const tech = $("machine").value, W = +$("lw").value, job = curJob(), v = +$("calV").value, p = +$("calP").value;
     if (!(v > 0 && p > 0)) return;
+    setTimeout(() => setStatus(`Réglage manuel appliqué : ${v} mm/s · ${p} %.`), 0);
     lsSet(calKey(tech, W, job), job === "cut" ? { v, p, t: +$("lthick").value, passes: +$("pwN").textContent || 1 } : { v: v / (+$("lint").value || 1), p, dpi: mode === "svg" ? 254 : +els.dpi.value });
     laserCalc();
   };
+  document.querySelectorAll(".pw-out > div").forEach((d, i) => d.addEventListener("click", () => { $("pwCal").open = true; (i === 1 ? $("calP") : $("calV")).focus(); }));
   $("calForget").onclick = () => { lsSet(calKey($("machine").value, +$("lw").value, curJob()), null); laserCalc(); };
 
 
@@ -1961,6 +1976,63 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
   function setStatus(msg, err) { const s = $("status"); s.textContent = msg; s.classList.toggle("err", !!err); }
 
 
+
+  // fabrique le fichier à exporter (PNG avec DPI ou SVG en mm)
+  async function buildExport() {
+    if (cropping) showCropper(false);
+    if (erasing) showEraser(false);
+    clearTimeout(timer); process();
+    if (!outBW) return null;
+    const svg = mode === "svg";
+    if (svg && !svgPath) { setStatus("Aucune forme détectée. Baisse le seuil ou décoche « Inverser ».", true); return null; }
+    let blob; const dpi = +els.dpi.value;
+    if (svg) blob = svgBlob();
+    else {
+      const c = document.createElement("canvas"); c.width = outW; c.height = outH;
+      const g = c.getContext("2d"), id = g.createImageData(outW, outH);
+      for (let i = 0, j = 0; i < outBW.length; i++, j += 4) { id.data[j] = id.data[j+1] = id.data[j+2] = outBW[i]; id.data[j+3] = 255; }
+      g.putImageData(id, 0, 0);
+      blob = await pngWithDpi(c, dpi);
+    }
+    const base = ($("srcName").textContent || "gravure").replace(/\.[^.]+$/, "").replace(/[^\p{L}\p{N}\-' ]+/gu, "").trim() || "gravure";
+    const name = svg ? `${base}_vecteur_${Math.round(+els.wmm.value)}mm.svg` : `${base}_${MATS[mat].name.replace(/[^\p{L}\p{N}]+/gu, "-")}_${dpi}dpi.png`;
+    return { blob, name };
+  }
+  // ---------- Glisser le fichier directement dans le logiciel du graveur (version Windows)
+  if (window.laser?.prepareDrag) {
+    const box = $("dragOut"); box.hidden = false;
+    let ready = null, preparing = null, dirty = true;
+    const markDirty = () => { dirty = true; ready = null; };
+    document.addEventListener("input", markDirty, true); document.addEventListener("change", markDirty, true); document.addEventListener("click", e => { if (!box.contains(e.target)) markDirty(); }, true);
+    function drawThumb() { const t = $("cOut"), c = $("dragThumb"), g = c.getContext("2d"); g.fillStyle = "#000"; g.fillRect(0, 0, c.width, c.height); const k = Math.min(c.width / t.width, c.height / t.height); g.drawImage(t, (c.width - t.width * k) / 2, (c.height - t.height * k) / 2, t.width * k, t.height * k); }
+    async function prepare() {
+      if (ready && !dirty) return ready;
+      if (preparing) return preparing;
+      preparing = (async () => {
+        $("dragState").textContent = "Préparation du fichier…";
+        const ex = await buildExport(); if (!ex) { preparing = null; return null; }
+        const res = await window.laser.prepareDrag(ex.name, new Uint8Array(await ex.blob.arrayBuffer()));
+        preparing = null;
+        if (res.result === "limit") { window.renderPlan(res.state); $("dragState").textContent = "Exports gratuits du jour épuisés."; return null; }
+        dirty = false; ready = { path: res.path, name: ex.name, blob: ex.blob }; drawThumb();
+        $("dragState").textContent = "Prêt : maintiens le clic et dépose dans la fenêtre du logiciel.";
+        return ready;
+      })();
+      return preparing;
+    }
+    box.addEventListener("pointerenter", () => { prepare(); });
+    box.addEventListener("pointerdown", () => { prepare(); });
+    box.addEventListener("dragstart", e => {
+      e.preventDefault();
+      if (ready && !dirty) {
+        window.laser.startDrag(ready.path);
+        addToLibrary(ready.name, ready.blob);
+        setStatus(`Dépose le fichier dans le logiciel du graveur. Il est aussi enregistré dans Images\\Laser Pix.`);
+        setTimeout(() => window.laser.status().then(window.renderPlan), 800);
+      } else { $("dragState").textContent = "Une seconde… réessaie de glisser."; prepare(); }
+    });
+    setTimeout(drawThumb, 1500);
+  }
   let lastSaved = "";
   $("showFile").onclick = () => lastSaved && window.laser.showFile(lastSaved);
 
@@ -1979,23 +2051,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
     $("sendBtn").onclick = () => { sendTarget = $("sendTo").value; $("export").click(); };
   }
   $("export").addEventListener("click", async () => {
-    if (cropping) showCropper(false);
-    if (erasing) showEraser(false);
-    clearTimeout(timer); process();
-    if (!outBW) return;
-    const svg = mode === "svg";
-    if (svg && !svgPath) { setStatus("Aucune forme détectée. Baisse le seuil ou décoche « Inverser ».", true); return; }
-    let blob, dpi = +els.dpi.value;
-    if (svg) blob = svgBlob();
-    else {
-      const c = document.createElement("canvas"); c.width = outW; c.height = outH;
-      const g = c.getContext("2d"), id = g.createImageData(outW, outH);
-      for (let i = 0, j = 0; i < outBW.length; i++, j += 4) { id.data[j] = id.data[j+1] = id.data[j+2] = outBW[i]; id.data[j+3] = 255; }
-      g.putImageData(id, 0, 0);
-      blob = await pngWithDpi(c, dpi);
-    }
-    const base = ($("srcName").textContent || "gravure").replace(/\.[^.]+$/, "").replace(/[^\p{L}\p{N}\-' ]+/gu, "").trim() || "gravure";
-    const name = svg ? `${base}_vecteur_${Math.round(+els.wmm.value)}mm.svg` : `${base}_${MATS[mat].name.replace(/[^\p{L}\p{N}]+/gu, "-")}_${dpi}dpi.png`;
+    const ex = await buildExport(); if (!ex) return;
+    const { blob, name } = ex;
     if (!window.laser) { setStatus("Lance l'application Laser Pix pour enregistrer.", true); return; }
     const st = await window.laser.status();
     if (!st.pro && st.remaining <= 0) { window.openPlan("limit"); return; }
@@ -2011,7 +2068,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
     } else if (res.result === "sent") {
       addToLibrary(name, blob);
       const left = res.state.pro ? "" : ` · ${res.state.remaining} export${res.state.remaining > 1 ? "s" : ""} gratuit${res.state.remaining > 1 ? "s" : ""} restant${res.state.remaining > 1 ? "s" : ""}`;
-      setStatus(`Ouvert dans ${res.app}${left}. Si l'image n'apparaît pas, glisse le fichier depuis l'Explorateur dans le logiciel.`);
+      setStatus(`${res.app} est ouvert${left}. S'il n'affiche pas l'image tout seul, glisse la case rouge « Glisse-moi dans le logiciel » dans sa fenêtre.`);
       lastSaved = res.path; $("showFile").hidden = false;
     } else if (res.result === "notfound") setStatus(`${res.app} est introuvable sur ce PC. Choisis son fichier .exe pour l'ajouter.`, true);
     else if (res.result === "error") setStatus(res.message || "Impossible d'ouvrir le logiciel.", true);

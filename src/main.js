@@ -1,6 +1,6 @@
 // Laser Pix — processus principal Electron
 // Gère la fenêtre, l'enregistrement des fichiers, la licence Lemon Squeezy et le quota gratuit.
-const { app, BrowserWindow, ipcMain, dialog, shell, safeStorage, Menu } = require("electron");
+const { app, BrowserWindow, ipcMain, dialog, shell, safeStorage, Menu, nativeImage } = require("electron");
 const path = require("path");
 const fs = require("fs");
 const os = require("os");
@@ -311,6 +311,26 @@ ipcMain.handle("file:resave", async (e, { filename, bytes }) => {
   if (canceled || !filePath) return { result: "canceled" };
   fs.writeFileSync(filePath, Buffer.from(bytes));
   return { result: "saved", path: filePath };
+});
+// ---------- Glisser le fichier depuis Laser Pix vers le logiciel du graveur
+const dragDir = () => path.join(app.getPath("pictures"), "Laser Pix");
+const dragCounted = new Set();
+ipcMain.handle("drag:prepare", (_e, { filename, bytes }) => {
+  const st = status();
+  if (!st.pro && st.remaining <= 0) return { result: "limit", state: st };
+  fs.mkdirSync(dragDir(), { recursive: true });
+  const file = path.join(dragDir(), path.basename(filename));
+  fs.writeFileSync(file, Buffer.from(bytes));
+  return { result: "ready", path: file };
+});
+ipcMain.on("drag:start", (e, file) => {
+  if (typeof file !== "string" || path.dirname(file) !== dragDir() || !fs.existsSync(file)) return;
+  let icon = nativeImage.createFromPath(file);
+  if (icon.isEmpty()) icon = nativeImage.createFromPath(path.join(__dirname, "..", "build", "icon.png"));
+  if (!icon.isEmpty()) icon = icon.resize({ width: 96 });
+  e.sender.startDrag({ file, icon });
+  const key = file + ":" + fs.statSync(file).mtimeMs;
+  if (!dragCounted.has(key)) { dragCounted.add(key); if (!isPro()) { const u = usage(); u.count += 1; writeJson("usage.json", u); } }
 });
 ipcMain.handle("file:show", (_e, p) => shell.showItemInFolder(p));
 
