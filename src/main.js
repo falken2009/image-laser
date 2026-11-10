@@ -334,9 +334,33 @@ ipcMain.on("drag:start", (e, file) => {
 });
 ipcMain.handle("file:show", (_e, p) => shell.showItemInFolder(p));
 
+// ---------- Mises à jour automatiques (GitHub Releases)
+let updateState = { state: "idle" };
+function broadcastUpdate(s) { updateState = s; BrowserWindow.getAllWindows().forEach(w => w.webContents.send("update:status", s)); }
+function setupUpdates() {
+  if (!app.isPackaged) return;
+  let autoUpdater;
+  try { ({ autoUpdater } = require("electron-updater")); } catch { return; }
+  autoUpdater.autoDownload = true;
+  autoUpdater.autoInstallOnAppQuit = true;
+  autoUpdater.on("update-available", info => broadcastUpdate({ state: "downloading", version: info.version, percent: 0 }));
+  autoUpdater.on("download-progress", p => broadcastUpdate({ ...updateState, state: "downloading", percent: Math.round(p.percent || 0) }));
+  autoUpdater.on("update-downloaded", info => broadcastUpdate({ state: "ready", version: info.version }));
+  autoUpdater.on("update-not-available", () => broadcastUpdate({ state: "uptodate" }));
+  autoUpdater.on("error", () => broadcastUpdate({ state: "idle" }));
+  const check = () => autoUpdater.checkForUpdates().catch(() => {});
+  ipcMain.handle("update:check", async () => { await check(); return updateState; });
+  ipcMain.handle("update:install", () => { if (updateState.state === "ready") autoUpdater.quitAndInstall(false, true); });
+  check();
+  setInterval(check, 4 * 60 * 60 * 1000);
+}
+ipcMain.handle("app:version", () => app.getVersion());
+ipcMain.handle("update:state", () => updateState);
+
 app.whenReady().then(async () => {
   Menu.setApplicationMenu(null);
   createWindow();
+  setupUpdates();
   revalidate();
   setInterval(revalidate, 6 * 60 * 60 * 1000);
   app.on("activate", () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });

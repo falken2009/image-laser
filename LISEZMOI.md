@@ -71,6 +71,21 @@ Pour relancer une compilation sans rien modifier : **Actions → Compiler Laser 
 
 La clé est chiffrée avec le coffre de Windows (`safeStorage`) dans `%APPDATA%\Laser Pix\`.
 
+## Mises à jour automatiques
+
+L'appli se met à jour toute seule à partir des **Releases** de ton dépôt GitHub.
+
+- À chaque envoi de fichiers sur GitHub (commit sur `main`), la compilation crée une nouvelle version numérotée (1.0.12, 1.0.13…) et la publie dans **Releases**.
+- Les applis déjà installées vérifient au démarrage, puis toutes les 4 heures. Elles téléchargent la nouvelle version en arrière-plan et affichent un bandeau rouge **Redémarrer et installer**. Sinon, l'installation se fait à la prochaine fermeture de l'appli.
+- Le numéro de version s'affiche à côté du nom « Laser Pix ».
+
+À savoir :
+
+- Le dépôt indiqué dans `package.json` (`build.publish`) est `falken2009/image-laser`. Si tu renommes le dépôt, change-le ici aussi.
+- **Le dépôt doit rester public** pour que les applis puissent télécharger les mises à jour sans mot de passe. Si tu veux cacher le code, garde le code dans un dépôt privé et publie les Releases dans un second dépôt public vide (change alors `repo` dans `package.json`).
+- La première version avec mise à jour automatique doit être installée à la main une fois. Les suivantes arrivent toutes seules.
+- Dans GitHub : **Settings → Actions → General → Workflow permissions** doit être sur **Read and write permissions**, sinon la publication échoue.
+
 ## Bibliothèque
 
 Le bouton **Bibliothèque**, en haut, contient deux rubriques :

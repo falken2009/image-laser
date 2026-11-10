@@ -9,7 +9,8 @@
   "private": true,
   "scripts": {
     "start": "electron .",
-    "dist": "electron-builder --win --x64 --publish never"
+    "dist": "electron-builder --win --x64 --publish never",
+    "release": "electron-builder --win --x64 --publish always"
   },
   "devDependencies": {
     "electron": "33.2.1",
@@ -48,6 +49,17 @@
       "createStartMenuShortcut": true,
       "shortcutName": "Laser Pix",
       "language": "1036"
-    }
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "falken2009",
+        "repo": "image-laser",
+        "releaseType": "release"
+      }
+    ]
+  },
+  "dependencies": {
+    "electron-updater": "6.3.9"
   }
 }

@@ -320,6 +320,50 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
 .dragout span { font-size: .76rem; color: var(--muted); }
 .pw-out > div { cursor: pointer; }
 .pw-out > div:hover { border-color: var(--accent); }
+
+.three { display: grid; grid-template-columns: 1fr 1fr .7fr; gap: 8px; }
+
+/* Éditeur : barre d'outils, image au centre, panneau de l'outil choisi */
+.rail { display: flex; gap: 4px; background: var(--glass); border: 1px solid var(--line); border-radius: 16px; padding: 6px; }
+.rail button { border: 0; background: transparent; color: var(--muted); border-radius: 11px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 9px 4px; font: 600 .66rem var(--font-body); min-width: 62px; }
+.rail button svg { width: 22px; height: 22px; }
+.rail button:hover { color: var(--ink); background: rgba(255,255,255,.05); }
+.rail button[aria-pressed="true"] { color: #fff; background: var(--accent); box-shadow: 0 6px 16px rgba(229,37,47,.35); }
+.rail .sep { flex: none; background: var(--line); }
+.panel { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+.panel .cards, .panel .cards > div:not(.card) { display: contents !important; }
+.panel-head h2 { margin: 0; font: 800 1.35rem/1.15 var(--font-display); }
+.panel-head p { margin: 3px 0 0; color: var(--muted); font-size: .84rem; }
+.panel-nav { display: flex; gap: 8px; }
+.panel-nav button { flex: 1; border: 1px solid var(--line); background: var(--glass-2); color: var(--ink); border-radius: 10px; padding: 11px 12px; font: 600 .84rem var(--font-body); cursor: pointer; }
+.panel-nav button.next { background: var(--accent); border-color: var(--accent); color: #fff; flex: 2; }
+.panel details.card > summary { cursor: default; }
+.panel details.card > summary::after { display: none; }
+@media (min-width: 900px) {
+  .main { grid-template-columns: 78px minmax(0, 1fr) 400px; }
+  .main > .rail { grid-column: 1; grid-row: 1; flex-direction: column; position: sticky; top: 16px; align-self: start; max-height: calc(100vh - 32px); overflow-y: auto; scrollbar-width: none; }
+  .main > .rail .sep { height: 1px; margin: 4px 8px; }
+  .main > .stage { grid-column: 2; grid-row: 1; }
+  .main > .panel { grid-column: 3; grid-row: 1; }
+}
+@media (max-width: 899px) {
+  .rail { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; border-radius: 16px 16px 0 0; border-width: 1px 0 0; background: rgba(12,12,14,.96); overflow-x: auto; scrollbar-width: none;
+    padding: 6px max(8px, env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px)); }
+  .rail .sep { width: 1px; margin: 8px 2px; }
+  .rail button { flex: none; }
+  .main { padding-bottom: 96px; }
+}
+
+@media (max-width: 899px) {
+  .main > .stage .toolbar { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; scrollbar-width: none; }
+  .main > .stage .toolbar > * { flex: none; }
+  #cropBtn, #eraseBtn, .dims .ms { display: none; }
+}
+
+.upbar { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; padding: 8px 16px; background: var(--accent); color: #fff; font: 600 .84rem var(--font-body); }
+.upbar.soft { background: rgba(255,255,255,.06); color: var(--muted); font-weight: 500; }
+.upbar button { border: 1.5px solid #fff; background: #fff; color: #b3121b; border-radius: 8px; padding: 5px 12px; font: 700 .8rem var(--font-body); cursor: pointer; }
+.ver { font: 400 .68rem var(--font-mono); color: var(--muted); margin-left: 6px; }
 </style>
 </head>
 <body>
@@ -339,6 +383,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
     <button class="btn-top" id="exportTop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg><span>Exporter</span></button>
   </div>
 </header>
+<div class="upbar" id="upBar" hidden role="status"><span id="upTxt"></span><button id="upBtn" hidden>Redémarrer et installer</button></div>
 
 <div class="main">
   <section class="machine" aria-label="Graveur laser">
@@ -591,9 +636,10 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
         </div>
         <details class="pw-cal" id="pwCal">
           <summary>Régler moi-même la vitesse et la puissance</summary>
-          <div class="two" style="margin-top:8px">
-            <label class="field">Vitesse (mm/s)<input type="number" id="calV" min="1" max="10000" step="1"></label>
-            <label class="field">Puissance (%)<input type="number" id="calP" min="1" max="100" step="1"></label>
+          <div class="three" style="margin-top:8px">
+            <label class="field">Vitesse (mm/s)<input type="number" id="calV" min="0.1" max="10000" step="any"></label>
+            <label class="field">Puissance (%)<input type="number" id="calP" min="1" max="100" step="any"></label>
+            <label class="field">Passes<input type="number" id="calN" min="1" max="20" step="1" value="1"></label>
           </div>
           <div class="tools" style="margin-top:8px"><button class="btn" id="calSave">Appliquer et garder pour ce matériau</button><button class="btn ghost" id="calForget" hidden>Revenir au calcul automatique</button></div>
           <p class="hint" style="margin-top:6px">Entre tes propres valeurs (par exemple la meilleure case de ta grille de test) : elles remplacent le calcul pour ce matériau et cette puissance de laser, et s'adaptent ensuite si tu changes de résolution ou d'épaisseur.</p>
@@ -832,7 +878,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
   function loadFile(f) {
     if (!f || !f.type.startsWith("image/")) { setStatus("Ce fichier n'est pas une image. Choisis un JPG, PNG ou WebP.", true); return; }
     const url = URL.createObjectURL(f), img = new Image();
-    img.onload = () => { src = img; srcBlob = f; rot = 0; flip = false; strokes = []; eraseInfo(); resetBox(); $("srcName").textContent = f.name || "Image collée"; setStatus(""); if ($("autoOn").checked) autoTune(); else schedule(); };
+    img.onload = () => { src = img; srcBlob = f; rot = 0; flip = false; strokes = []; eraseInfo(); resetBox(); $("srcName").textContent = f.name || "Image collée"; setStatus(""); if ($("autoOn").checked) autoTune(); else schedule(); setTool("support"); };
     img.onerror = () => setStatus("Impossible de lire cette image. Essaie un autre format.", true);
     img.src = url;
   }
@@ -1565,12 +1611,26 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
       const rows = hmm * dpi / 25.4, t = rows * (wmm / v + 0.08);
       $("pwTime").textContent = `Durée estimée de la gravure : environ ${fmtT(t)} pour ${wmm.toFixed(0)} × ${hmm.toFixed(0)} mm.`;
     }
-    $("pwV").textContent = r5(v); $("pwP").textContent = Math.round(p); $("pwN").textContent = passes;
-    $("pwSub").innerHTML = `${r5(v)} mm/s · ${Math.round(p)} %` + (cal ? '<span class="pw-badge">testé</span>' : "");
+    // Réglage manuel : on affiche exactement les valeurs de l'utilisateur, sans les recalculer
+    const manual = cal && cal.manual;
+    if (manual) {
+      v = cal.v; p = cal.p; passes = cal.passes || 1;
+      const curDpi = mode === "svg" ? 254 : +els.dpi.value;
+      if (job !== "cut" && cal.dpi && cal.dpi !== curDpi) warn.push(`Ton réglage a été noté à ${cal.dpi} DPI et tu es maintenant à ${curDpi} DPI : il est gardé tel quel, ajuste-le si besoin.`);
+      if (job === "cut" && cal.t && cal.t !== +$("lthick").value) warn.push(`Ton réglage a été noté pour ${cal.t} mm d'épaisseur : il est gardé tel quel, ajuste-le si besoin.`);
+      if (job !== "cut") {
+        const dpi = curDpi, wmm = Math.min(1500, Math.max(5, +els.wmm.value || 100)), hmm = outW ? wmm * outH / outW : wmm;
+        $("pwTime").textContent = `Durée estimée de la gravure : environ ${fmtT(hmm * dpi / 25.4 * (wmm / v + 0.08) * passes)} pour ${wmm.toFixed(0)} × ${hmm.toFixed(0)} mm.`;
+      }
+    }
+    const vShow = manual ? v : r5(v), pShow = manual ? p : Math.round(p);
+    $("pwV").textContent = vShow; $("pwP").textContent = pShow; $("pwN").textContent = passes;
+    $("pwSub").innerHTML = `${vShow} mm/s · ${pShow} %` + (manual ? '<span class="pw-badge">mon réglage</span>' : cal ? '<span class="pw-badge">testé</span>' : "");
     $("calForget").hidden = !cal;
-    if (!$("calV").matches(":focus") && !$("calP").matches(":focus")) { $("calV").value = r5(v); $("calP").value = Math.round(p); }
+    const editing = ["calV", "calP", "calN"].some(id => $(id).matches(":focus"));
+    if (!editing && !$("pwCal").dataset.typing) { $("calV").value = vShow; $("calP").value = pShow; $("calN").value = passes; }
     showWarn(warn);
-    window.__laserSettings = { v: r5(v), p: Math.round(p), passes };
+    window.__laserSettings = { v: vShow, p: pShow, passes };
   }
   function showWarn(w) { $("pwWarn").hidden = !w.length; $("pwWarn").textContent = w.join(" "); }
   ["lw", "lvmax", "lthick", "lax", "lay"].forEach(id => $(id).addEventListener("input", () => {
@@ -1579,14 +1639,18 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
   $("lint").addEventListener("change", laserCalc);
   $("machine").addEventListener("change", () => { $("lw").dataset.tech = ""; laserCalc(); });
   $("calSave").onclick = () => {
-    const tech = $("machine").value, W = +$("lw").value, job = curJob(), v = +$("calV").value, p = +$("calP").value;
-    if (!(v > 0 && p > 0)) return;
-    setTimeout(() => setStatus(`Réglage manuel appliqué : ${v} mm/s · ${p} %.`), 0);
-    lsSet(calKey(tech, W, job), job === "cut" ? { v, p, t: +$("lthick").value, passes: +$("pwN").textContent || 1 } : { v: v / (+$("lint").value || 1), p, dpi: mode === "svg" ? 254 : +els.dpi.value });
+    const tech = $("machine").value, W = +$("lw").value, job = curJob();
+    const v = parseFloat(String($("calV").value).replace(",", ".")), p = parseFloat(String($("calP").value).replace(",", ".")), n = Math.max(1, Math.round(+$("calN").value || 1));
+    if (!(v > 0 && p > 0 && p <= 100)) { setStatus("Entre une vitesse et une puissance entre 1 et 100 %.", true); return; }
+    lsSet(calKey(tech, W, job), { manual: true, v, p, passes: n, t: +$("lthick").value, dpi: mode === "svg" ? 254 : +els.dpi.value });
+    delete $("pwCal").dataset.typing;
     laserCalc();
+    setStatus(`Ton réglage est appliqué et gardé pour ${MATS[mat].name} : ${v} mm/s · ${p} %${n > 1 ? ` · ${n} passes` : ""}.`);
   };
   document.querySelectorAll(".pw-out > div").forEach((d, i) => d.addEventListener("click", () => { $("pwCal").open = true; (i === 1 ? $("calP") : $("calV")).focus(); }));
-  $("calForget").onclick = () => { lsSet(calKey($("machine").value, +$("lw").value, curJob()), null); laserCalc(); };
+  ["calV", "calP", "calN"].forEach(id => $(id).addEventListener("input", () => { $("pwCal").dataset.typing = "1"; }));
+  $("calForget").addEventListener("click", () => setStatus("Retour au calcul automatique."));
+  $("calForget").onclick = () => { delete $("pwCal").dataset.typing; lsSet(calKey($("machine").value, +$("lw").value, curJob()), null); laserCalc(); };
 
 
   // ---------- Bibliothèque : mes supports (réglages) et mes gravures (fichiers)
@@ -1623,9 +1687,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
     $("lw").dataset.tech = $("machine").value;
     if (st.laser && st.laser.v > 0 && st.laser.p > 0) {
       const job = curJob();
-      lsSet(calKey($("machine").value, +$("lw").value, job), job === "cut"
-        ? { v: st.laser.v, p: st.laser.p, t: +$("lthick").value, passes: st.laser.passes || 1 }
-        : { v: st.laser.v / (+$("lint").value || 1), p: st.laser.p, dpi: mode === "svg" ? 254 : +els.dpi.value });
+      lsSet(calKey($("machine").value, +$("lw").value, job), { manual: true, v: st.laser.v, p: st.laser.p, passes: st.laser.passes || 1, t: +$("lthick").value, dpi: mode === "svg" ? 254 : +els.dpi.value });
     }
     if (st.size) {
       $("fmt").value = st.size.fmt || ""; $("marg").value = st.size.marg || 0;
@@ -1951,6 +2013,61 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
     if (sizeLocked) { const asp = outW && outH ? outW / outH : 1; els.wmm.value = Math.round(clampMM(h * asp) * 10) / 10; schedule(); }
     else { fmtW = 0; $("fmt").value = ""; exactSize(+els.wmm.value || 100, h); }
   });
+
+
+  // ---------- Éditeur à outils : un seul groupe de réglages visible à la fois
+  const TOOLS = {
+    photo:    { n: "Photo",    d: "Charge l'image que tu veux graver.", i: '<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/>' },
+    support:  { n: "Support",  d: "Choisis sur quoi tu graves : l'aperçu et les réglages s'adaptent.", i: '<path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/>' },
+    format:   { n: "Format",   d: "Taille de la gravure, type de fichier et résolution.", i: '<path d="M4 8V4h4M20 8V4h-4M4 16v4h4M20 16v4h-4"/><rect x="8" y="8" width="8" height="8" rx="1"/>' },
+    retouche: { n: "Retouche", d: "Style de gravure, lumière, contraste et netteté.", i: '<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>' },
+    ia:       { n: "IA",       d: "Décris la modification en français, l'appli règle tout.", i: '<path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/>' },
+    recadrer: { n: "Recadrer", d: "Garde seulement la partie utile, en rectangle ou en rond.", i: '<path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M18 22V8a2 2 0 0 0-2-2H2"/>' },
+    gomme:    { n: "Gomme",    d: "Passe sur un élément pour le faire disparaître.", i: '<path d="M20 20H9L3.5 14.5a2 2 0 0 1 0-2.8L12.7 2.5a2 2 0 0 1 2.8 0l5 5a2 2 0 0 1 0 2.8L11 20"/><path d="M8 9l7 7"/>' },
+    fond:     { n: "Fond",     d: "Retire le fond uni autour du sujet.", i: '<circle cx="12" cy="9" r="4"/><path d="M5 21a7 7 0 0 1 14 0"/><path d="M3 3l2 2M21 3l-2 2" stroke-dasharray="1 3"/>' },
+    laser:    { n: "Laser",    d: "Vitesse, puissance et passes pour ta machine.", i: '<path d="M12 2v8"/><path d="M8 10h8l-4 5z"/><path d="M4 21h16"/><path d="M9 19l3-3 3 3"/>' },
+    export:   { n: "Exporter", d: "Enregistre le fichier ou envoie-le au logiciel du graveur.", i: '<path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/>' },
+  };
+  const TOOL_ORDER = Object.keys(TOOLS);
+  let tool = "photo";
+  const mainEl = document.querySelector(".main"), panel = document.createElement("aside"), rail = document.createElement("nav");
+  panel.className = "panel"; panel.setAttribute("aria-label", "Réglages de l'outil"); rail.className = "rail"; rail.setAttribute("aria-label", "Outils");
+  (() => {
+    const tag = (el, t) => { if (el) el.dataset.tool = t; };
+    tag(document.querySelector(".machine"), "photo"); tag($("drop").closest(".card"), "photo");
+    tag($("mats").closest(".card"), "support"); tag($("fmt").closest(".card"), "format");
+    tag($("bri").closest(".card"), "retouche"); tag($("aiCard"), "ia");
+    tag($("cropCard"), "recadrer"); tag($("eraseCard"), "gomme"); tag($("bgOn").closest(".card"), "fond");
+    tag($("powerCard"), "laser"); tag($("export").closest(".card"), "export"); tag(document.querySelector(".main > .note"), "export");
+    const head = document.createElement("div"); head.className = "panel-head"; head.innerHTML = '<h2 id="toolTitle"></h2><p id="toolDesc"></p>';
+    panel.appendChild(head);
+    [...mainEl.children].filter(c => !c.classList.contains("stage")).forEach(c => panel.appendChild(c));
+    const nav = document.createElement("div"); nav.className = "panel-nav"; nav.innerHTML = '<button id="toolPrev">← Retour</button><button class="next" id="toolNext"></button>';
+    panel.appendChild(nav);
+    rail.innerHTML = TOOL_ORDER.map((k, i) => (i === 4 || i === 8 ? '<span class="sep"></span>' : "") + `<button data-t="${k}" aria-pressed="false" title="${TOOLS[k].d}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${TOOLS[k].i}</svg>${TOOLS[k].n}</button>`).join("");
+    mainEl.insertBefore(rail, mainEl.firstChild); mainEl.appendChild(panel);
+  })();
+  function setTool(name, noMode) {
+    if (!TOOLS[name]) return;
+    if (!noMode) { if (cropping && name !== "recadrer") showCropper(false); if (erasing && name !== "gomme") showEraser(false); }
+    tool = name;
+    panel.querySelectorAll("[data-tool]").forEach(c => { c.hidden = c.dataset.tool !== name; if (!c.hidden && c.tagName === "DETAILS") c.open = true; });
+    rail.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.t === name));
+    $("toolTitle").textContent = TOOLS[name].n; $("toolDesc").textContent = TOOLS[name].d;
+    const i = TOOL_ORDER.indexOf(name), nx = TOOL_ORDER[i + 1];
+    $("toolPrev").hidden = i === 0; $("toolNext").hidden = !nx; if (nx) $("toolNext").textContent = `Suivant : ${TOOLS[nx].n} →`;
+    if (!noMode) { if (name === "recadrer" && !cropping) showCropper(true); if (name === "gomme" && !erasing) showEraser(true); }
+    rail.querySelector(`[data-t="${name}"]`)?.scrollIntoView({ block: "nearest", inline: "nearest" });
+    if (!noMode && window.innerWidth < 900) window.scrollTo({ top: 0 });
+  }
+  window.__setTool = setTool;
+  rail.addEventListener("click", e => { const b = e.target.closest("button[data-t]"); if (b) setTool(b.dataset.t); });
+  $("toolNext").onclick = () => setTool(TOOL_ORDER[TOOL_ORDER.indexOf(tool) + 1]);
+  $("toolPrev").onclick = () => setTool(TOOL_ORDER[TOOL_ORDER.indexOf(tool) - 1]);
+  $("cropBtn").addEventListener("click", () => { if (cropping) setTool("recadrer", true); });
+  $("eraseBtn").addEventListener("click", () => { if (erasing) setTool("gomme", true); });
+  $("supAll") && $("supAll").addEventListener("click", () => {});
+  setTool("photo", true);
 
   // ---------- Export
   const CRC = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
@@ -2295,7 +2412,7 @@ Règles : la gravure assombrit le bois, donc garde des tons moyens plutôt clair
   autoTune();
   updateSplit();
 })();
-  document.getElementById("exportTop").addEventListener("click", () => document.getElementById("export").click());
+  document.getElementById("exportTop").addEventListener("click", () => window.__setTool("export"));
   // ---------- Glisser l'avant/après et loupe
   (() => {
     const cmp = document.getElementById("compare"), sp = document.getElementById("split"), lp = document.getElementById("loupe"), lc = document.getElementById("cLoupe");
@@ -2364,6 +2481,20 @@ Règles : la gravure assombrit le bois, donc garde des tons moyens plutôt clair
     if (window.laser) { window.laser.status().then(window.renderPlan); window.laser.refresh().then(window.renderPlan); }
     else window.renderPlan({ pro: false, status: "none", remaining: 3, limit: 3, priceLabel: "—" });
   })();
+
+  // ---------- Mises à jour automatiques (version Windows)
+  if (window.laser?.onUpdate) {
+    const bar = document.getElementById("upBar"), txt = document.getElementById("upTxt"), btn = document.getElementById("upBtn");
+    const show = s => {
+      if (!s) return;
+      if (s.state === "downloading") { bar.hidden = false; bar.className = "upbar soft"; btn.hidden = true; txt.textContent = `Mise à jour ${s.version || ""} en cours de téléchargement${s.percent ? ` : ${s.percent} %` : "…"}`; }
+      else if (s.state === "ready") { bar.hidden = false; bar.className = "upbar"; btn.hidden = false; txt.textContent = `La version ${s.version} de Laser Pix est prête.`; }
+      else bar.hidden = true;
+    };
+    window.laser.onUpdate(show); window.laser.updateState().then(show);
+    btn.onclick = () => { btn.disabled = true; btn.textContent = "Redémarrage…"; window.laser.installUpdate(); };
+    window.laser.version().then(v => { const h = document.querySelector(".brand h1"); if (h && v) { const sp = document.createElement("span"); sp.className = "ver"; sp.textContent = "v" + v; h.appendChild(sp); } });
+  }
 </script>
 
 </body>
