@@ -408,6 +408,25 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
 .dt-note { margin: 0; font-size: .88rem; white-space: pre-line; background: rgba(255,255,255,.04); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; padding: 8px 12px; }
 .dt .act .btn.go { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; padding: 10px 18px; font-size: .9rem; }
 @media (prefers-reduced-motion: reduce) { .tile { transition: none; } .tile:hover { transform: none; } }
+
+/* Tutoriel guidé */
+.tuto { position: fixed; z-index: 55; left: 112px; bottom: 20px; width: min(400px, calc(100vw - 32px)); background: #18171a; border: 1px solid var(--accent); border-radius: 14px; padding: 14px 16px 14px; box-shadow: 0 20px 60px rgba(0,0,0,.7); display: flex; flex-direction: column; gap: 8px; }
+.tuto-top { display: flex; justify-content: space-between; align-items: center; font: 700 .66rem var(--font-display); letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
+.tuto-top button { border: 0; background: transparent; color: var(--muted); font-size: 1rem; cursor: pointer; padding: 2px 6px; }
+.tuto h3 { margin: 0; font: 800 1.15rem/1.2 var(--font-display); }
+.tuto-text { font-size: .86rem; line-height: 1.5; color: var(--ink); }
+.tuto-text ul { margin: 6px 0 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
+.tuto-text b { color: #fff; }
+.tuto-dots { display: flex; gap: 5px; }
+.tuto-dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--line); }
+.tuto-dots i.on { background: var(--accent); }
+.tuto-nav { display: flex; gap: 8px; }
+.tuto-nav button { flex: 1; border: 1px solid var(--line); background: var(--glass-2); color: var(--ink); border-radius: 9px; padding: 9px 10px; font: 600 .82rem var(--font-body); cursor: pointer; }
+.tuto-nav button.next { flex: 2; background: var(--accent); border-color: var(--accent); color: #fff; }
+.tuto-focus { outline: 2px solid #fff !important; outline-offset: 3px; box-shadow: 0 0 0 7px rgba(229,37,47,.5) !important; animation: tutoPulse 1.4s ease-in-out infinite; }
+@keyframes tutoPulse { 50% { box-shadow: 0 0 0 11px rgba(229,37,47,.22); } }
+@media (max-width: 899px) { .tuto { left: 12px; right: 12px; width: auto; bottom: calc(88px + env(safe-area-inset-bottom, 0px)); max-height: 46vh; overflow-y: auto; } }
+@media (prefers-reduced-motion: reduce) { .tuto-focus { animation: none; } }
 </style>
 </head>
 <body>
@@ -423,6 +442,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
     </div>
     <div class="spacer"></div>
     <button class="plan" id="planBtn"><span class="dot"></span><span id="planTxt">Gratuit</span></button>
+    <button class="btn-top ghost" id="tutoBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 1-1 1.7"/><path d="M12 17h0"/></svg><span>Tuto</span></button>
     <button class="btn-top ghost" id="libBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2.5z"/><path d="M8 7h6M8 11h6"/></svg><span>Bibliothèque</span></button>
     <button class="btn-top" id="exportTop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg><span>Exporter</span></button>
   </div>
@@ -2157,6 +2177,59 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
   $("eraseBtn").addEventListener("click", () => { if (erasing) setTool("gomme", true); });
   $("supAll") && $("supAll").addEventListener("click", () => {});
   setTool("photo", true);
+
+
+  // ---------- Tutoriel guidé
+  (() => {
+    const win = !!window.laser;
+    const STEPS = [
+      { t: "Bienvenue dans Laser Pix", tool: "photo", f: [".rail"],
+        h: "Laser Pix transforme une photo ou un logo en fichier prêt à graver. Tu avances de haut en bas dans la barre d'outils : <b>Photo → Support → Format → Retouche → Laser → Exporter</b>.<ul><li>L'image au centre montre le résultat en direct.</li><li>À droite, seuls les réglages de l'outil choisi sont affichés.</li></ul>" },
+      { t: "1. Charge ta photo", tool: "photo", f: ["#drop"],
+        h: "Touche <b>Charger une photo</b>, ou glisse l'image dans la zone. Tu peux aussi la coller avec Ctrl + V.<ul><li>Formats : JPG, PNG, WebP.</li><li>Une photo nette et bien contrastée donne la meilleure gravure.</li></ul>" },
+      { t: "2. Choisis ton support", tool: "support", f: ["#mats"],
+        h: "Sélectionne le matériau à graver. L'aperçu, le tramage et les réglages s'adaptent tout seuls.<ul><li>Matériau sombre (ardoise, toile peinte en noir, alu anodisé) : l'image est inversée automatiquement.</li><li><b>+ Nouveau support</b> ajoute ton propre matériau.</li><li>La liste <b>Mes supports</b> rappelle tes réglages enregistrés.</li></ul>" },
+      { t: "3. Règle la taille", tool: "format", f: [".sizebox"],
+        h: "Indique la largeur ou la hauteur en mm, ou choisis un <b>format de support</b> (toile 30 × 40, dessous de verre…).<ul><li>Le maillon rouge garde les proportions de l'image.</li><li><b>Marge autour</b> évite de graver le bord du support.</li><li>Photo → <b>PNG</b>. Texte ou logo → <b>SVG</b>.</li></ul>" },
+      { t: "4. Retouche le rendu", tool: "retouche", f: ["#autoBtn", "#styleField"],
+        h: "<b>Réglage auto</b> analyse la photo et règle tout pour ton matériau.<ul><li><b>Style de gravure</b> : points fins pour une photo, <b>Sans points</b> pour un manga, un dessin ou un logo.</li><li>Affine avec luminosité, contraste, gamma et netteté.</li><li>Sur l'image : glisse la ligne rouge pour comparer avant / après, et touche <b>▶ Graver</b> pour voir la simulation.</li></ul>" },
+      { t: "5. Recadre, gomme, enlève le fond", tool: "recadrer", f: ['.rail [data-t="recadrer"]', '.rail [data-t="gomme"]', '.rail [data-t="fond"]'],
+        h: "Trois outils pour nettoyer l'image :<ul><li><b>Recadrer</b> : garde la partie utile, en rectangle ou en rond.</li><li><b>Gomme</b> : passe sur un élément gênant pour le faire disparaître.</li><li><b>Fond</b> : efface un fond uni autour du sujet.</li></ul>L'outil <b>IA</b> fait ces réglages à ta place : écris simplement « enlève le fond et recadre en rond »." },
+      { t: "6. Vitesse et puissance", tool: "laser", f: [".pw-out"],
+        h: "Laser Pix calcule la vitesse et la puissance pour ta machine, ton matériau et ta résolution.<ul><li>Indique la puissance de ton laser (en W) une seule fois.</li><li>Fais la <b>grille de test</b> proposée sur une chute.</li><li>Touche une case pour <b>régler toi-même</b> : tes valeurs sont gardées telles quelles pour ce matériau.</li></ul>" },
+      { t: "7. Exporte vers ton graveur", tool: "export", f: ["#export"],
+        h: (win ? "<b>Enregistre</b> le fichier, ou glisse la case rouge <b>Glisse-moi dans le logiciel</b> directement dans xTool Creative Space ou LightBurn." : "<b>Enregistre</b> le fichier PNG ou SVG, puis importe-le dans xTool Creative Space, LightBurn ou LaserGRBL.") + "<ul><li>Dans le logiciel du graveur, désactive son tramage : « Aucun » dans XCS, « Passthrough » dans LightBurn.</li><li><b>★ Enregistrer ces réglages comme support</b> garde tout pour la prochaine fois.</li></ul>" },
+      { t: "8. Retrouve tout dans la Bibliothèque", tool: "export", f: ["#libBtn"],
+        h: "Chaque export est gardé avec son image, sa photo d'origine et ses réglages.<ul><li>Clique une affiche pour voir sa fiche : vitesse, puissance, taille, note.</li><li><b>Rouvrir</b> recharge tout pour retoucher.</li><li>Ajoute une <b>photo du résultat réel</b> pour reconnaître tes projets.</li></ul>" },
+      { t: "Pour une gravure réussie", tool: "photo", f: [],
+        h: "<ul><li><b>Essai sur une chute</b> avant la vraie pièce : chaque matériau réagit un peu différemment.</li><li><b>Mise au point</b> au centre de la pièce. Sur une toile, cale le dessous pour qu'elle soit bien à plat.</li><li>Résultat trop pâle : baisse la vitesse ou ajoute une passe. Trop brûlé : baisse la puissance.</li><li><b>Sécurité</b> : capot fermé ou lunettes adaptées, pièce ventilée, et ne laisse jamais le laser travailler sans surveillance.</li></ul>Tu peux relancer ce tuto à tout moment avec le bouton <b>Tuto</b>." },
+    ];
+    const el = document.createElement("div"); el.className = "tuto"; el.id = "tuto"; el.hidden = true; el.setAttribute("role", "dialog"); el.setAttribute("aria-label", "Tutoriel");
+    el.innerHTML = '<div class="tuto-top"><span id="tutoStep"></span><button id="tutoClose" aria-label="Fermer le tutoriel">✕</button></div><h3 id="tutoTitle"></h3><div class="tuto-text" id="tutoText"></div><div class="tuto-dots" id="tutoDots"></div><div class="tuto-nav"><button id="tutoPrev">← Retour</button><button class="next" id="tutoNext"></button></div>';
+    document.body.appendChild(el);
+    let i = 0;
+    const clear = () => document.querySelectorAll(".tuto-focus").forEach(x => x.classList.remove("tuto-focus"));
+    function show(n) {
+      i = Math.max(0, Math.min(STEPS.length - 1, n)); const s = STEPS[i];
+      setTool(s.tool, true); clear();
+      s.f.forEach(sel => { const x = document.querySelector(sel); if (x && !x.hidden) x.classList.add("tuto-focus"); });
+      $("tutoStep").textContent = `Tuto · ${i + 1} / ${STEPS.length}`; $("tutoTitle").textContent = s.t; $("tutoText").innerHTML = s.h;
+      $("tutoDots").innerHTML = STEPS.map((_, k) => `<i class="${k === i ? "on" : ""}"></i>`).join("");
+      $("tutoPrev").hidden = i === 0; $("tutoNext").textContent = i === STEPS.length - 1 ? "Terminer ✓" : "Suivant →";
+      el.hidden = false; el.scrollTop = 0;
+      const first = s.f[0] && document.querySelector(s.f[0]);
+      if (first && window.innerWidth >= 900) first.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    }
+    function close() { el.hidden = true; clear(); try { localStorage.setItem("lp-tuto-seen", "1"); } catch (e) {} }
+    $("tutoBtn").onclick = () => show(0);
+    $("tutoClose").onclick = close;
+    $("tutoPrev").onclick = () => show(i - 1);
+    $("tutoNext").onclick = () => { if (i === STEPS.length - 1) { close(); setTool("photo", true); } else show(i + 1); };
+    document.addEventListener("keydown", e => { if (el.hidden) return; if (e.key === "Escape") close(); else if (e.key === "ArrowRight") $("tutoNext").click(); else if (e.key === "ArrowLeft" && i > 0) show(i - 1); });
+    rail.addEventListener("click", () => { if (!el.hidden) clear(); });
+    let seen = false; try { seen = localStorage.getItem("lp-tuto-seen") === "1"; } catch (e) { seen = true; }
+    if (!seen) setTimeout(() => show(0), 900);
+  })();
 
   // ---------- Export
   const CRC = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
