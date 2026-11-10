@@ -71,6 +71,15 @@ Pour relancer une compilation sans rien modifier : **Actions → Compiler Laser 
 
 La clé est chiffrée avec le coffre de Windows (`safeStorage`) dans `%APPDATA%\Laser Pix\`.
 
+## Bibliothèque
+
+Le bouton **Bibliothèque**, en haut, contient deux rubriques :
+
+- **Mes supports** : tes réglages enregistrés par support (matériau, machine, vitesse, puissance, résolution, réglages d'image, avec une note). Enregistre-les avec « ★ Enregistrer ces réglages comme support » sous le bouton d'export. Retrouve-les aussi dans la liste en haut de la carte Matériau.
+- **Mes gravures** : une copie de chaque fichier exporté, avec son aperçu, sa photo d'origine et ses réglages. « Rouvrir » recharge tout pour retoucher. « Enregistrer le fichier » le réenregistre sans compter un nouvel export.
+
+Tout est gardé sur le PC, dans `%APPDATA%\Laser Pix\`.
+
 ## Envoi vers le logiciel du graveur
 
 Sous le bouton d'enregistrement, choisis ton logiciel puis touche **Envoyer vers le logiciel** :

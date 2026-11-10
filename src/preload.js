@@ -10,6 +10,7 @@ contextBridge.exposeInMainWorld("laser", {
   openPortal: () => ipcRenderer.invoke("open:portal"),
   saveFile: (filename, bytes) => ipcRenderer.invoke("file:save", { filename, bytes }),
   showFile: p => ipcRenderer.invoke("file:show", p),
+  resave: (filename, bytes) => ipcRenderer.invoke("file:resave", { filename, bytes }),
   sendList: () => ipcRenderer.invoke("send:list"),
   sendTo: (software, filename, bytes) => ipcRenderer.invoke("send:open", { software, filename, bytes }),
   ai: (prompt, imageBase64) => ipcRenderer.invoke("ai:ask", { prompt, imageBase64 }),

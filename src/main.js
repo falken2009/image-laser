@@ -299,6 +299,19 @@ ipcMain.handle("send:open", async (e, { software, filename, bytes }) => {
   const shown = software === "custom" ? path.basename(exe, ".exe") : appName;
   return { result: "sent", app: shown, path: file, state: status() };
 });
+// Réenregistrer un fichier déjà exporté (depuis la bibliothèque) : ne compte pas comme nouvel export
+ipcMain.handle("file:resave", async (e, { filename, bytes }) => {
+  const ext = path.extname(filename).slice(1).toLowerCase();
+  const win = BrowserWindow.fromWebContents(e.sender);
+  const { canceled, filePath } = await dialog.showSaveDialog(win, {
+    title: "Enregistrer le fichier de gravure",
+    defaultPath: path.join(app.getPath("pictures"), filename),
+    filters: [ext === "svg" ? { name: "Image vectorielle SVG", extensions: ["svg"] } : { name: "Image PNG", extensions: ["png"] }],
+  });
+  if (canceled || !filePath) return { result: "canceled" };
+  fs.writeFileSync(filePath, Buffer.from(bytes));
+  return { result: "saved", path: filePath };
+});
 ipcMain.handle("file:show", (_e, p) => shell.showItemInFolder(p));
 
 app.whenReady().then(async () => {

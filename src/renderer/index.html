@@ -252,6 +252,66 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
 .pw-cal > summary { cursor: pointer; font: 600 .8rem var(--font-body); color: var(--accent); }
 .pw-badge { display: inline-block; font: 600 .68rem var(--font-body); color: var(--ok); border: 1px solid var(--ok); border-radius: 999px; padding: 1px 7px; margin-left: 6px; }
 @media (max-width: 420px) { .pw-out { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* Bibliothèque */
+[hidden] { display: none !important; }
+.btn-top.ghost { border-color: var(--line); }
+.supsel { display: flex; gap: 6px; }
+.supsel select { flex: 1; min-width: 0; font: 500 .84rem var(--font-body); color: var(--ink); background: rgba(0,0,0,.45); border: 1px solid var(--line); border-radius: 8px; padding: 8px 9px; }
+.supsel select option { background: #1b1b1f; }
+.btn.sm { padding: 5px 10px; font-size: .76rem; }
+.btn.danger { border-color: var(--err); color: var(--err); }
+.libbar { display: flex; flex-direction: column; gap: 8px; }
+.supform { display: flex; flex-direction: column; gap: 8px; background: rgba(0,0,0,.3); border: 1px solid var(--line); border-radius: 10px; padding: 10px; }
+.lib-in { width: 100%; font: 500 .88rem var(--font-body); color: var(--ink); background: rgba(0,0,0,.45); border: 1px solid var(--line); border-radius: 8px; padding: 9px 10px; resize: vertical; }
+.lib-in:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.lib { position: fixed; inset: 0; z-index: 60; background: rgba(0,0,0,.75); display: flex; justify-content: center; align-items: flex-start; overflow-y: auto;
+  padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.lib-panel { width: min(1000px, 100%); background: #141316; border: 1px solid var(--line); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 30px 80px rgba(0,0,0,.6); }
+.lib-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.lib-head h3 { margin: 0; font: 800 1.25rem var(--font-display); }
+.lib-tabs { flex: 1; min-width: 240px; }
+#libNote { min-height: 0; }
+#libNote:empty { display: none; }
+.lib-list { display: flex; flex-direction: column; gap: 8px; }
+.sup { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 14px; align-items: center; background: var(--glass-2); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+.nm { font: 700 .95rem var(--font-body); overflow-wrap: anywhere; }
+.mt { font: 400 .74rem var(--font-mono); color: var(--muted); overflow-wrap: anywhere; }
+.nt { font-size: .8rem; color: var(--ink); white-space: pre-line; margin-top: 4px; }
+.act { display: flex; gap: 6px; flex-wrap: wrap; }
+@media (max-width: 640px) { .sup { grid-template-columns: minmax(0, 1fr); } }
+.lib-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+.grv { background: var(--glass-2); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
+.grv img { width: 100%; aspect-ratio: 4 / 3; object-fit: contain; background: #000; display: block; }
+.grv .in { padding: 9px 10px 10px; display: flex; flex-direction: column; gap: 6px; }
+.empty { text-align: center; color: var(--muted); padding: 34px 12px; font-size: .86rem; grid-column: 1 / -1; }
+
+.mat.add { border-style: dashed; color: var(--accent); justify-content: center; font-weight: 600; background: transparent; }
+.matform { display: flex; flex-direction: column; gap: 9px; background: rgba(0,0,0,.3); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+.matform b { font: 700 .9rem var(--font-body); }
+.matform input[type=color] { padding: 3px; height: 38px; cursor: pointer; }
+.matcustom { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: .78rem; color: var(--muted); }
+#mfErr:empty { display: none; }
+
+.sup { grid-template-columns: 110px minmax(0, 1fr); align-items: start; }
+.sup .act { grid-column: 2; }
+.pic { position: relative; width: 100%; aspect-ratio: 4 / 3; border-radius: 8px; overflow: hidden; background: #000; cursor: pointer; border: 1px solid var(--line); padding: 0; display: block; }
+.pic img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pic .ph { position: absolute; inset: 0; display: grid; place-items: center; font: 600 .7rem var(--font-body); color: rgba(255,255,255,.8); text-align: center; padding: 6px; }
+.pic .tag { position: absolute; left: 5px; bottom: 5px; font: 700 .6rem var(--font-display); letter-spacing: .06em; text-transform: uppercase; color: #fff; background: rgba(0,0,0,.7); border-radius: 4px; padding: 2px 5px; }
+.pic .tag.real { background: var(--accent); }
+.grv .pic { border: 0; border-radius: 0; aspect-ratio: 4 / 3; }
+.grv .pic img { object-fit: contain; }
+.grv .pic img.real { object-fit: cover; }
+@media (max-width: 640px) { .sup { grid-template-columns: 90px minmax(0, 1fr); } .sup .act { grid-column: 1 / -1; } }
+
+.sizebox { display: flex; flex-direction: column; gap: 9px; background: rgba(0,0,0,.28); border: 1px solid var(--line); border-radius: 10px; padding: 10px; }
+.sizehead { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.sizehead b { font: 700 .84rem var(--font-body); }
+#sizeHint { font: 500 .76rem var(--font-mono); color: var(--accent); }
+.sizerow { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 8px; align-items: end; }
+.lockbtn { width: 38px; height: 38px; border-radius: 8px; border: 1px solid var(--line); background: rgba(0,0,0,.45); color: var(--muted); display: grid; place-items: center; cursor: pointer; }
+.lockbtn[aria-pressed="true"] { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
 </style>
 </head>
 <body>
@@ -267,6 +327,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
     </div>
     <div class="spacer"></div>
     <button class="plan" id="planBtn"><span class="dot"></span><span id="planTxt">Gratuit</span></button>
+    <button class="btn-top ghost" id="libBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V5a2 2 0 0 1 2-2h12v16H6a2 2 0 0 0-2 2.5z"/><path d="M8 7h6M8 11h6"/></svg><span>Bibliothèque</span></button>
     <button class="btn-top" id="exportTop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg><span>Exporter</span></button>
   </div>
 </header>
@@ -382,6 +443,14 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
     <div class="card-head">Affiner ce résultat ?<span class="tools"><button class="btn auto" id="autoBtn"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>Réglage auto</button><button class="btn ghost" id="reset">↺ Tout réinitialiser</button></span></div>
       <div class="autobar"><label class="autochk"><input type="checkbox" id="autoOn" checked> Régler automatiquement à chaque photo et matériau</label><span class="hint" id="autoInfo"></span></div>
     <div class="body">
+      <div class="field" id="styleField">Style de gravure
+        <div class="seg" role="group" aria-label="Style de gravure">
+          <button data-st="fine" aria-pressed="true">Points fins</button>
+          <button data-st="xfine" aria-pressed="false">Points très fins</button>
+          <button data-st="clean" aria-pressed="false">Sans points</button>
+        </div>
+      </div>
+      <p class="hint" id="styleHint">Le laser ne sait que graver ou ne pas graver : les gris sont faits de petits points, comme dans un journal.</p>
       <div class="sliders">
         <div class="sl"><div class="top"><label for="bri">Luminosité</label><output id="oBri">0</output></div><input type="range" id="bri" min="-100" max="100" value="0"></div>
         <div class="sl"><div class="top"><label for="con">Contraste</label><output id="oCon">0</output></div><input type="range" id="con" min="-100" max="100" value="0"></div>
@@ -430,8 +499,45 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
             <option value="fibre">Laser fibre · métal, gravure très fine</option>
           </select>
         </label>
+        <div class="sizebox">
+          <div class="sizehead"><b>Taille de la gravure</b><span id="sizeHint"></span></div>
+          <label class="field">Format du support
+            <select id="fmt">
+              <option value="">Libre : garde les proportions de l'image</option>
+              <optgroup label="Petits objets">
+                <option value="90x90r">Dessous de verre rond · Ø 9 cm</option>
+                <option value="100x100">Dessous de verre carré · 10 × 10 cm</option>
+                <option value="85x55">Carte de visite · 8,5 × 5,5 cm</option>
+                <option value="150x100">Plaque · 15 × 10 cm</option>
+                <option value="200x150">Plaque · 20 × 15 cm</option>
+              </optgroup>
+              <optgroup label="Toiles sur châssis">
+                <option value="200x200">Toile 20 × 20 cm</option>
+                <option value="240x300">Toile 24 × 30 cm</option>
+                <option value="300x300">Toile 30 × 30 cm</option>
+                <option value="300x400">Toile 30 × 40 cm</option>
+                <option value="400x400">Toile 40 × 40 cm</option>
+                <option value="400x500">Toile 40 × 50 cm</option>
+              </optgroup>
+              <optgroup label="Papier">
+                <option value="148x210">A5 · 14,8 × 21 cm</option>
+                <option value="210x297">A4 · 21 × 29,7 cm</option>
+                <option value="297x420">A3 · 29,7 × 42 cm</option>
+              </optgroup>
+            </select>
+          </label>
+          <div class="sizerow">
+            <label class="field">Largeur (mm)<input type="number" id="wmm" min="5" max="1500" step="1" value="100"></label>
+            <button class="lockbtn" id="lockRatio" aria-pressed="true" title="Proportions de l'image gardées"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></svg></button>
+            <label class="field">Hauteur (mm)<input type="number" id="hmm" min="5" max="1500" step="1"></label>
+          </div>
+          <p class="hint" id="lockHint">Proportions gardées : change la largeur ou la hauteur, l'autre suit. Touche le maillon pour une taille exacte (l'image est alors recadrée).</p>
+          <div class="two">
+            <label class="field">Marge autour (mm)<input type="number" id="marg" min="0" max="50" step="1" value="0"></label>
+            <div class="field">Orientation<button class="btn" id="fmtRot" type="button">Pivoter le format ⟲</button></div>
+          </div>
+        </div>
         <div class="two">
-          <label class="field">Largeur (mm)<input type="number" id="wmm" min="5" max="500" step="1" value="100"></label>
           <label class="field" id="dpiField">Résolution
             <select id="dpi">
               <option value="254">254 DPI · 10 l/mm</option>
@@ -451,6 +557,10 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
         <div class="two">
           <label class="field">Puissance du laser (W)<input type="number" id="lw" min="1" max="300" step="1" value="20"></label>
           <label class="field">Vitesse max machine (mm/s)<input type="number" id="lvmax" min="10" max="10000" step="10" value="600"></label>
+        </div>
+        <div class="two">
+          <label class="field">Zone de travail X (mm)<input type="number" id="lax" min="10" max="3000" step="1" value="498"></label>
+          <label class="field">Zone de travail Y (mm)<input type="number" id="lay" min="10" max="3000" step="1" value="319"></label>
         </div>
         <div class="two">
           <label class="field">Rendu voulu
@@ -484,7 +594,50 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
     </details>
     <details class="card" open>
       <summary>Matériau</summary>
-      <div class="body"><div class="mats" id="mats"></div></div>
+      <div class="body">
+        <div class="supsel"><select id="supSel" aria-label="Mes supports enregistrés"></select><button class="btn sm" id="supAll">Gérer</button></div>
+        <div class="mats" id="mats"></div>
+        <div class="matcustom" id="matCustom" hidden><span>Support ajouté par toi</span><button class="btn sm" id="mfEdit">Modifier</button></div>
+        <div class="matform" id="matForm" hidden>
+          <b id="mfTitle">Nouveau support de gravure</b>
+          <label class="field">Nom<input id="mfName" maxlength="40" placeholder="Ex. : Bambou, Verre peint, Galet, Planche à découper"></label>
+          <label class="field">Il ressemble le plus à
+            <select id="mfLike">
+              <option value="peuplier">Bois tendre, contreplaqué</option>
+              <option value="boisdur">Bois dur (chêne, noyer, bambou…)</option>
+              <option value="mdf">MDF, aggloméré</option>
+              <option value="ardoise">Ardoise, pierre, galet</option>
+              <option value="carreau">Céramique ou verre peint</option>
+              <option value="acry">Acrylique ou plastique opaque</option>
+              <option value="cuir">Cuir, simili</option>
+              <option value="alu">Métal anodisé ou peint</option>
+              <option value="liege">Liège</option>
+              <option value="carton">Carton, papier</option>
+              <option value="toile">Tissu, toile, jean</option>
+              <option value="toilenoir">Surface peinte en noir</option>
+            </select>
+          </label>
+          <div class="two">
+            <label class="field">Couleur du support<input type="color" id="mfBase" value="#e3c79a"></label>
+            <label class="field">Couleur de la marque<input type="color" id="mfBurn" value="#4a2e17"></label>
+          </div>
+          <label class="field">Le laser rend la marque
+            <select id="mfInv">
+              <option value="0">Plus foncée que le support (bois, cuir, carton…)</option>
+              <option value="1">Plus claire que le support (ardoise, peinture, anodisé…)</option>
+            </select>
+          </label>
+          <label class="field">Tramage conseillé<select id="mfAlgo"></select></label>
+          <div class="two">
+            <label class="field">Vitesse qui marche (mm/s)<input type="number" id="mfV" min="1" max="10000" placeholder="facultatif"></label>
+            <label class="field">Puissance qui marche (%)<input type="number" id="mfP" min="1" max="100" placeholder="facultatif"></label>
+          </div>
+          <p class="hint" id="mfHint">Si tu connais déjà un bon réglage pour ta machine actuelle, entre-le : le calcul de vitesse et de puissance partira de là. Sinon, il part du support le plus proche.</p>
+          <label class="autochk"><input type="checkbox" id="mfCut"> Ce support peut aussi être découpé</label>
+          <p class="hint" id="mfErr" style="color:var(--err)"></p>
+          <div class="tools"><button class="btn primary" id="mfSave" style="width:auto;padding:9px 14px;font-size:.84rem">Ajouter le support</button><button class="btn" id="mfCancel">Annuler</button><button class="btn danger" id="mfDel" hidden>Supprimer ce support</button></div>
+        </div>
+      </div>
     </details>
 
     <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
@@ -543,6 +696,15 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
       <select id="sendTo" aria-label="Logiciel du graveur"></select>
       <button class="btn" id="sendBtn">Envoyer vers le logiciel</button>
     </div>
+    <div class="libbar">
+      <button class="btn" id="saveSupport">★ Enregistrer ces réglages comme support</button>
+      <label class="autochk"><input type="checkbox" id="keepCopy" checked> Garder une copie de chaque export dans Mes gravures</label>
+    </div>
+    <div class="supform" id="supForm" hidden>
+      <input class="lib-in" id="supName" placeholder="Nom du support (ex. Toile noire 30×40 Action)">
+      <textarea class="lib-in" id="supNote" rows="2" placeholder="Note : mise au point au centre, 2 passes, marque de peinture…"></textarea>
+      <div class="tools"><button class="btn primary" id="supOk" style="width:auto;padding:9px 14px;font-size:.84rem">Enregistrer le support</button><button class="btn" id="supCancel">Annuler</button></div>
+    </div>
     <p class="status" id="status" role="status"></p>
     <button class="btn ghost" id="showFile" hidden style="align-self:center">Afficher dans l'Explorateur</button>
     <div id="fallback" hidden></div>
@@ -575,6 +737,23 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
     </div>
     <p class="msg" id="planMsg" role="status"></p>
     <button class="btn ghost close" id="closePlan">Fermer</button>
+  </div>
+</div>
+
+<div class="lib" id="lib" hidden>
+  <div class="lib-panel" role="dialog" aria-modal="true" aria-labelledby="libTitle">
+    <div class="lib-head">
+      <h3 id="libTitle">Bibliothèque</h3>
+      <div class="seg lib-tabs" role="group" aria-label="Rubrique">
+        <button id="tabSup" aria-pressed="true">Mes supports <span id="nSup"></span></button>
+        <button id="tabGrav" aria-pressed="false">Mes gravures <span id="nGrav"></span></button>
+      </div>
+      <button class="btn" id="libClose">Fermer</button>
+    </div>
+    <input class="lib-in" id="libSearch" placeholder="Rechercher : nom, matériau, note…" autocomplete="off">
+    <p class="hint" id="libNote"></p>
+    <div class="lib-list" id="libSupView"></div>
+    <div class="lib-grid" id="libGravView" hidden></div>
   </div>
 </div>
 <script>
@@ -640,7 +819,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
   function loadFile(f) {
     if (!f || !f.type.startsWith("image/")) { setStatus("Ce fichier n'est pas une image. Choisis un JPG, PNG ou WebP.", true); return; }
     const url = URL.createObjectURL(f), img = new Image();
-    img.onload = () => { src = img; rot = 0; flip = false; strokes = []; eraseInfo(); resetBox(); $("srcName").textContent = f.name || "Image collée"; setStatus(""); if ($("autoOn").checked) autoTune(); else schedule(); };
+    img.onload = () => { src = img; srcBlob = f; rot = 0; flip = false; strokes = []; eraseInfo(); resetBox(); $("srcName").textContent = f.name || "Image collée"; setStatus(""); if ($("autoOn").checked) autoTune(); else schedule(); };
     img.onerror = () => setStatus("Impossible de lire cette image. Essaie un autre format.", true);
     img.src = url;
   }
@@ -927,7 +1106,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
     ["bri","con","gam","shp","thr","spk","tol"].forEach(k => $("o" + k[0].toUpperCase() + k.slice(1)).textContent = fmt[k](+els[k].value));
     const svg = mode === "svg";
     $("thrRow").hidden = !(svg || els.algo.value === "threshold");
-    $("algoField").hidden = svg; $("serpLbl").hidden = svg; $("dpiField").hidden = svg; $("roDpiWrap").hidden = svg;
+    $("algoField").hidden = svg; if ($("styleField")) { $("styleField").hidden = svg; $("styleHint").hidden = svg; } $("serpLbl").hidden = svg; $("dpiField").hidden = svg; $("roDpiWrap").hidden = svg;
     $("spkRow").hidden = !svg; $("smoothLbl").hidden = !svg; $("outlineLbl").hidden = !svg;
     $("tolRow").hidden = !els.bgOn.checked;
     if (cropping || (typeof erasing !== "undefined" && erasing)) return;
@@ -1054,7 +1233,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
     const t0 = performance.now(), svg = mode === "svg";
     const o = getOrient();
     const sx = box.x * o.width, sy = box.y * o.height, sw = Math.max(1, box.w * o.width), sh = Math.max(1, box.h * o.height);
-    const dpi = +els.dpi.value, wmm = Math.min(500, Math.max(5, +els.wmm.value || 100));
+    const dpi = +els.dpi.value, wmm = Math.min(1500, Math.max(5, +els.wmm.value || 100));
     let W = Math.round(wmm / 25.4 * dpi), H = Math.round(W * sh / sw);
     const cap = svg ? 1600 : 4200;
     if (svg) { W = cap; H = Math.round(W * sh / sw); }
@@ -1091,6 +1270,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
       }
       L = t;
     }
+    if (styleBlur > 0 && mode !== "svg") L = boxBlur(L, W, H, Math.max(1, Math.round(styleBlur * W / 1600)));
     const b = +els.bri.value * 2.55, cv = +els.con.value * 2.55, f = (259*(cv+255)) / (255*(259-cv)), gm = +els.gam.value / 100;
     const inv = els.inv.checked, bgw = els.bgw.checked;
     for (let i = 0; i < N; i++) {
@@ -1137,7 +1317,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
     $("roMm").textContent = `${wmm.toFixed(1).replace(".0","")} × ${realH.toFixed(1)} mm`;
     $("roDpi").textContent = `${dpi} DPI`;
     $("roMs").textContent = `calcul ${Math.round(performance.now() - t0)} ms`;
-    laserCalc();
+    laserCalc(); syncSize();
     $("fallback").hidden = true;
   }
 
@@ -1286,9 +1466,9 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
     carreau: { v: 200, p: 30, cut: null },              acry: { v: 150, p: 40, cut: { t: 3, v: 1.5 } },
     cuir: { v: 150, p: 30, cut: { t: 2, v: 8 } },       alu: { v: 150, p: 60, cut: null },
     liege: { v: 300, p: 25, cut: { t: 3, v: 10 } },     carton: { v: 200, p: 30, cut: { t: 2, v: 20 } },
-    toilenoir: { v: 300, p: 20, cut: null },            toile: { v: 250, p: 30, cut: { t: .5, v: 20 } },
+    toilenoir: { v: 250, p: 35, cut: null },            toile: { v: 250, p: 30, cut: { t: .5, v: 20 } },
   };
-  const TECH = { diode: { w: 20, vmax: 600, minP: 5, cutP: 100, name: "laser diode" }, co2: { w: 50, vmax: 800, minP: 10, cutP: 70, name: "laser CO2" }, fibre: { w: 30, vmax: 7000, minP: 5, cutP: 100, name: "laser fibre" } };
+  const TECH = { diode: { ax: 498, ay: 319, w: 20, vmax: 600, minP: 5, cutP: 100, name: "laser diode" }, co2: { ax: 500, ay: 300, w: 50, vmax: 800, minP: 10, cutP: 70, name: "laser CO2" }, fibre: { ax: 110, ay: 110, w: 30, vmax: 7000, minP: 5, cutP: 100, name: "laser fibre" } };
   const EFF = {
     co2: { wood: 1.6, mdf: 1.6, leather: 1.6, cork: 1.6, paper: 1.6, canvas: 1.4, acrylic: 2, slate: 1, tile: 1, metal: .7 },
     fibre: { wood: .35, mdf: .35, leather: .5, cork: .3, paper: .3, canvas: .4, acrylic: .25, slate: 1.1, tile: .9, metal: 3 },
@@ -1309,18 +1489,23 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
   function machineFields(tech) {
     if ($("lw").dataset.tech === tech) return;
     const st = lsGet("lp-mach-" + tech, null) || {};
-    $("lw").value = st.w || TECH[tech].w; $("lvmax").value = st.vmax || TECH[tech].vmax; $("lw").dataset.tech = tech;
+    $("lw").value = st.w || TECH[tech].w; $("lvmax").value = st.vmax || TECH[tech].vmax; $("lax").value = st.ax || TECH[tech].ax; $("lay").value = st.ay || TECH[tech].ay; $("lw").dataset.tech = tech;
   }
   function calKey(tech, W, job) { return `lp-cal-${tech}-${W}-${mat}-${job === "cut" ? "cut" : "eng"}`; }
   function laserCalc() {
     if (!$("pwV")) return;
+    $("matCustom").hidden = !MATS[mat]?.custom;
     const tech = $("machine").value || "diode"; machineFields(tech);
     const T = TECH[tech], W = Math.max(1, +$("lw").value || T.w), vmax = Math.max(10, +$("lvmax").value || T.vmax);
     const job = curJob(), ref = LREF[mat] || LREF.peuplier, kind = KIND[mat] || "wood";
     const eff = (EFF[tech] || {})[kind] || 1, Weff = W * eff, inten = +$("lint").value || 1;
     const warn = [];
     if (WARN[tech]?.[mat]) warn.push(WARN[tech][mat]);
+    if (mat === "toilenoir" || mat === "toile") warn.push("Toile sur châssis : le centre n'est pas soutenu et s'affaisse, donc il sort de la mise au point et la gravure devient pâle. Glisse un support plat sous la toile (carton, planche, livres) pour qu'elle soit bien tendue et à plat, puis fais la mise au point au centre, pas sur le bord.");
+    if (mat === "toilenoir") warn.push("Peinture épaisse : si le blanc n'apparaît pas assez, ajoute une 2e passe plutôt que de monter la puissance au-delà de 50 %.");
     if (tech === "fibre" && !["slate", "tile", "metal"].includes(kind)) warn.push(WARN.fibre._organic);
+    { const ax = +$("lax").value, ay = +$("lay").value, gw = Math.min(1500, Math.max(5, +els.wmm.value || 100)), gh = outW ? gw * outH / outW : gw;
+      if (ax > 0 && ay > 0 && !(gw <= ax && gh <= ay)) warn.push(gh <= ax && gw <= ay ? `Pour tenir dans la zone de travail (${ax} × ${ay} mm), tourne la pièce de 90° dans le logiciel du graveur.` : `${Math.round(gw)} × ${Math.round(gh)} mm dépasse la zone de travail de ta machine (${ax} × ${ay} mm) : réduis la taille ou grave en plusieurs fois.`); }
     $("lthickF").hidden = job !== "cut";
     const jobName = { photo: "Gravure d'image tramée", gray: "Gravure en niveaux de gris", fill: "Gravure remplie (SVG)", cut: "Découpe (contour SVG)" }[job];
     $("pwJob").innerHTML = `${jobName} <em>· ${MATS[mat].name} · ${T.name} ${W} W</em>`;
@@ -1363,7 +1548,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
       const vs = [.75, 1, 1.25].map(k => r5(Math.min(vmax, v * k)));
       $("pwGrid").textContent = `Fais une grille de test (XCS : « Matrice de test matériau », LightBurn : « Outils laser → Test de matériau ») :\nPuissance ${ps[0]} → ${ps[4]} % · Vitesse ${vs[0]} → ${vs[2]} mm/s · ${(dpi / 25.4).toFixed(1)} lignes/mm\nGarde la case la plus fidèle à l'aperçu, puis enregistre-la ci-dessous.` + (job === "gray" ? `\nNiveaux de gris : puissance mini ≈ ${Math.max(1, Math.round(p * .15))} %.` : "");
       // durée estimée
-      const wmm = Math.min(500, Math.max(5, +els.wmm.value || 100)), hmm = outW ? wmm * outH / outW : wmm;
+      const wmm = Math.min(1500, Math.max(5, +els.wmm.value || 100)), hmm = outW ? wmm * outH / outW : wmm;
       const rows = hmm * dpi / 25.4, t = rows * (wmm / v + 0.08);
       $("pwTime").textContent = `Durée estimée de la gravure : environ ${fmtT(t)} pour ${wmm.toFixed(0)} × ${hmm.toFixed(0)} mm.`;
     }
@@ -1375,8 +1560,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
     window.__laserSettings = { v: r5(v), p: Math.round(p), passes };
   }
   function showWarn(w) { $("pwWarn").hidden = !w.length; $("pwWarn").textContent = w.join(" "); }
-  ["lw", "lvmax", "lthick"].forEach(id => $(id).addEventListener("input", () => {
-    const tech = $("machine").value; lsSet("lp-mach-" + tech, { w: +$("lw").value, vmax: +$("lvmax").value }); laserCalc();
+  ["lw", "lvmax", "lthick", "lax", "lay"].forEach(id => $(id).addEventListener("input", () => {
+    const tech = $("machine").value; lsSet("lp-mach-" + tech, { w: +$("lw").value, vmax: +$("lvmax").value, ax: +$("lax").value, ay: +$("lay").value }); laserCalc();
   }));
   $("lint").addEventListener("change", laserCalc);
   $("machine").addEventListener("change", () => { $("lw").dataset.tech = ""; laserCalc(); });
@@ -1387,6 +1572,370 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
     laserCalc();
   };
   $("calForget").onclick = () => { lsSet(calKey($("machine").value, +$("lw").value, curJob()), null); laserCalc(); };
+
+
+  // ---------- Bibliothèque : mes supports (réglages) et mes gravures (fichiers)
+  const LIB = (() => {
+    let dbp = null;
+    const open = () => dbp || (dbp = new Promise((res, rej) => {
+      try {
+        const r = indexedDB.open("laserpix", 1);
+        r.onupgradeneeded = () => { const d = r.result; d.createObjectStore("supports", { keyPath: "id" }); d.createObjectStore("gravures", { keyPath: "id" }); };
+        r.onsuccess = () => res(r.result); r.onerror = () => { dbp = null; rej(r.error); };
+      } catch (e) { dbp = null; rej(e); }
+    }));
+    const tx = async (store, m, fn) => { const d = await open(); return new Promise((res, rej) => { const t = d.transaction(store, m), q = fn(t.objectStore(store)); t.oncomplete = () => res(q.result); t.onerror = () => rej(t.error); t.onabort = () => rej(t.error); }); };
+    return { all: s => tx(s, "readonly", st => st.getAll()), put: (s, v) => tx(s, "readwrite", st => st.put(v)), del: (s, id) => tx(s, "readwrite", st => st.delete(id)) };
+  })();
+  const esc = t => String(t ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const newId = p => p + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  const VKEYS = ["bri", "con", "gam", "shp", "thr", "spk", "tol", "wmm", "dpi", "algo", "ratio", "shape"], CKEYS = ["inv", "serp", "bgw", "bgOn", "smooth", "outline"];
+  let srcBlob = null, supports = [], gravures = [], libTab = "sup";
+  function captureSettings() {
+    return { mat, mode, machine: $("machine").value, lw: +$("lw").value, lvmax: +$("lvmax").value, lint: $("lint").value, lthick: +$("lthick").value,
+      v: Object.fromEntries(VKEYS.map(k => [k, els[k].value])), c: Object.fromEntries(CKEYS.map(k => [k, els[k].checked])),
+      laser: window.__laserSettings ? { ...window.__laserSettings } : null,
+      size: { locked: sizeLocked, fmt: $("fmt").value, marg: $("marg").value, w: +els.wmm.value, h: +$("hmm").value } };
+  }
+  function applySettings(st, keepBox) {
+    if (!st) return;
+    if (st.machine && TECH[st.machine]) { $("machine").value = st.machine; try { localStorage.setItem("lp-machine", st.machine); } catch (e) {} }
+    if (st.mode && st.mode !== mode) setMode(st.mode);
+    if (st.mat && MATS[st.mat]) { mat = st.mat; document.querySelectorAll(".mat").forEach(b => b.setAttribute("aria-pressed", b.id === "mat-" + mat)); }
+    VKEYS.forEach(k => { if (st.v && st.v[k] != null) els[k].value = st.v[k]; });
+    CKEYS.forEach(k => { if (st.c && st.c[k] != null) els[k].checked = st.c[k]; });
+    if (st.lw) $("lw").value = st.lw; if (st.lvmax) $("lvmax").value = st.lvmax; $("lint").value = st.lint || "1"; if (st.lthick) $("lthick").value = st.lthick;
+    $("lw").dataset.tech = $("machine").value;
+    if (st.laser && st.laser.v > 0 && st.laser.p > 0) {
+      const job = curJob();
+      lsSet(calKey($("machine").value, +$("lw").value, job), job === "cut"
+        ? { v: st.laser.v, p: st.laser.p, t: +$("lthick").value, passes: st.laser.passes || 1 }
+        : { v: st.laser.v / (+$("lint").value || 1), p: st.laser.p, dpi: mode === "svg" ? 254 : +els.dpi.value });
+    }
+    if (st.size) {
+      $("fmt").value = st.size.fmt || ""; $("marg").value = st.size.marg || 0;
+      const m = (st.size.fmt || "").match(/^(\d+)x(\d+)/); fmtW = m ? +m[1] : 0; fmtH = m ? +m[2] : 0;
+      setLock(st.size.locked !== false);
+      if (st.size.locked === false && st.size.w && st.size.h) exactSize(st.size.w, st.size.h, keepBox);
+    }
+    drawBox(); updCropSub(); schedule();
+  }
+  function meta(st) {
+    if (!st) return "";
+    const parts = [MATS[st.mat]?.name || "", `${TECH[st.machine]?.name || "laser"} ${st.lw || ""} W`];
+    if (st.laser) parts.push(`${st.laser.v} mm/s · ${st.laser.p} %` + (st.laser.passes > 1 ? ` · ${st.laser.passes} passes` : ""));
+    parts.push(st.mode === "svg" ? (st.c?.outline ? "SVG découpe" : "SVG") : `${st.v?.dpi} DPI`);
+    parts.push(`${st.v?.wmm} mm`);
+    return parts.filter(Boolean).join(" · ");
+  }
+  async function libLoad() {
+    try {
+      supports = (await LIB.all("supports")).sort((a, b) => b.updated - a.updated);
+      gravures = (await LIB.all("gravures")).sort((a, b) => b.date - a.date);
+    } catch (e) { supports = []; gravures = []; libMsg("La bibliothèque n'est pas disponible ici : le stockage du navigateur est bloqué.", true); }
+    fillSupSel(); renderLib();
+  }
+  function libMsg(t, err) { const n = $("libNote"); n.textContent = t || ""; n.style.color = err ? "var(--err)" : "var(--ok)"; }
+  function fillSupSel() {
+    $("supSel").innerHTML = `<option value="">${supports.length ? `Mes supports (${supports.length}) : choisir…` : "Aucun support enregistré"}</option>` + supports.map(s => `<option value="${esc(s.id)}">${esc(s.name)}</option>`).join("");
+  }
+  function renderLib() {
+    const q = $("libSearch").value.trim().toLowerCase(), ok = t => !q || t.toLowerCase().includes(q);
+    $("nSup").textContent = supports.length ? `(${supports.length})` : ""; $("nGrav").textContent = gravures.length ? `(${gravures.length})` : "";
+    $("tabSup").setAttribute("aria-pressed", libTab === "sup"); $("tabGrav").setAttribute("aria-pressed", libTab === "grav");
+    $("libSupView").hidden = libTab !== "sup"; $("libGravView").hidden = libTab !== "grav";
+    const sl = supports.filter(s => ok(`${s.name} ${s.note || ""} ${meta(s.settings)}`));
+    $("libSupView").innerHTML = sl.length ? sl.map(s => `<div class="sup" data-id="${esc(s.id)}">${picHtml(s, s.name)}<div style="min-width:0"><div class="nm">${esc(s.name)}</div><div class="mt">${esc(meta(s.settings))}</div>${s.note ? `<div class="nt">${esc(s.note)}</div>` : ""}</div><div class="act"><button class="btn sm" data-a="use">Utiliser</button><button class="btn sm" data-a="upd">Remplacer par les réglages actuels</button><button class="btn sm" data-a="edit">Modifier</button><button class="btn sm" data-a="photo">${s.photo ? "Changer la photo" : "Ajouter une photo"}</button>${s.photo ? '<button class="btn sm" data-a="unphoto">Retirer la photo</button>' : ""}<button class="btn sm danger" data-a="del">Supprimer</button></div></div>`).join("")
+      : `<div class="empty">${supports.length ? "Aucun support ne correspond à ta recherche." : "Aucun support enregistré pour l'instant.<br>Règle ton image et ton matériau, puis touche « ★ Enregistrer ces réglages comme support » sous le bouton d'export."}</div>`;
+    const gl = gravures.filter(g => ok(`${g.name} ${g.matName || ""} ${g.srcName || ""}`));
+    $("libGravView").innerHTML = gl.length ? gl.map(g => `<div class="grv" data-id="${esc(g.id)}">${picHtml(g, g.name)}<div class="in"><div class="nm">${esc(g.name)}</div><div class="mt">${esc(new Date(g.date).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" }))} · ${esc(g.matName)} · ${esc(g.size)}${g.settings?.laser ? ` · ${g.settings.laser.v} mm/s · ${g.settings.laser.p} %` : ""}</div><div class="act"><button class="btn sm" data-a="open">Rouvrir</button><button class="btn sm" data-a="save">Enregistrer le fichier</button><button class="btn sm" data-a="photo">${g.photo ? "Changer la photo" : "Photo du résultat"}</button>${g.photo ? '<button class="btn sm" data-a="unphoto">Retirer</button>' : ""}<button class="btn sm danger" data-a="del">Supprimer</button></div></div></div>`).join("")
+      : `<div class="empty">${gravures.length ? "Aucune gravure ne correspond à ta recherche." : "Aucune gravure gardée pour l'instant.<br>Chaque fichier exporté est ajouté ici automatiquement, avec sa photo d'origine et ses réglages. Ajoute ensuite une photo du résultat réel pour le retrouver d'un coup d'œil."}</div>`;
+  }
+  const openLib = tab => { if (tab) libTab = tab; libMsg(""); $("lib").hidden = false; libLoad(); };
+  const closeLib = () => { $("lib").hidden = true; };
+  $("libBtn").onclick = () => openLib();
+  $("supAll").onclick = () => openLib("sup");
+  $("libClose").onclick = closeLib;
+  $("lib").addEventListener("click", e => { if (e.target.id === "lib") closeLib(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("lib").hidden) closeLib(); });
+  $("tabSup").onclick = () => { libTab = "sup"; renderLib(); };
+  $("tabGrav").onclick = () => { libTab = "grav"; renderLib(); };
+  $("libSearch").addEventListener("input", renderLib);
+  $("supSel").addEventListener("change", e => {
+    const s = supports.find(x => x.id === e.target.value); e.target.value = "";
+    if (s) { applySettings(s.settings); setStatus(`Support « ${s.name} » appliqué.`); }
+  });
+  try { $("keepCopy").checked = localStorage.getItem("lp-keep") !== "0"; } catch (e) {}
+  $("keepCopy").addEventListener("change", () => { try { localStorage.setItem("lp-keep", $("keepCopy").checked ? "1" : "0"); } catch (e) {} });
+
+  // Enregistrer un support
+  $("saveSupport").onclick = () => { $("supForm").hidden = false; $("supName").value = `${MATS[mat].name} · ${new Date().toLocaleDateString("fr-FR")}`; $("supName").focus(); $("supName").select(); };
+  $("supCancel").onclick = () => { $("supForm").hidden = true; };
+  $("supOk").onclick = async () => {
+    const name = $("supName").value.trim(); if (!name) { $("supName").focus(); return; }
+    const now = Date.now(), rec = { id: newId("s"), name, note: $("supNote").value.trim(), created: now, updated: now, settings: captureSettings(), thumb: thumbOf() };
+    try { await LIB.put("supports", rec); $("supForm").hidden = true; $("supNote").value = ""; setStatus(`Support « ${name} » enregistré. Retrouve-le dans Matériau ou dans la Bibliothèque.`); libLoad(); }
+    catch (e) { setStatus("Impossible d'enregistrer : le stockage n'est pas disponible ici.", true); }
+  };
+  $("libSupView").addEventListener("click", async e => {
+    const b = e.target.closest("button[data-a]"); if (!b) return;
+    const el = b.closest(".sup"), s = supports.find(x => x.id === el.dataset.id); if (!s) return;
+    const a = b.dataset.a;
+    try {
+      if (await picAction(a, "supports", s)) return;
+      if (a === "use") { applySettings(s.settings); closeLib(); setStatus(`Support « ${s.name} » appliqué.`); }
+      else if (a === "upd") { if (b.dataset.ok !== "1") { b.dataset.ok = "1"; b.textContent = "Confirmer le remplacement"; return; } s.settings = captureSettings(); s.thumb = thumbOf(); s.updated = Date.now(); await LIB.put("supports", s); libMsg(`« ${s.name} » mis à jour.`); libLoad(); }
+      else if (a === "del") { if (b.dataset.ok !== "1") { b.dataset.ok = "1"; b.textContent = "Confirmer la suppression"; return; } await LIB.del("supports", s.id); libMsg(`« ${s.name} » supprimé.`); libLoad(); }
+      else if (a === "edit") {
+        el.innerHTML = `<div style="display:flex;flex-direction:column;gap:6px;min-width:0"><input class="lib-in" data-f="name" value="${esc(s.name)}"><textarea class="lib-in" data-f="note" rows="2" placeholder="Note : mise au point, passes, marque de peinture…">${esc(s.note || "")}</textarea></div><div class="act"><button class="btn sm" data-a="saveedit">Enregistrer</button><button class="btn sm" data-a="cancel">Annuler</button></div>`;
+        el.querySelector("[data-f=name]").focus();
+      }
+      else if (a === "saveedit") { s.name = el.querySelector("[data-f=name]").value.trim() || s.name; s.note = el.querySelector("[data-f=note]").value.trim(); s.updated = Date.now(); await LIB.put("supports", s); libLoad(); }
+      else if (a === "cancel") renderLib();
+    } catch (err) { libMsg("Action impossible : le stockage n'est pas disponible.", true); }
+  });
+
+
+  function thumbOf(max) {
+    const t = $("cOut"), k = Math.min(1, (max || 360) / Math.max(t.width, t.height, 1)), c = document.createElement("canvas");
+    c.width = Math.max(1, Math.round(t.width * k)); c.height = Math.max(1, Math.round(t.height * k));
+    c.getContext("2d").drawImage(t, 0, 0, c.width, c.height);
+    return c.toDataURL("image/jpeg", .82);
+  }
+  function photoFromFile(f) {
+    return new Promise((res, rej) => {
+      if (!f || !f.type.startsWith("image/")) return rej(new Error("type"));
+      const u = URL.createObjectURL(f), img = new Image();
+      img.onload = () => { const k = Math.min(1, 900 / Math.max(img.naturalWidth, img.naturalHeight)), c = document.createElement("canvas"); c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k); c.getContext("2d").drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(u); res(c.toDataURL("image/jpeg", .85)); };
+      img.onerror = () => { URL.revokeObjectURL(u); rej(new Error("read")); };
+      img.src = u;
+    });
+  }
+  // image affichée : photo du résultat réel si elle existe, sinon l'aperçu ; un clic alterne entre les deux
+  const showReal = new Set();
+  function picHtml(r, label) {
+    const usePhoto = r.photo && !showReal.has(r.id + ":preview");
+    const src = usePhoto ? r.photo : r.thumb;
+    const sw = MATS[r.settings?.mat]?.base || "#333";
+    const tag = r.photo ? (usePhoto ? '<span class="tag real">Résultat réel</span>' : '<span class="tag">Aperçu</span>') : "";
+    return `<button class="pic" data-a="pic" title="${r.photo ? "Toucher pour alterner photo réelle / aperçu" : "Ajouter une photo du résultat"}" aria-label="Image de ${esc(label)}">${src ? `<img src="${src}" alt="" loading="lazy"${usePhoto ? ' class="real"' : ""}>` : `<span class="ph" style="background:${esc(sw)}">${esc(MATS[r.settings?.mat]?.name || "")}</span>`}${tag}</button>`;
+  }
+  const photoInput = Object.assign(document.createElement("input"), { type: "file", accept: "image/*", hidden: true });
+  document.body.appendChild(photoInput);
+  let photoTarget = null;
+  photoInput.addEventListener("change", async () => {
+    const f = photoInput.files[0]; photoInput.value = ""; if (!photoTarget || !f) return;
+    const { store, rec } = photoTarget; photoTarget = null;
+    try { rec.photo = await photoFromFile(f); showReal.delete(rec.id + ":preview"); await LIB.put(store, rec); libMsg("Photo du résultat ajoutée."); libLoad(); }
+    catch (e) { libMsg("Cette image n'a pas pu être lue. Choisis un JPG ou un PNG.", true); }
+  });
+  async function picAction(a, store, rec) {
+    if (a === "pic") {
+      if (!rec.photo) { photoTarget = { store, rec }; photoInput.click(); return true; }
+      const k = rec.id + ":preview"; showReal.has(k) ? showReal.delete(k) : showReal.add(k); renderLib(); return true;
+    }
+    if (a === "photo") { photoTarget = { store, rec }; photoInput.click(); return true; }
+    if (a === "unphoto") { delete rec.photo; await LIB.put(store, rec); libMsg("Photo retirée."); libLoad(); return true; }
+    return false;
+  }
+
+  // Garder chaque fichier exporté
+  async function addToLibrary(fileName, blob) {
+    if (!$("keepCopy").checked) return;
+    try {
+      const wmm = Math.min(1500, Math.max(5, +els.wmm.value || 100)), hmm = outW ? wmm * outH / outW : wmm;
+      await LIB.put("gravures", { id: newId("g"), date: Date.now(), name: fileName.replace(/\.[^.]+$/, "").replace(/_/g, " "), fileName, file: blob,
+        original: src ? srcBlob : null, srcName: $("srcName").textContent, thumb: thumbOf(), matName: MATS[mat].name,
+        size: `${Math.round(wmm)} × ${Math.round(hmm)} mm`, settings: captureSettings(), box: { ...box }, strokes: JSON.parse(JSON.stringify(strokes)), eMode, rot, flip });
+      libLoad();
+    } catch (e) {}
+  }
+  function reopen(g) {
+    if (!g.original) { applySettings(g.settings); closeLib(); setStatus(`Réglages de « ${g.name} » appliqués.`); return; }
+    const img = new Image();
+    img.onload = () => {
+      src = img; srcBlob = g.original; rot = g.rot || 0; flip = !!g.flip; orient = null;
+      box = g.box ? { ...g.box } : { x: 0, y: 0, w: 1, h: 1 };
+      strokes = g.strokes ? JSON.parse(JSON.stringify(g.strokes)) : []; eMode = g.eMode || "fill";
+      $("eFill").setAttribute("aria-pressed", eMode === "fill"); $("eBlank").setAttribute("aria-pressed", eMode === "blank");
+      $("srcName").textContent = g.srcName || g.name; eraseInfo();
+      applySettings(g.settings, true); closeLib(); setStatus(`« ${g.name} » rouvert avec sa photo et ses réglages.`);
+    };
+    img.onerror = () => libMsg("Impossible de rouvrir cette image.", true);
+    img.src = URL.createObjectURL(g.original);
+  }
+  async function resaveFile(g) {
+    if (window.laser?.resave) {
+      const r = await window.laser.resave(g.fileName, new Uint8Array(await g.file.arrayBuffer()));
+      if (r && r.result === "saved") libMsg("Enregistré : " + r.path.split(/[\\/]/).pop());
+      return;
+    }
+    let dl = null; try { dl = window.claude?.use ? await window.claude.use("downloads") : null; } catch (e) {}
+    if (!dl) { libMsg("L'enregistrement n'est pas disponible dans cette vue.", true); return; }
+    try { await dl.save({ filename: g.fileName, data: g.file }); libMsg("Enregistré : " + g.fileName); }
+    catch (e) { if (!e || e.code !== "declined") libMsg("Enregistrement impossible. Réessaie.", true); }
+  }
+  $("libGravView").addEventListener("click", async e => {
+    const b = e.target.closest("button[data-a]"); if (!b) return;
+    const el = b.closest(".grv"), g = gravures.find(x => x.id === el.dataset.id); if (!g) return;
+    const a = b.dataset.a;
+    try {
+      if (await picAction(a, "gravures", g)) return;
+      if (a === "open") reopen(g);
+      else if (a === "save") resaveFile(g);
+      else if (a === "del") { if (b.dataset.ok !== "1") { b.dataset.ok = "1"; b.textContent = "Confirmer"; return; } await LIB.del("gravures", g.id); libMsg(`« ${g.name} » supprimé.`); libLoad(); }
+    } catch (err) { libMsg("Action impossible : le stockage n'est pas disponible.", true); }
+  });
+  libLoad();
+
+
+  // ---------- Supports de gravure ajoutés par l'utilisateur
+  const loadCustom = () => { try { return JSON.parse(localStorage.getItem("lp-mats") || "[]"); } catch (e) { return []; } };
+  const saveCustomList = l => { try { localStorage.setItem("lp-mats", JSON.stringify(l)); return true; } catch (e) { return false; } };
+  let mfEditing = null;
+  [...els.algo.options].forEach(o => $("mfAlgo").appendChild(o.cloneNode(true)));
+  function registerCustom(r) {
+    const like = MATS[r.like] && !MATS[r.like].custom ? r.like : "peuplier", L = MATS[like], ref = LREF[like];
+    MATS[r.id] = { name: r.name, base: r.base, burn: r.burn, custom: true, like, s: { ...L.s, inv: !!r.inv, algo: r.algo || L.s.algo, bgw: !r.inv } };
+    KIND[r.id] = KIND[like] || "wood";
+    AUTO_TARGET[r.id] = r.inv ? .48 : (AUTO_TARGET[like] || .58);
+    const lr = { v: ref.v, p: ref.p, cut: r.cut ? (ref.cut || { t: 3, v: 5 }) : null };
+    if (r.v > 0 && r.p > 0) {
+      const eff = (EFF[r.tech] || {})[KIND[r.id]] || 1, d = 25.4 / (r.dpi || 254);
+      const E = (r.p / 100 * (r.w || 20) * eff) / (r.v * d), pr = Math.min(85, Math.max(5, r.p));
+      lr.v = (pr / 100 * 20) / (E * 0.1); lr.p = pr;
+    }
+    LREF[r.id] = lr;
+  }
+  function matButton(r) {
+    let b = $("mat-" + r.id);
+    if (!b) { b = document.createElement("button"); b.className = "mat"; b.id = "mat-" + r.id; b.innerHTML = "<i></i><span></span>"; b.addEventListener("click", () => { mat = r.id; applyPreset(); if ($("autoOn").checked) autoTune(); }); $("mats").insertBefore(b, $("mat-add")); }
+    b.querySelector("i").style.background = r.base; b.querySelector("span").textContent = r.name; b.title = r.name;
+  }
+  (() => { const add = document.createElement("button"); add.className = "mat add"; add.id = "mat-add"; add.textContent = "+ Nouveau support"; add.addEventListener("click", () => openMatForm(null)); $("mats").appendChild(add); })();
+  loadCustom().forEach(r => { registerCustom(r); matButton(r); });
+  function fillLike() { const L = MATS[$("mfLike").value]; $("mfBase").value = L.base; $("mfBurn").value = L.burn; $("mfInv").value = L.s.inv ? "1" : "0"; $("mfAlgo").value = L.s.algo; $("mfCut").checked = !!LREF[$("mfLike").value].cut; }
+  function openMatForm(r) {
+    mfEditing = r ? r.id : null; $("mfErr").textContent = "";
+    $("mfTitle").textContent = r ? `Modifier « ${r.name} »` : "Nouveau support de gravure";
+    $("mfSave").textContent = r ? "Enregistrer les modifications" : "Ajouter le support";
+    $("mfDel").hidden = !r; $("mfDel").dataset.ok = ""; $("mfDel").textContent = "Supprimer ce support";
+    if (r) { $("mfName").value = r.name; $("mfLike").value = r.like; $("mfBase").value = r.base; $("mfBurn").value = r.burn; $("mfInv").value = r.inv ? "1" : "0"; $("mfAlgo").value = r.algo; $("mfV").value = r.v || ""; $("mfP").value = r.p || ""; $("mfCut").checked = !!r.cut; }
+    else { $("mfName").value = ""; $("mfLike").value = "peuplier"; $("mfV").value = ""; $("mfP").value = ""; fillLike(); }
+    $("mfHint").textContent = `Si tu connais déjà un bon réglage pour ta machine actuelle (${TECH[$("machine").value]?.name || "laser"} ${$("lw").value} W, ${mode === "svg" ? 254 : els.dpi.value} DPI), entre-le : le calcul de vitesse et de puissance partira de là. Sinon, il part du support le plus proche.`;
+    $("matForm").hidden = false; $("mfName").focus();
+  }
+  $("mfLike").addEventListener("change", () => { if (!mfEditing) fillLike(); });
+  $("mfCancel").onclick = () => { $("matForm").hidden = true; };
+  $("mfEdit").onclick = () => { const r = loadCustom().find(x => x.id === mat); if (r) openMatForm(r); };
+  $("mfSave").onclick = () => {
+    const name = $("mfName").value.trim();
+    if (!name) { $("mfErr").textContent = "Donne un nom à ton support."; $("mfName").focus(); return; }
+    const v = +$("mfV").value || 0, p = +$("mfP").value || 0;
+    if ((v > 0) !== (p > 0)) { $("mfErr").textContent = "Entre la vitesse et la puissance ensemble, ou laisse les deux vides."; return; }
+    const list = loadCustom(), old = list.find(x => x.id === mfEditing);
+    const r = { id: mfEditing || "c" + Date.now().toString(36), name, like: $("mfLike").value, base: $("mfBase").value, burn: $("mfBurn").value, inv: $("mfInv").value === "1", algo: $("mfAlgo").value, cut: $("mfCut").checked, v, p,
+      tech: old && v === old.v && p === old.p ? old.tech : $("machine").value, w: old && v === old.v && p === old.p ? old.w : +$("lw").value, dpi: old && v === old.v && p === old.p ? old.dpi : (mode === "svg" ? 254 : +els.dpi.value) };
+    const i = list.findIndex(x => x.id === r.id); if (i >= 0) list[i] = r; else list.push(r);
+    if (!saveCustomList(list)) { $("mfErr").textContent = "Impossible d'enregistrer : le stockage n'est pas disponible ici."; return; }
+    registerCustom(r); matButton(r); texCache.key = "";
+    $("matForm").hidden = true; mat = r.id; applyPreset(); if ($("autoOn").checked) autoTune();
+    setStatus(`Support « ${name} » ${i >= 0 ? "modifié" : "ajouté"}.`);
+  };
+  $("mfDel").onclick = () => {
+    if ($("mfDel").dataset.ok !== "1") { $("mfDel").dataset.ok = "1"; $("mfDel").textContent = "Confirmer la suppression"; return; }
+    const id = mfEditing, list = loadCustom().filter(x => x.id !== id); saveCustomList(list);
+    const name = MATS[id]?.name; delete MATS[id]; delete LREF[id]; delete KIND[id]; delete AUTO_TARGET[id]; $("mat-" + id)?.remove();
+    $("matForm").hidden = true; if (mat === id) { mat = "peuplier"; applyPreset(); }
+    setStatus(`Support « ${name} » supprimé.`);
+  };
+
+
+  // ---------- Style de gravure : points fins, très fins, ou sans points
+  let styleBlur = 0, gStyle = "fine";
+  const STYLE_HINT = {
+    fine: "Les gris sont faits de petits points, comme dans un journal. Bon équilibre entre détail et temps de gravure.",
+    xfine: "Points plus petits et plus serrés, presque invisibles à 30 cm. Gravure environ 30 % plus longue ; la vitesse est recalculée.",
+    clean: "Aucun point : seulement des aplats noirs et blancs aux contours lissés. Idéal pour les mangas, dessins, logos et textes. Les dégradés deviennent des aplats.",
+  };
+  function boxBlur(src, W, H, r) {
+    const tmp = new Float32Array(src.length), out = new Float32Array(src.length), n = 2 * r + 1;
+    for (let y = 0; y < H; y++) { let acc = 0; const o = y * W;
+      for (let x = -r; x <= r; x++) acc += src[o + Math.min(W - 1, Math.max(0, x))];
+      for (let x = 0; x < W; x++) { tmp[o + x] = acc / n; acc += src[o + Math.min(W - 1, x + r + 1)] - src[o + Math.max(0, x - r)]; } }
+    for (let x = 0; x < W; x++) { let acc = 0;
+      for (let y = -r; y <= r; y++) acc += tmp[Math.min(H - 1, Math.max(0, y)) * W + x];
+      for (let y = 0; y < H; y++) { out[y * W + x] = acc / n; acc += tmp[Math.min(H - 1, y + r + 1) * W + x] - tmp[Math.max(0, y - r) * W + x]; } }
+    return out;
+  }
+  function setStyle(st, silent) {
+    gStyle = st;
+    document.querySelectorAll("#styleField [data-st]").forEach(b => b.setAttribute("aria-pressed", b.dataset.st === st));
+    $("styleHint").textContent = STYLE_HINT[st] || "";
+    if (silent) return;
+    const tech = $("machine").value || "diode", base = MACH_DPI[tech] || "318";
+    if (st === "fine") { styleBlur = 0; els.algo.value = MATS[mat].s.algo === "threshold" ? "jarvis" : MATS[mat].s.algo; els.dpi.value = base; }
+    if (st === "xfine") { styleBlur = 0; els.algo.value = "stucki"; els.dpi.value = tech === "co2" ? "318" : tech === "fibre" ? "508" : "423"; }
+    if (st === "clean") { styleBlur = 1; els.algo.value = "threshold"; els.shp.value = 0; }
+    if (st === "clean" || $("autoOn").checked) autoTune(); else schedule();
+  }
+  document.querySelectorAll("#styleField [data-st]").forEach(b => b.addEventListener("click", () => setStyle(b.dataset.st)));
+  els.algo.addEventListener("change", () => {
+    const a = els.algo.value;
+    if (a === "threshold") { styleBlur = 1; setStyle("clean", true); }
+    else { styleBlur = 0; setStyle(a === "stucki" && +els.dpi.value >= 381 ? "xfine" : "fine", true); }
+  });
+
+
+  // ---------- Taille de la gravure : largeur, hauteur, format du support, marge
+  let sizeLocked = true, fmtW = 0, fmtH = 0;
+  const clampMM = v => Math.min(1500, Math.max(5, v));
+  function setLock(on) {
+    sizeLocked = on; $("lockRatio").setAttribute("aria-pressed", on);
+    $("lockRatio").title = on ? "Proportions de l'image gardées" : "Taille exacte : l'image est recadrée à ce format";
+    $("lockHint").textContent = on ? "Proportions gardées : change la largeur ou la hauteur, l'autre suit. Touche le maillon pour une taille exacte (l'image est alors recadrée)." : "Taille exacte : l'image est recadrée au centre pour remplir ce format. Utilise « Recadrer » pour choisir la partie gardée.";
+  }
+  function exactSize(w, h, keepBox) {
+    w = clampMM(w); h = clampMM(h);
+    let o = $("ratioExact");
+    if (!o) { o = document.createElement("option"); o.id = "ratioExact"; els.ratio.appendChild(o); }
+    o.value = String(w / h); o.textContent = `Taille exacte ${Math.round(w)} × ${Math.round(h)} mm`; o.selected = true;
+    if (!keepBox) fitRatio();
+    els.wmm.value = Math.round(w * 10) / 10; updCropSub(); schedule();
+  }
+  function supportSize() {
+    if (!fmtW) return;
+    const m = Math.max(0, +$("marg").value || 0);
+    exactSize(fmtW - 2 * m, fmtH - 2 * m);
+  }
+  function syncSize() {
+    const w = clampMM(+els.wmm.value || 100), h = outW ? w * outH / outW : w;
+    if (document.activeElement !== $("hmm")) $("hmm").value = Math.round(h * 10) / 10;
+    $("sizeHint").textContent = fmtW ? `support ${fmtW} × ${fmtH} → gravure ${Math.round(w)} × ${Math.round(h)} mm` : `${Math.round(w)} × ${Math.round(h)} mm`;
+  }
+  $("fmt").addEventListener("change", () => {
+    const v = $("fmt").value;
+    if (!v) { fmtW = fmtH = 0; setLock(true); schedule(); return; }
+    const m = v.match(/^(\d+)x(\d+)(r?)$/); fmtW = +m[1]; fmtH = +m[2];
+    els.shape.value = m[3] ? "round" : "rect"; drawBox();
+    setLock(false); supportSize();
+  });
+  $("fmtRot").onclick = () => {
+    if (fmtW) { [fmtW, fmtH] = [fmtH, fmtW]; supportSize(); return; }
+    const w = +els.wmm.value || 100, h = +$("hmm").value || w; setLock(false); exactSize(h, w);
+  };
+  $("marg").addEventListener("input", supportSize);
+  $("lockRatio").onclick = () => {
+    setLock(!sizeLocked);
+    if (sizeLocked) { fmtW = fmtH = 0; $("fmt").value = ""; }
+    else exactSize(+els.wmm.value || 100, +$("hmm").value || +els.wmm.value || 100, true);
+  };
+  els.wmm.addEventListener("input", () => { if (!sizeLocked && +els.wmm.value >= 5) { fmtW = 0; $("fmt").value = ""; exactSize(+els.wmm.value, +$("hmm").value || +els.wmm.value, false); } });
+  $("hmm").addEventListener("input", () => {
+    const h = +$("hmm").value; if (!(h >= 5)) return;
+    if (sizeLocked) { const asp = outW && outH ? outW / outH : 1; els.wmm.value = Math.round(clampMM(h * asp) * 10) / 10; schedule(); }
+    else { fmtW = 0; $("fmt").value = ""; exactSize(+els.wmm.value || 100, h); }
+  });
 
   // ---------- Export
   const CRC = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
@@ -1403,7 +1952,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
     return new Blob([out], { type: "image/png" });
   }
   function svgBlob() {
-    const wmm = Math.min(500, Math.max(5, +els.wmm.value || 100)), hmm = wmm * outH / outW;
+    const wmm = Math.min(1500, Math.max(5, +els.wmm.value || 100)), hmm = wmm * outH / outW;
     const sw = r2(0.1 * outW / wmm);
     const paint = els.outline.checked ? `fill="none" stroke="#000" stroke-width="${sw}"` : `fill="#000" fill-rule="evenodd"`;
     const txt = `<?xml version="1.0" encoding="UTF-8"?>\n<svg xmlns="http://www.w3.org/2000/svg" width="${wmm.toFixed(2)}mm" height="${hmm.toFixed(2)}mm" viewBox="0 0 ${outW} ${outH}"><path ${paint} d="${svgPath}"/></svg>`;
@@ -1445,8 +1994,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
       g.putImageData(id, 0, 0);
       blob = await pngWithDpi(c, dpi);
     }
-    const base = ($("srcName").textContent || "gravure").replace(/\.[^.]+$/, "").replace(/[^\w\- ]+/g, "").trim() || "gravure";
-    const name = svg ? `${base}_vecteur_${Math.round(+els.wmm.value)}mm.svg` : `${base}_${MATS[mat].name.replace(/[^\w]+/g, "-")}_${dpi}dpi.png`;
+    const base = ($("srcName").textContent || "gravure").replace(/\.[^.]+$/, "").replace(/[^\p{L}\p{N}\-' ]+/gu, "").trim() || "gravure";
+    const name = svg ? `${base}_vecteur_${Math.round(+els.wmm.value)}mm.svg` : `${base}_${MATS[mat].name.replace(/[^\p{L}\p{N}]+/gu, "-")}_${dpi}dpi.png`;
     if (!window.laser) { setStatus("Lance l'application Laser Pix pour enregistrer.", true); return; }
     const st = await window.laser.status();
     if (!st.pro && st.remaining <= 0) { window.openPlan("limit"); return; }
@@ -1455,10 +2004,12 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
     const res = target ? await window.laser.sendTo(target, name, bytes) : await window.laser.saveFile(name, bytes);
     window.renderPlan(res.state);
     if (res.result === "saved") {
+      addToLibrary(name, blob);
       const left = res.state.pro ? "" : ` · ${res.state.remaining} export${res.state.remaining > 1 ? "s" : ""} gratuit${res.state.remaining > 1 ? "s" : ""} restant${res.state.remaining > 1 ? "s" : ""} aujourd'hui`;
       setStatus("Enregistré : " + res.path.split(/[\\/]/).pop() + left);
       lastSaved = res.path; $("showFile").hidden = false;
     } else if (res.result === "sent") {
+      addToLibrary(name, blob);
       const left = res.state.pro ? "" : ` · ${res.state.remaining} export${res.state.remaining > 1 ? "s" : ""} gratuit${res.state.remaining > 1 ? "s" : ""} restant${res.state.remaining > 1 ? "s" : ""}`;
       setStatus(`Ouvert dans ${res.app}${left}. Si l'image n'apparaît pas, glisse le fichier depuis l'Explorateur dans le logiciel.`);
       lastSaved = res.path; $("showFile").hidden = false;
