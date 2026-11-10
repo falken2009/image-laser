@@ -3,23 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Image Laser</title>
+<title>Laser Pix</title>
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com data:; script-src 'self' 'unsafe-inline'">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
 /* Layout : colonne centrée façon atelier — aperçu avant/après en vedette, ligne de cotes, panneau « Affiner », puis cartes de réglages en grille. Thème unique bleu nuit, choisi volontairement. */
 :root {
-  --bg-top: #0a1838;
-  --bg-bot: #1f4596;
-  --glass: rgba(18, 36, 82, .72);
-  --glass-2: rgba(28, 54, 118, .6);
-  --line: rgba(140, 175, 255, .2);
-  --ink: #eef3ff;
-  --muted: #9fb3dc;
-  --accent: #3d8bff;
+  --bg-top: #09090b;
+  --bg-bot: #2a0c10;
+  --glass: rgba(20, 20, 24, .82);
+  --glass-2: rgba(42, 30, 33, .7);
+  --line: rgba(255, 90, 90, .2);
+  --ink: #f5f1f1;
+  --muted: #b6a7a9;
+  --accent: #e5252f;
   --accent-ink: #ffffff;
-  --accent-soft: rgba(61, 139, 255, .2);
+  --accent-soft: rgba(229, 37, 47, .2);
   --check-a: #f3f5fa;
   --check-b: #dfe5f0;
   --ok: #6be3a6;
@@ -34,13 +34,13 @@
 html, body { margin: 0; }
 img { max-width: 100%; }
 html { background: var(--bg-top); }
-body { min-height: 100vh; background: linear-gradient(180deg, var(--bg-top) 0%, #12295e 45%, var(--bg-bot) 100%) fixed; color: var(--ink); font-family: var(--font-body); font-size: 14px; line-height: 1.45; -webkit-font-smoothing: antialiased; }
+body { min-height: 100vh; background: linear-gradient(180deg, var(--bg-top) 0%, #140b0d 55%, var(--bg-bot) 100%) fixed; color: var(--ink); font-family: var(--font-body); font-size: 14px; line-height: 1.45; -webkit-font-smoothing: antialiased; }
 
-.appbar { background: rgba(8, 18, 44, .85); border-bottom: 1px solid var(--line); backdrop-filter: blur(10px); }
+.appbar { background: rgba(6, 6, 8, .92); border-bottom: 1px solid var(--line); backdrop-filter: blur(10px); }
 .appbar-in { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; gap: 14px; padding-block: 12px;
   padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
-.mark { width: 32px; height: 32px; border-radius: 9px; background: linear-gradient(135deg, #5aa2ff, #2a64e8); display: grid; place-items: center; flex: none; box-shadow: 0 4px 14px rgba(61,139,255,.45); }
+.mark { width: 32px; height: 32px; border-radius: 9px; background: linear-gradient(135deg, #ff4d4d, #b3121b); display: grid; place-items: center; flex: none; box-shadow: 0 4px 14px rgba(229,37,47,.45); }
 .mark svg { width: 18px; height: 18px; }
 .brand h1 { font: 800 1.15rem/1.1 var(--font-display); letter-spacing: .01em; margin: 0; }
 .brand small { display: block; font: 400 .72rem var(--font-mono); color: var(--muted); letter-spacing: .04em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -68,17 +68,17 @@ body { min-height: 100vh; background: linear-gradient(180deg, var(--bg-top) 0%, 
 .compare.loupe-on { cursor: none; }
 .compare canvas, .cropper canvas { display: block; max-width: 100%; height: auto; max-height: 66vh; width: auto; }
 #cOrig { position: absolute; inset: 0; width: 100%; height: 100%; max-height: none; }
-.split-line { position: absolute; top: 0; bottom: 0; width: 3px; background: var(--accent); pointer-events: none; box-shadow: 0 0 10px rgba(61,139,255,.6); }
+.split-line { position: absolute; top: 0; bottom: 0; width: 3px; background: var(--accent); pointer-events: none; box-shadow: 0 0 10px rgba(229,37,47,.6); }
 .split-knob { position: absolute; top: 50%; left: 50%; width: 42px; height: 42px; transform: translate(-50%, -50%); border-radius: 50%; background: var(--accent); box-shadow: 0 4px 14px rgba(0,0,0,.4); display: grid; place-items: center; }
 .split-knob svg { width: 22px; height: 22px; }
-.pill { position: absolute; bottom: 12px; font: 700 .7rem var(--font-display); letter-spacing: .08em; color: #fff; background: rgba(40, 50, 70, .72); padding: 5px 10px; border-radius: 5px; line-height: 1.2; pointer-events: none; }
+.pill { position: absolute; bottom: 12px; font: 700 .7rem var(--font-display); letter-spacing: .08em; color: #fff; background: rgba(20, 20, 22, .8); padding: 5px 10px; border-radius: 5px; line-height: 1.2; pointer-events: none; }
 .pill.l { left: 12px; } .pill.r { right: 12px; }
 .loupe { position: absolute; width: 170px; height: 170px; border-radius: 50%; border: 3px solid var(--accent); box-shadow: 0 0 0 2px rgba(255,255,255,.55), 0 10px 28px rgba(0,0,0,.45); pointer-events: none; background: #fff; }
 .loupe::after { content: ""; position: absolute; left: 50%; top: 50%; width: 22px; height: 22px; transform: translate(-50%, -50%);
   background: linear-gradient(var(--accent), var(--accent)) center / 2px 100% no-repeat, linear-gradient(var(--accent), var(--accent)) center / 100% 2px no-repeat; }
 #cLoupe { width: 100%; height: 100%; border-radius: 50%; max-height: none; display: block; }
 .cropper { touch-action: none; user-select: none; -webkit-user-select: none; }
-.cbox { position: absolute; border: 1.5px solid #fff; box-shadow: 0 0 0 9999px rgba(6,12,28,.62); cursor: move; }
+.cbox { position: absolute; border: 1.5px solid #fff; box-shadow: 0 0 0 9999px rgba(0,0,0,.65); cursor: move; }
 .cbox.round { border-radius: 50%; }
 .cbox::before, .cbox::after { content: ""; position: absolute; inset: 33.3% 0; border-block: 1px solid rgba(255,255,255,.35); pointer-events: none; }
 .cbox::after { inset: 0 33.3%; border-block: 0; border-inline: 1px solid rgba(255,255,255,.35); }
@@ -112,11 +112,11 @@ details.card > summary .sub { margin-left: auto; font: 400 .72rem var(--font-mon
 .row .top { display: flex; justify-content: space-between; align-items: baseline; font: 600 .84rem var(--font-body); }
 .row output { font: 500 .78rem var(--font-mono); color: var(--accent); }
 input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 24px; background: transparent; cursor: pointer; }
-input[type=range]::-webkit-slider-runnable-track { height: 4px; border-radius: 4px; background: rgba(160, 190, 255, .28); }
-input[type=range]::-moz-range-track { height: 4px; border-radius: 4px; background: rgba(160, 190, 255, .28); }
+input[type=range]::-webkit-slider-runnable-track { height: 4px; border-radius: 4px; background: rgba(255, 150, 150, .28); }
+input[type=range]::-moz-range-track { height: 4px; border-radius: 4px; background: rgba(255, 150, 150, .28); }
 input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--accent); border: 2px solid #fff; margin-top: -6px; box-shadow: 0 2px 6px rgba(0,0,0,.35); }
 input[type=range]::-moz-range-thumb { width: 12px; height: 12px; border-radius: 50%; background: var(--accent); border: 2px solid #fff; }
-.drop { border: 1.5px dashed rgba(160,190,255,.45); background: var(--glass-2); border-radius: 12px; padding: 18px; display: flex; align-items: center; gap: 14px; color: var(--muted); font-size: .84rem; cursor: pointer; text-align: left; }
+.drop { border: 1.5px dashed rgba(255,150,150,.45); background: var(--glass-2); border-radius: 12px; padding: 18px; display: flex; align-items: center; gap: 14px; color: var(--muted); font-size: .84rem; cursor: pointer; text-align: left; }
 .drop svg { width: 30px; height: 30px; flex: none; color: var(--accent); }
 .drop strong { display: block; color: var(--ink); font-weight: 600; font-size: .92rem; }
 .drop.over { border-color: var(--accent); background: var(--accent-soft); }
@@ -127,8 +127,8 @@ input[type=range]::-moz-range-thumb { width: 12px; height: 12px; border-radius: 
 .mat[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
 .two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .field { display: flex; flex-direction: column; gap: 5px; font-size: .76rem; color: var(--muted); min-width: 0; }
-.field input, .field select { font: 500 .86rem var(--font-body); color: var(--ink); background: rgba(8, 18, 44, .55); border: 1px solid var(--line); border-radius: 8px; padding: 9px 10px; width: 100%; }
-.field select option { background: #13285a; }
+.field input, .field select { font: 500 .86rem var(--font-body); color: var(--ink); background: rgba(0, 0, 0, .45); border: 1px solid var(--line); border-radius: 8px; padding: 9px 10px; width: 100%; }
+.field select option { background: #1b1b1f; }
 .checks { display: flex; flex-wrap: wrap; gap: 8px; }
 .checks label { display: inline-flex; gap: 7px; align-items: center; cursor: pointer; font-size: .8rem; background: var(--glass-2); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px 6px 9px; }
 .checks input { accent-color: var(--accent); width: 15px; height: 15px; margin: 0; }
@@ -136,8 +136,8 @@ input[type=range]::-moz-range-thumb { width: 12px; height: 12px; border-radius: 
 .tools { display: flex; gap: 6px; flex-wrap: wrap; }
 .btn { border: 1px solid var(--line); background: var(--glass-2); color: var(--ink); border-radius: 8px; padding: 8px 12px; font: 500 .8rem var(--font-body); cursor: pointer; }
 .btn.ghost { border-color: var(--line); background: transparent; color: var(--muted); padding: 5px 10px; font-size: .74rem; text-transform: none; letter-spacing: 0; font-family: var(--font-body); }
-.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font: 700 .95rem var(--font-display); letter-spacing: .02em; padding: 14px 16px; width: 100%; border-radius: 10px; box-shadow: 0 8px 22px rgba(61,139,255,.4); }
-.seg { display: flex; padding: 3px; gap: 3px; background: rgba(8, 18, 44, .55); border: 1px solid var(--line); border-radius: 10px; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font: 700 .95rem var(--font-display); letter-spacing: .02em; padding: 14px 16px; width: 100%; border-radius: 10px; box-shadow: 0 8px 22px rgba(229,37,47,.4); }
+.seg { display: flex; padding: 3px; gap: 3px; background: rgba(0, 0, 0, .45); border: 1px solid var(--line); border-radius: 10px; }
 .seg button { flex: 1; border: 0; background: transparent; color: var(--muted); font: 500 .8rem var(--font-body); padding: 9px 6px; border-radius: 7px; cursor: pointer; }
 .seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
 button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-visible, summary:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
@@ -173,8 +173,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
 .plan .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
 .plan.pro { border-color: var(--accent); background: var(--accent-soft); }
 .plan.pro .dot { background: var(--ok); box-shadow: 0 0 8px var(--ok); }
-.modal { position: fixed; inset: 0; z-index: 50; background: rgba(4, 10, 26, .72); display: grid; place-items: center; padding: 16px; backdrop-filter: blur(4px); }
-.sheet { width: min(460px, 100%); background: linear-gradient(180deg, #16306b, #0e2050); border: 1px solid var(--line); border-radius: 18px; padding: 22px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 30px 80px rgba(0,0,0,.5); }
+.modal { position: fixed; inset: 0; z-index: 50; background: rgba(0, 0, 0, .75); display: grid; place-items: center; padding: 16px; backdrop-filter: blur(4px); }
+.sheet { width: min(460px, 100%); background: linear-gradient(180deg, #1d1b1e, #0e0d0f); border: 1px solid var(--line); border-radius: 18px; padding: 22px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 30px 80px rgba(0,0,0,.5); }
 .sheet h3 { margin: 0; font: 800 1.35rem/1.2 var(--font-display); text-wrap: balance; }
 .sheet .lead { margin: 0; color: var(--muted); font-size: .88rem; }
 .sheet ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 7px; font-size: .88rem; }
@@ -183,12 +183,75 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
 .price { font: 800 1.6rem var(--font-display); }
 .price small { font: 500 .8rem var(--font-body); color: var(--muted); margin-left: 6px; }
 .keyrow { display: flex; gap: 8px; }
-.keyrow input { flex: 1; min-width: 0; font: 500 .86rem var(--font-mono); color: var(--ink); background: rgba(8,18,44,.6); border: 1px solid var(--line); border-radius: 8px; padding: 10px; }
+.keyrow input { flex: 1; min-width: 0; font: 500 .86rem var(--font-mono); color: var(--ink); background: rgba(0,0,0,.5); border: 1px solid var(--line); border-radius: 8px; padding: 10px; }
 .sep { display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: .76rem; }
 .sep::before, .sep::after { content: ""; flex: 1; height: 1px; background: var(--line); }
 .msg { margin: 0; font-size: .82rem; min-height: 1.2em; }
 .msg.err { color: var(--err); } .msg.ok { color: var(--ok); }
 .close { align-self: center; }
+
+/* Paysage : aperçu à gauche sur toute la hauteur, réglages en colonne à droite */
+@media (min-width: 900px) {
+  .appbar-in { max-width: 1600px; }
+  .main { max-width: 1600px; display: grid; grid-template-columns: minmax(0, 1fr) 410px; align-items: start; gap: 16px; padding-block: 16px 32px; }
+  .main > .stage { grid-column: 1; grid-row: 1 / span 8; position: sticky; top: 16px; }
+  .main > :not(.stage) { grid-column: 2; }
+  .cards { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .sliders { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 18px; }
+  .viewport { min-height: calc(100vh - 200px); }
+  .compare canvas, .cropper canvas { max-height: calc(100vh - 230px); }
+  .machine { gap: 12px; padding: 12px 14px; }
+  .machine svg { width: 120px; }
+  .machine h2 { font-size: 1rem; }
+  .machine p { font-size: .78rem; }
+  .machine .specs { margin-top: 6px; }
+}
+
+/* Petit écran : l'aperçu reste collé en haut pendant qu'on fait défiler les réglages */
+@media (max-width: 899px) {
+  body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 21; background: var(--bg-top); }
+  .main > .stage { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; gap: 6px; padding-block: 8px; background: linear-gradient(180deg, var(--bg-top) 85%, rgba(9,9,11,0)); }
+  .main > .stage .viewport { min-height: 0; padding: 8px; }
+  .compare canvas, .cropper canvas { max-height: 34vh; }
+  .main > .stage .fname { display: none; }
+  .main > .stage .toolbar { gap: 6px; }
+  .main > .stage .tgroup button, .main > .stage .ibtn { padding: 6px 8px; }
+}
+
+.btn.auto { display: inline-flex; align-items: center; gap: 6px; background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; padding: 6px 11px; text-transform: none; letter-spacing: 0; font-family: var(--font-body); font-size: .78rem; }
+.autobar { display: flex; flex-direction: column; gap: 4px; padding: 0 16px 10px; }
+.autochk { display: inline-flex; gap: 8px; align-items: center; font-size: .8rem; color: var(--muted); cursor: pointer; }
+.autochk input { accent-color: var(--accent); width: 15px; height: 15px; margin: 0; }
+#autoInfo { color: var(--ink); min-height: 1em; }
+
+#aiPrompt { width: 100%; resize: vertical; font: 500 .88rem var(--font-body); color: var(--ink); background: rgba(0,0,0,.45); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; min-height: 52px; }
+#aiPrompt:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--line); background: var(--glass-2); color: var(--ink); border-radius: 999px; padding: 5px 11px; font: 500 .76rem var(--font-body); cursor: pointer; }
+.chip:hover { border-color: var(--accent); }
+#aiOut { color: var(--ink); white-space: pre-line; }
+#aiOut.err { color: var(--err); }
+#aiGo[disabled] { opacity: .6; cursor: progress; }
+
+.sendrow { display: flex; gap: 8px; }
+.sendrow select { flex: 1; min-width: 0; font: 500 .86rem var(--font-body); color: var(--ink); background: rgba(0,0,0,.45); border: 1px solid var(--line); border-radius: 8px; padding: 9px 10px; }
+.sendrow select option { background: #1b1b1f; }
+.sendrow .btn { white-space: nowrap; font-weight: 600; border-color: var(--accent); }
+
+.pw-job { font: 600 .8rem var(--font-body); color: var(--ink); }
+.pw-job em { font-style: normal; color: var(--muted); font-weight: 500; }
+.pw-out { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.pw-out > div { background: rgba(0,0,0,.4); border: 1px solid var(--line); border-radius: 10px; padding: 8px 6px; display: flex; flex-direction: column; align-items: center; gap: 1px; min-width: 0; }
+.pw-out span { font: 600 .66rem var(--font-display); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.pw-out b { font: 800 1.35rem/1.1 var(--font-display); color: var(--ink); font-variant-numeric: tabular-nums; }
+.pw-out > div:first-child b, .pw-out > div:nth-child(2) b { color: var(--accent); }
+.pw-out i { font: 500 .7rem var(--font-mono); font-style: normal; color: var(--muted); }
+.pw-warn { margin: 0; font-size: .8rem; color: #ffcf6b; background: rgba(255, 190, 60, .1); border: 1px solid rgba(255, 190, 60, .3); border-radius: 8px; padding: 8px 10px; }
+.pw-test { background: rgba(0,0,0,.3); border: 1px dashed var(--line); border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; font-size: .82rem; }
+.pw-test .hint { white-space: pre-line; color: var(--ink); }
+.pw-cal > summary { cursor: pointer; font: 600 .8rem var(--font-body); color: var(--accent); }
+.pw-badge { display: inline-block; font: 600 .68rem var(--font-body); color: var(--ok); border: 1px solid var(--ok); border-radius: 999px; padding: 1px 7px; margin-left: 6px; }
+@media (max-width: 420px) { .pw-out { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 </style>
 </head>
 <body>
@@ -200,7 +263,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
       <div class="mark" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M12 2v9"/><path d="M8 11h8l-4 5z" fill="#fff"/><path d="M4 21h16"/><path d="M9 19l3-3 3 3"/></svg>
       </div>
-      <div><h1>Image Laser</h1><small>Préparation de fichiers · xTool S1</small></div>
+      <div><h1>Laser <span style="color:var(--accent)">Pix</span></h1><small>Préparation de fichiers · tous graveurs laser</small></div>
     </div>
     <div class="spacer"></div>
     <button class="plan" id="planBtn"><span class="dot"></span><span id="planTxt">Gratuit</span></button>
@@ -213,7 +276,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
     <svg viewBox="0 0 260 170" role="img" aria-label="Illustration d'un graveur laser fermé en train de graver">
       <defs>
         <linearGradient id="body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a4252"/><stop offset="1" stop-color="#1c212b"/></linearGradient>
-        <linearGradient id="lid" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7fb3ff" stop-opacity=".35"/><stop offset="1" stop-color="#2a64e8" stop-opacity=".18"/></linearGradient>
+        <linearGradient id="lid" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff6b6b" stop-opacity=".35"/><stop offset="1" stop-color="#b3121b" stop-opacity=".18"/></linearGradient>
         <linearGradient id="wood" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#e6c896"/><stop offset="1" stop-color="#cfa66c"/></linearGradient>
       </defs>
       <ellipse cx="130" cy="160" rx="118" ry="7" fill="#000" opacity=".35"/>
@@ -221,7 +284,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
       <rect x="14" y="128" width="232" height="26" rx="0" fill="#151920"/>
       <rect x="14" y="140" width="232" height="14" rx="12" fill="#151920"/>
       <rect x="28" y="134" width="60" height="6" rx="3" fill="#2b3240"/>
-      <circle cx="226" cy="137" r="5" fill="#3d8bff"/><circle cx="226" cy="137" r="9" fill="none" stroke="#3d8bff" stroke-opacity=".35" stroke-width="2"/>
+      <circle cx="226" cy="137" r="5" fill="#e5252f"/><circle cx="226" cy="137" r="9" fill="none" stroke="#e5252f" stroke-opacity=".35" stroke-width="2"/>
       <rect x="28" y="32" width="204" height="90" rx="6" fill="#0d1118"/>
       <rect x="62" y="56" width="136" height="60" rx="2" fill="url(#wood)"/>
       <g stroke="#4a2e17" stroke-width="2.2" stroke-linecap="round" fill="none" opacity=".9">
@@ -233,27 +296,40 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
         <g class="head">
           <rect x="60" y="38" width="22" height="22" rx="4" fill="#e9edf4"/>
           <rect x="66" y="58" width="10" height="5" rx="1.5" fill="#9aa4b6"/>
-          <circle cx="71" cy="45" r="2" fill="#3d8bff"/>
-          <g class="beam"><line x1="71" y1="63" x2="71" y2="68" stroke="#ff4d4d" stroke-width="2"/><circle cx="71" cy="68" r="3" fill="#ffd6d6"/><circle cx="71" cy="68" r="6" fill="#ff4d4d" opacity=".35"/></g>
+          <circle cx="71" cy="45" r="2" fill="#e5252f"/>
+          <g class="beam"><line x1="71" y1="63" x2="71" y2="68" stroke="#ffffff" stroke-width="2"/><circle cx="71" cy="68" r="3" fill="#ffffff"/><circle cx="71" cy="68" r="6" fill="#ff4d4d" opacity=".35"/></g>
         </g>
       </g>
-      <path d="M22 26h216a6 6 0 0 1 6 6v92H16V32a6 6 0 0 1 6-6z" fill="url(#lid)" stroke="#9cc0ff" stroke-opacity=".35"/>
+      <path d="M22 26h216a6 6 0 0 1 6 6v92H16V32a6 6 0 0 1 6-6z" fill="url(#lid)" stroke="#ff9a9a" stroke-opacity=".35"/>
       <path d="M40 30l40 0-50 90h-4z" fill="#fff" opacity=".08"/>
     </svg>
     <div>
       <h2>Prépare tes fichiers pour ton graveur</h2>
-      <p>Charge une photo ou un logo, choisis le matériau, puis exporte un fichier prêt à graver dans xTool Creative Space.</p>
-      <div class="specs"><span>Laser diode 20 W</span><span>254–508 DPI</span><span>PNG · SVG</span></div>
+      <p>Charge une photo ou un logo, choisis le matériau, puis exporte un fichier prêt pour xTool Creative Space, LightBurn, LaserGRBL ou le logiciel de ton graveur.</p>
+      <div class="specs"><span>Diode · CO2 · Fibre</span><span>254–508 DPI</span><span>PNG · SVG</span></div>
     </div>
   </section>
+  <details class="card" open>
+    <summary>Image source</summary>
+    <div class="body">
+      <div class="drop" id="drop" tabindex="0" role="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+        <div><strong>Charger une photo</strong>ou la glisser ici · JPG, PNG, WebP</div>
+      </div>
+      <input type="file" id="file" accept="image/*" hidden>
+    </div>
+  </details>
   <section class="stage" aria-label="Aperçu">
     <div class="toolbar">
       <div class="tgroup" role="group" aria-label="Rendu de l'aperçu">
-        <button id="vMat" aria-pressed="true">Sur matériau</button>
+        <button id="vSim" aria-pressed="true">Réaliste</button>
+        <button id="vMat" aria-pressed="false">Simple</button>
         <button id="vBw" aria-pressed="false">Fichier N&amp;B</button>
       </div>
+      <div class="tgroup" role="group" aria-label="Simulation"><button class="ibtn" id="playBtn" title="Voir la gravure se faire">▶ Graver</button></div>
       <div class="tgroup" role="group" aria-label="Outils">
         <button class="ibtn" id="loupeBtn" aria-pressed="false" title="Loupe"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/><path d="M11 8v6M8 11h6"/></svg>Loupe</button>
+        <button class="ibtn" id="eraseBtn" aria-pressed="false" title="Gomme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20H9L3.5 14.5a2 2 0 0 1 0-2.8L12.7 2.5a2 2 0 0 1 2.8 0l5 5a2 2 0 0 1 0 2.8L11 20"/><path d="M8 9l7 7"/></svg><span id="eraseLbl">Gomme</span></button>
         <button class="ibtn" id="cropBtn" aria-pressed="false" title="Recadrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M18 22V8a2 2 0 0 0-2-2H2"/></svg><span id="cropLbl">Recadrer</span></button>
       </div>
       <div class="tgroup" role="group" aria-label="Orientation">
@@ -270,6 +346,10 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
         <span class="pill l">AVANT</span><span class="pill r">APRÈS</span>
         <div class="loupe" id="loupe" hidden><canvas id="cLoupe" width="340" height="340"></canvas></div>
       </div>
+      <div class="cropper" id="eraser" hidden style="cursor:crosshair">
+        <canvas id="cErase"></canvas>
+        <div id="brushRing" hidden style="position:absolute;border:2px solid #fff;outline:1px solid rgba(0,0,0,.5);border-radius:50%;pointer-events:none;transform:translate(-50%,-50%)"></div>
+      </div>
       <div class="cropper" id="cropper" hidden>
         <canvas id="cCrop"></canvas>
         <div class="cbox" id="cbox">
@@ -283,8 +363,24 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
     <div class="fname" id="srcName">Image d'exemple</div>
   </section>
 
+  <section class="card" id="aiCard" aria-label="Modification IA">
+    <div class="card-head">Modification IA<span class="sub" id="aiState"></span></div>
+    <div class="body">
+      <textarea id="aiPrompt" rows="2" placeholder="Ex. : recadre sur le visage en rond, enlève le fond et rends la peau plus douce"></textarea>
+      <div class="chips" id="aiChips">
+        <button class="chip">Recadre sur le sujet principal</button>
+        <button class="chip">Enlève le fond</button>
+        <button class="chip">Plus de détails dans les ombres</button>
+        <button class="chip">Rendu plus doux pour un portrait</button>
+        <button class="chip">Prépare un logo net en SVG</button>
+      </div>
+      <div class="tools"><button class="btn primary" id="aiGo" style="width:auto;flex:1">Appliquer avec l'IA</button><button class="btn" id="aiUndo" hidden>Annuler</button></div>
+      <p class="hint" id="aiOut"></p>
+    </div>
+  </section>
   <section class="card" aria-label="Affiner ce résultat">
-    <div class="card-head">Affiner ce résultat ?<button class="btn ghost" id="reset">↺ Tout réinitialiser</button></div>
+    <div class="card-head">Affiner ce résultat ?<span class="tools"><button class="btn auto" id="autoBtn"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>Réglage auto</button><button class="btn ghost" id="reset">↺ Tout réinitialiser</button></span></div>
+      <div class="autobar"><label class="autochk"><input type="checkbox" id="autoOn" checked> Régler automatiquement à chaque photo et matériau</label><span class="hint" id="autoInfo"></span></div>
     <div class="body">
       <div class="sliders">
         <div class="sl"><div class="top"><label for="bri">Luminosité</label><output id="oBri">0</output></div><input type="range" id="bri" min="-100" max="100" value="0"></div>
@@ -319,16 +415,6 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
   </section>
 
   <div class="cards">
-    <details class="card" open>
-      <summary>Image source</summary>
-      <div class="body">
-        <div class="drop" id="drop" tabindex="0" role="button">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
-          <div><strong>Charger une photo</strong>ou la glisser ici · JPG, PNG, WebP</div>
-        </div>
-        <input type="file" id="file" accept="image/*" hidden>
-      </div>
-    </details>
 
     <details class="card" open>
       <summary>Sortie</summary>
@@ -337,6 +423,13 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
           <button id="mPng" aria-pressed="true">Photo · PNG</button>
           <button id="mSvg" aria-pressed="false">Texte / logo · SVG</button>
         </div>
+        <label class="field" id="machField">Type de graveur
+          <select id="machine">
+            <option value="diode">Laser diode · xTool, Atomstack, Sculpfun, Ortur…</option>
+            <option value="co2">Laser CO2 · Glowforge, OMTech, Thunder…</option>
+            <option value="fibre">Laser fibre · métal, gravure très fine</option>
+          </select>
+        </label>
         <div class="two">
           <label class="field">Largeur (mm)<input type="number" id="wmm" min="5" max="500" step="1" value="100"></label>
           <label class="field" id="dpiField">Résolution
@@ -352,6 +445,43 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
       </div>
     </details>
 
+    <details class="card" id="powerCard" open>
+      <summary>Puissance &amp; vitesse <span class="sub" id="pwSub"></span></summary>
+      <div class="body">
+        <div class="two">
+          <label class="field">Puissance du laser (W)<input type="number" id="lw" min="1" max="300" step="1" value="20"></label>
+          <label class="field">Vitesse max machine (mm/s)<input type="number" id="lvmax" min="10" max="10000" step="10" value="600"></label>
+        </div>
+        <div class="two">
+          <label class="field">Rendu voulu
+            <select id="lint"><option value="0.8">Plus léger</option><option value="1" selected>Normal</option><option value="1.25">Plus foncé</option></select>
+          </label>
+          <label class="field" id="lthickF" hidden>Épaisseur (mm)<input type="number" id="lthick" min="0.2" max="20" step="0.5" value="3"></label>
+        </div>
+        <div class="pw-job" id="pwJob"></div>
+        <div class="pw-out">
+          <div><span>Vitesse</span><b id="pwV">—</b><i>mm/s</i></div>
+          <div><span id="pwPLbl">Puissance</span><b id="pwP">—</b><i id="pwPUnit">%</i></div>
+          <div><span>Passes</span><b id="pwN">—</b><i>&nbsp;</i></div>
+          <div><span id="pwXLbl">Lignes</span><b id="pwX">—</b><i id="pwXUnit">/mm</i></div>
+        </div>
+        <p class="hint" id="pwTime"></p>
+        <p class="pw-warn" id="pwWarn" hidden></p>
+        <div class="pw-test">
+          <b>Pour un résultat parfait : grille de test</b>
+          <p class="hint" id="pwGrid"></p>
+        </div>
+        <details class="pw-cal">
+          <summary>J'ai fait le test : enregistrer le meilleur réglage</summary>
+          <div class="two" style="margin-top:8px">
+            <label class="field">Vitesse retenue (mm/s)<input type="number" id="calV" min="1" max="10000" step="1"></label>
+            <label class="field">Puissance retenue (%)<input type="number" id="calP" min="1" max="100" step="1"></label>
+          </div>
+          <div class="tools" style="margin-top:8px"><button class="btn" id="calSave">Enregistrer pour ce matériau</button><button class="btn ghost" id="calForget" hidden>Oublier mon réglage</button></div>
+        </details>
+        <p class="hint">Valeurs de départ calculées pour ta machine, ton matériau et ta résolution. Chaque planche et chaque laser sont un peu différents : le test sur une chute reste indispensable. Mets la mise au point à la bonne hauteur et l'assistance d'air en marche pour la découpe.</p>
+      </div>
+    </details>
     <details class="card" open>
       <summary>Matériau</summary>
       <div class="body"><div class="mats" id="mats"></div></div>
@@ -384,6 +514,18 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
           <p class="hint" id="cropHint" hidden>Déplace le cadre ou tire ses coins, puis touche « Terminer » au-dessus de l'image.</p>
         </div>
       </details>
+      <details class="card" id="eraseCard">
+        <summary>Gomme <span class="sub" id="eraseSub">Aucun élément</span></summary>
+        <div class="body">
+          <div class="seg" role="group" aria-label="Effet de la gomme">
+            <button id="eFill" aria-pressed="true">Faire disparaître</button>
+            <button id="eBlank" aria-pressed="false">Ne pas graver</button>
+          </div>
+          <div class="row"><div class="top"><label for="brush">Taille du pinceau</label><output id="oBrush">40</output></div><input type="range" id="brush" min="6" max="160" value="40"></div>
+          <div class="tools"><button class="btn" id="eUndo">Annuler le dernier trait</button><button class="btn" id="eClear">Tout effacer</button></div>
+          <p class="hint" id="eraseHint">Touche « Gomme » au-dessus de l'image, puis passe le doigt sur l'élément à retirer. « Faire disparaître » le remplace par ce qui l'entoure ; « Ne pas graver » laisse la zone vide.</p>
+        </div>
+      </details>
       <details class="card">
         <summary>Fond</summary>
         <div class="body">
@@ -396,21 +538,25 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
   </div>
 
   <section class="card"><div class="body" style="padding-top:16px">
-    <button class="btn primary" id="export">Enregistrer le PNG pour xTool</button>
+    <button class="btn primary" id="export">Enregistrer le PNG</button>
+    <div class="sendrow" id="sendRow" hidden>
+      <select id="sendTo" aria-label="Logiciel du graveur"></select>
+      <button class="btn" id="sendBtn">Envoyer vers le logiciel</button>
+    </div>
     <p class="status" id="status" role="status"></p>
     <button class="btn ghost" id="showFile" hidden style="align-self:center">Afficher dans l'Explorateur</button>
     <div id="fallback" hidden></div>
-    <p class="hint" id="tipPng">Dans xTool Creative Space, importe le PNG et choisis le traitement « Aucun » : l'image est déjà tramée. La taille est lue depuis le DPI du fichier.</p>
-    <p class="hint" id="tipSvg" hidden>Le SVG s'importe à la taille exacte en mm. Choisis « Gravure » pour marquer le motif, ou coche « Contour seul » et choisis « Découpe » pour découper la forme.</p>
+    <p class="hint" id="tipPng">Importe le PNG dans ton logiciel et désactive son propre tramage : « Aucun » dans xTool Creative Space, « Passthrough » dans LightBurn, « Ligne par ligne » sans tramage dans LaserGRBL. La taille est lue depuis le DPI du fichier.</p>
+    <p class="hint" id="tipSvg" hidden>Le SVG s'importe à la taille exacte en mm dans tous les logiciels laser. Choisis « Gravure » (remplissage) pour marquer le motif, ou coche « Contour seul » et choisis « Découpe » (ligne) pour découper la forme.</p>
   </div></section>
-  <p class="note">Les réglages de chaque matériau sont des points de départ. Fais toujours un essai sur une chute : la puissance et la vitesse se règlent dans xTool Creative Space.</p>
+  <p class="note">Les réglages de chaque matériau sont des points de départ. Fais toujours un essai sur une chute : la puissance et la vitesse se règlent dans le logiciel de ton graveur.</p>
 </div>
 
 
 <div class="modal" id="planModal" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="planTitle">
     <div id="planFree">
-      <h3 id="planTitle">Passe à Image Laser Pro</h3>
+      <h3 id="planTitle">Passe à Laser Pix Pro</h3>
       <p class="lead" id="planLead">Tu as utilisé tes exports gratuits du jour.</p>
     </div>
     <ul id="planFeatures">
@@ -449,7 +595,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
   };
   const $ = id => document.getElementById(id);
   const els = ["bri","con","gam","shp","thr","spk","tol","algo","inv","serp","bgw","wmm","dpi","bgOn","smooth","outline","ratio","shape"].reduce((o,k)=>(o[k]=$(k),o),{});
-  let mat = "peuplier", view = "mat", mode = "png", src = null, rot = 0, flip = false;
+  let mat = "peuplier", view = "sim", mode = "png", src = null, rot = 0, flip = false;
   let outBW = null, outW = 0, outH = 0, svgPath = "", timer = 0;
   let orient = null, orientKey = "";
   let box = { x: 0, y: 0, w: 1, h: 1 }, cropping = false;
@@ -478,7 +624,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
   Object.entries(MATS).forEach(([k, m]) => {
     const b = document.createElement("button"); b.className = "mat"; b.id = "mat-" + k;
     b.innerHTML = `<i style="background:${m.base}"></i><span>${m.name}</span>`;
-    b.addEventListener("click", () => { mat = k; applyPreset(); });
+    b.addEventListener("click", () => { mat = k; applyPreset(); if ($("autoOn").checked) autoTune(); });
     matsEl.appendChild(b);
   });
   function applyPreset() {
@@ -494,7 +640,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
   function loadFile(f) {
     if (!f || !f.type.startsWith("image/")) { setStatus("Ce fichier n'est pas une image. Choisis un JPG, PNG ou WebP.", true); return; }
     const url = URL.createObjectURL(f), img = new Image();
-    img.onload = () => { src = img; rot = 0; flip = false; resetBox(); $("srcName").textContent = f.name || "Image collée"; setStatus(""); schedule(); };
+    img.onload = () => { src = img; rot = 0; flip = false; strokes = []; eraseInfo(); resetBox(); $("srcName").textContent = f.name || "Image collée"; setStatus(""); if ($("autoOn").checked) autoTune(); else schedule(); };
     img.onerror = () => setStatus("Impossible de lire cette image. Essaie un autre format.", true);
     img.src = url;
   }
@@ -505,10 +651,10 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
   ["dragleave","drop"].forEach(t => $("drop").addEventListener(t, e => { e.preventDefault(); $("drop").classList.remove("over"); }));
   $("drop").addEventListener("drop", e => loadFile(e.dataTransfer.files[0]));
   document.addEventListener("paste", e => { const it = [...(e.clipboardData?.items || [])].find(i => i.type.startsWith("image/")); if (it) loadFile(it.getAsFile()); });
-  $("rotL").onclick = () => { rot = (rot + 3) % 4; resetBox(); schedule(); };
-  $("rotR").onclick = () => { rot = (rot + 1) % 4; resetBox(); schedule(); };
-  $("flipH").onclick = () => { flip = !flip; box.x = 1 - box.x - box.w; schedule(); };
-  $("reset").onclick = applyPreset;
+  $("rotL").onclick = () => { rot = (rot + 3) % 4; strokes = []; eraseInfo(); resetBox(); schedule(); };
+  $("rotR").onclick = () => { rot = (rot + 1) % 4; strokes = []; eraseInfo(); resetBox(); schedule(); };
+  $("flipH").onclick = () => { flip = !flip; strokes.forEach(st => st.pts.forEach(pt => pt[0] = 1 - pt[0])); box.x = 1 - box.x - box.w; schedule(); };
+  $("reset").onclick = () => { applyPreset(); $("autoInfo").textContent = ""; };
 
   // ---------- Orientation (mise en cache)
   function getOrient() {
@@ -543,6 +689,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
     b.classList.toggle("round", els.shape.value === "round");
   }
   function showCropper(on) {
+    if (on && erasing) showEraser(false);
     cropping = on;
     $("cropBtn").setAttribute("aria-pressed", on); $("cropLbl").textContent = on ? "Terminer" : "Recadrer"; if (on) $("cropCard").open = true;
     $("cropper").hidden = !on; $("compare").hidden = on; $("splitWrap").hidden = on; $("cropHint").hidden = !on;
@@ -590,18 +737,179 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
   $("cropper").addEventListener("pointerup", endDrag);
   $("cropper").addEventListener("pointercancel", endDrag);
 
+
+  // ---------- Gomme : retirer un élément de l'image
+  let strokes = [], erasing = false, eMode = "fill", curStroke = null;
+  const eraseView = $("eraser"), cE = $("cErase");
+  function eraseInfo() { $("eraseSub").textContent = strokes.length ? `${strokes.length} trait${strokes.length > 1 ? "s" : ""} · ${eMode === "fill" ? "disparaître" : "ne pas graver"}` : "Aucun élément"; }
+  function drawStrokes(g, sxw, syh, color) {
+    g.save(); g.strokeStyle = color; g.fillStyle = color; g.lineCap = "round"; g.lineJoin = "round";
+    for (const s of strokes) {
+      g.lineWidth = s.r * sxw * 2;
+      g.beginPath(); s.pts.forEach(([x, y], i) => i ? g.lineTo(x * sxw, y * syh) : g.moveTo(x * sxw, y * syh));
+      if (s.pts.length === 1) { g.arc(s.pts[0][0] * sxw, s.pts[0][1] * syh, s.r * sxw, 0, Math.PI * 2); g.fill(); } else g.stroke();
+    }
+    g.restore();
+  }
+  function paintEraser() {
+    const o = getOrient(), g = cE.getContext("2d");
+    g.drawImage(o, 0, 0, cE.width, cE.height);
+    g.globalAlpha = .55; drawStrokes(g, cE.width, cE.height, "#ff3b3b"); g.globalAlpha = 1;
+  }
+  function showEraser(on) {
+    if (on && cropping) showCropper(false);
+    erasing = on;
+    $("eraseBtn").setAttribute("aria-pressed", on); $("eraseLbl").textContent = on ? "Terminer" : "Gomme";
+    if (on) $("eraseCard").open = true;
+    eraseView.hidden = !on; $("compare").hidden = on; $("splitWrap").hidden = on;
+    if (on) {
+      const o = getOrient(), k = Math.min(1, 1400 / Math.max(o.width, o.height));
+      cE.width = Math.round(o.width * k); cE.height = Math.round(o.height * k);
+      paintEraser();
+    } else schedule();
+  }
+  $("eraseBtn").onclick = () => showEraser(!erasing);
+  const setEMode = m => { eMode = m; $("eFill").setAttribute("aria-pressed", m === "fill"); $("eBlank").setAttribute("aria-pressed", m === "blank"); eraseInfo(); if (!erasing) schedule(); };
+  $("eFill").onclick = () => setEMode("fill"); $("eBlank").onclick = () => setEMode("blank");
+  $("brush").addEventListener("input", () => { $("oBrush").textContent = $("brush").value; });
+  $("eUndo").onclick = () => { strokes.pop(); eraseInfo(); erasing ? paintEraser() : schedule(); };
+  $("eClear").onclick = () => { strokes = []; eraseInfo(); erasing ? paintEraser() : schedule(); };
+  const ePos = e => { const r = cE.getBoundingClientRect(); return [(e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height, r]; };
+  const ring = $("brushRing");
+  function moveRing(e) {
+    const [nx, ny, r] = ePos(e), er = eraseView.getBoundingClientRect(), d = +$("brush").value;
+    ring.style.width = ring.style.height = d + "px"; ring.style.left = (e.clientX - er.left) + "px"; ring.style.top = (e.clientY - er.top) + "px";
+    ring.hidden = nx < 0 || ny < 0 || nx > 1 || ny > 1;
+  }
+  eraseView.addEventListener("pointerdown", e => {
+    e.preventDefault(); eraseView.setPointerCapture(e.pointerId);
+    const [nx, ny, r] = ePos(e);
+    curStroke = { r: (+$("brush").value / 2) / r.width, pts: [[nx, ny]] }; strokes.push(curStroke);
+    moveRing(e); paintEraser(); eraseInfo();
+  });
+  eraseView.addEventListener("pointermove", e => {
+    moveRing(e);
+    if (!curStroke) return;
+    const [nx, ny] = ePos(e); curStroke.pts.push([nx, ny]); paintEraser();
+  });
+  const eEnd = () => { curStroke = null; };
+  eraseView.addEventListener("pointerup", eEnd); eraseView.addEventListener("pointercancel", eEnd);
+  eraseView.addEventListener("pointerleave", () => { ring.hidden = true; });
+
+  // masque de la gomme dans l'espace de la sortie (après recadrage)
+  function eraseMaskFor(o, sx, sy, sw, sh, W, H) {
+    if (!strokes.length) return null;
+    const c = document.createElement("canvas"); c.width = W; c.height = H;
+    const g = c.getContext("2d");
+    g.setTransform(W / sw, 0, 0, H / sh, -sx * W / sw, -sy * H / sh);
+    drawStrokes(g, o.width, o.height, "#000");
+    const a = g.getImageData(0, 0, W, H).data, m = new Uint8Array(W * H); let any = 0;
+    for (let i = 0; i < m.length; i++) if (a[i * 4 + 3] > 60) { m[i] = 1; any = 1; }
+    return any ? m : null;
+  }
+  // remplissage par l'entourage (pyramide pousser-tirer puis lissage)
+  function inpaint(d, W, H, hole) {
+    const N = W * H;
+    let bx0 = W, by0 = H, bx1 = 0, by1 = 0;
+    for (let i = 0; i < N; i++) if (hole[i]) { const x = i % W, y = (i / W) | 0; if (x < bx0) bx0 = x; if (x > bx1) bx1 = x; if (y < by0) by0 = y; if (y > by1) by1 = y; }
+    for (let ch = 0; ch < 3; ch++) {
+      let lv = [{ w: W, h: H, v: new Float32Array(N), m: new Float32Array(N) }];
+      for (let i = 0; i < N; i++) { lv[0].v[i] = d[i * 4 + ch]; lv[0].m[i] = hole[i] ? 0 : 1; }
+      while (lv[lv.length - 1].w > 1 || lv[lv.length - 1].h > 1) {
+        const p = lv[lv.length - 1], w = Math.max(1, (p.w + 1) >> 1), h = Math.max(1, (p.h + 1) >> 1);
+        const v = new Float32Array(w * h), m = new Float32Array(w * h);
+        for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+          let sv = 0, sm = 0;
+          for (let dy = 0; dy < 2; dy++) for (let dx = 0; dx < 2; dx++) {
+            const X = Math.min(p.w - 1, x * 2 + dx), Y = Math.min(p.h - 1, y * 2 + dy), k = Y * p.w + X;
+            sv += p.v[k] * p.m[k]; sm += p.m[k];
+          }
+          v[y * w + x] = sm ? sv / sm : 0; m[y * w + x] = sm ? 1 : 0;
+        }
+        lv.push({ w, h, v, m });
+      }
+      for (let l = lv.length - 2; l >= 0; l--) {
+        const p = lv[l], q = lv[l + 1];
+        for (let y = 0; y < p.h; y++) for (let x = 0; x < p.w; x++) {
+          const k = y * p.w + x; if (p.m[k]) continue;
+          const fx = Math.min(q.w - 1, Math.max(0, (x - .5) / 2)), fy = Math.min(q.h - 1, Math.max(0, (y - .5) / 2));
+          const x0 = Math.floor(fx), y0 = Math.floor(fy), x1 = Math.min(q.w - 1, x0 + 1), y1 = Math.min(q.h - 1, y0 + 1), tx = fx - x0, ty = fy - y0;
+          p.v[k] = (q.v[y0*q.w+x0]*(1-tx) + q.v[y0*q.w+x1]*tx)*(1-ty) + (q.v[y1*q.w+x0]*(1-tx) + q.v[y1*q.w+x1]*tx)*ty;
+          p.m[k] = 1;
+        }
+      }
+      const v = lv[0].v;
+      for (let it = 0; it < 12; it++) for (let y = Math.max(1, by0); y < Math.min(H - 1, by1 + 1); y++) for (let x = Math.max(1, bx0); x < Math.min(W - 1, bx1 + 1); x++) {
+        const k = y * W + x; if (!hole[k]) continue;
+        v[k] = (v[k-1] + v[k+1] + v[k-W] + v[k+W]) / 4;
+      }
+      for (let i = 0; i < N; i++) if (hole[i]) d[i * 4 + ch] = v[i];
+    }
+    // un peu de grain pour éviter une zone trop lisse
+    let s = 7; for (let i = 0; i < N; i++) if (hole[i]) { s = (s * 16807) % 2147483647; const n = (s % 13) - 6; for (let ch = 0; ch < 3; ch++) d[i*4+ch] = Math.max(0, Math.min(255, d[i*4+ch] + n)); }
+  }
+
+
+  // ---------- Réglage auto selon la photo et le matériau
+  const AUTO_TARGET = { peuplier: .60, boisdur: .62, mdf: .60, cuir: .63, liege: .63, carton: .58, toile: .58, ardoise: .46, carreau: .50, acry: .50, alu: .50, toilenoir: .48 };
+  function autoTune() {
+    const o = getOrient();
+    const sx = box.x * o.width, sy = box.y * o.height, sw = Math.max(1, box.w * o.width), sh = Math.max(1, box.h * o.height);
+    const k = Math.min(1, 420 / Math.max(sw, sh)), W = Math.max(8, Math.round(sw * k)), H = Math.max(8, Math.round(sh * k));
+    const c = document.createElement("canvas"); c.width = W; c.height = H;
+    const g = c.getContext("2d", { willReadFrequently: true }); g.fillStyle = "#fff"; g.fillRect(0, 0, W, H);
+    g.drawImage(o, sx, sy, sw, sh, 0, 0, W, H);
+    const d = g.getImageData(0, 0, W, H).data, N = W * H, L = new Float32Array(N), hist = new Uint32Array(256);
+    for (let i = 0, j = 0; i < N; i++, j += 4) { const v = 0.299*d[j] + 0.587*d[j+1] + 0.114*d[j+2]; L[i] = v; hist[v | 0]++; }
+    const pct = q => { let a = 0, t = q * N; for (let i = 0; i < 256; i++) { a += hist[i]; if (a >= t) return i; } return 255; };
+    const p2 = pct(.02), p98 = pct(.98), med = pct(.5);
+    // finesse des détails (énergie du laplacien)
+    let lap = 0; for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) { const i = y*W + x; lap += Math.abs(4*L[i] - L[i-1] - L[i+1] - L[i-W] - L[i+W]); }
+    lap /= (W - 2) * (H - 2);
+    // étirement du contraste : p2 → 8, p98 → 247
+    const lo = 8, hi = 247, f = Math.min(4, Math.max(.6, (hi - lo) / Math.max(12, p98 - p2)));
+    let c255 = 255 * 259 * (f - 1) / (259 + 255 * f);
+    let b255 = (lo - 128) / f - p2 + 128;
+    const con = Math.max(-60, Math.min(90, Math.round(c255 / 2.55))), bri = Math.max(-80, Math.min(80, Math.round(b255 / 2.55)));
+    // gamma : place les tons moyens là où ce matériau rend le mieux
+    const cv = con * 2.55, ff = (259*(cv+255)) / (255*(259-cv));
+    let mn = (ff * (med + bri * 2.55 - 128) + 128) / 255; mn = Math.min(.97, Math.max(.03, mn));
+    const target = AUTO_TARGET[mat] || .58;
+    const gam = Math.max(.4, Math.min(2.6, Math.log(mn) / Math.log(target)));
+    // netteté : plus pour les photos douces et les petites gravures
+    const wmm = +els.wmm.value || 100;
+    let shp = (MATS[mat].s.shp || 60) + (lap < 6 ? 70 : lap < 12 ? 30 : lap > 25 ? -40 : 0) + (wmm < 70 ? 40 : 0);
+    if (mode === "svg") shp = Math.min(shp, 40);
+    shp = Math.max(0, Math.min(250, Math.round(shp)));
+    els.con.value = con; els.bri.value = bri; els.gam.value = Math.round(gam * 100); els.shp.value = shp;
+    els.bgw.checked = p98 > 232 && !MATS[mat].s.inv;
+    if (mode === "svg" || els.algo.value === "threshold") {
+      // seuil d'Otsu sur l'image corrigée
+      const h2 = new Float64Array(256);
+      for (let i = 0; i < N; i++) { let v = ff * (L[i] + bri * 2.55 - 128) + 128; v = Math.max(0, Math.min(255, v)); v = 255 * Math.pow(v / 255, 1 / gam); if (MATS[mat].s.inv && mode !== "svg") v = 255 - v; h2[v | 0]++; }
+      let sum = 0; for (let i = 0; i < 256; i++) sum += i * h2[i];
+      let wB = 0, sB = 0, best = 0, thr = 128;
+      for (let t = 0; t < 256; t++) { wB += h2[t]; if (!wB) continue; const wF = N - wB; if (!wF) break; sB += t * h2[t]; const mB = sB / wB, mF = (sum - sB) / wF, v = wB * wF * (mB - mF) ** 2; if (v > best) { best = v; thr = t; } }
+      els.thr.value = Math.max(1, Math.min(254, thr));
+    }
+    const sgn = v => (v > 0 ? "+" : "") + v;
+    $("autoInfo").textContent = `Auto pour ${MATS[mat].name.toLowerCase()} : contraste ${sgn(con)}, luminosité ${sgn(bri)}, gamma ${gam.toFixed(2)}, netteté ${(shp / 100).toFixed(1)}`;
+    schedule();
+  }
+  $("autoBtn").onclick = autoTune;
+
   // ---------- Contrôles
   const fmt = { bri: v => v, con: v => v, gam: v => (v/100).toFixed(2), shp: v => (v/100).toFixed(1), thr: v => v, spk: v => v, tol: v => v };
   ["bri","con","gam","shp","thr","spk","tol"].forEach(k => els[k].addEventListener("input", schedule));
   ["algo","inv","serp","bgw","dpi","bgOn","smooth","outline"].forEach(k => els[k].addEventListener("change", schedule));
   els.wmm.addEventListener("input", schedule);
-  $("vMat").onclick = () => setView("mat"); $("vBw").onclick = () => setView("bw");
-  function setView(v) { view = v; $("vMat").setAttribute("aria-pressed", v === "mat"); $("vBw").setAttribute("aria-pressed", v === "bw"); paintOut(); }
+  $("vMat").onclick = () => setView("mat"); $("vBw").onclick = () => setView("bw"); $("vSim").onclick = () => setView("sim"); $("playBtn").onclick = () => playEngrave();
+  function setView(v) { stopAnim(); view = v; $("vSim").setAttribute("aria-pressed", v === "sim"); $("vMat").setAttribute("aria-pressed", v === "mat"); $("vBw").setAttribute("aria-pressed", v === "bw"); paintOut(); }
   $("mPng").onclick = () => setMode("png"); $("mSvg").onclick = () => setMode("svg");
   function setMode(m) {
     mode = m;
     $("mPng").setAttribute("aria-pressed", m === "png"); $("mSvg").setAttribute("aria-pressed", m === "svg");
-    $("export").textContent = m === "png" ? "Enregistrer le PNG pour xTool" : "Enregistrer le SVG pour xTool";
+    $("export").textContent = m === "png" ? "Enregistrer le PNG" : "Enregistrer le SVG";
     $("tipPng").hidden = m !== "png"; $("tipSvg").hidden = m !== "svg";
     if (m === "svg") { els.shp.value = 0; els.bgw.checked = true; }
     schedule();
@@ -622,7 +930,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
     $("algoField").hidden = svg; $("serpLbl").hidden = svg; $("dpiField").hidden = svg; $("roDpiWrap").hidden = svg;
     $("spkRow").hidden = !svg; $("smoothLbl").hidden = !svg; $("outlineLbl").hidden = !svg;
     $("tolRow").hidden = !els.bgOn.checked;
-    if (cropping) return;
+    if (cropping || (typeof erasing !== "undefined" && erasing)) return;
     clearTimeout(timer); timer = setTimeout(process, svg ? 120 : 60);
   }
 
@@ -762,6 +1070,8 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
 
     const d = g.getImageData(0, 0, W, H).data, N = W * H;
     const mask = new Uint8Array(N);
+    const er = eraseMaskFor(o, sx, sy, sw, sh, W, H);
+    if (er) { if (eMode === "fill") inpaint(d, W, H, er); else for (let i = 0; i < N; i++) if (er[i]) mask[i] = 1; }
     if (els.shape.value === "round") {
       const cx = W/2, cy = H/2, rx2 = (W/2)**2, ry2 = (H/2)**2;
       for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (((x+.5-cx)**2)/rx2 + ((y+.5-cy)**2)/ry2 > 1) mask[y*W+x] = 1;
@@ -827,12 +1137,15 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
     $("roMm").textContent = `${wmm.toFixed(1).replace(".0","")} × ${realH.toFixed(1)} mm`;
     $("roDpi").textContent = `${dpi} DPI`;
     $("roMs").textContent = `calcul ${Math.round(performance.now() - t0)} ms`;
+    laserCalc();
     $("fallback").hidden = true;
   }
 
   function hex(h) { return [1,3,5].map(i => parseInt(h.slice(i, i+2), 16)); }
   function paintOut() {
     if (!outBW) return;
+    if (view === "sim") return paintSim();
+    stopAnim();
     const c = $("cOut"); c.width = outW; c.height = outH;
     const g = c.getContext("2d"), m = MATS[mat];
     if (mode === "svg") {
@@ -853,6 +1166,227 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
     }
     g.putImageData(id, 0, 0);
   }
+
+  const KIND = { peuplier: "wood", boisdur: "wood", mdf: "mdf", ardoise: "slate", carreau: "tile", acry: "acrylic", cuir: "leather", alu: "metal", liege: "cork", toilenoir: "canvas", toile: "canvas", carton: "paper" };
+
+  // ---------- Rendu réaliste de la gravure
+  let texCache = { key: "", c: null }, simBusy = 0;
+  function rnd(w, h, seed) {
+    const c = document.createElement("canvas"); c.width = Math.max(1, w); c.height = Math.max(1, h);
+    const g = c.getContext("2d"), id = g.createImageData(c.width, c.height); let s = seed || 1;
+    for (let i = 0; i < id.data.length; i += 4) { s = (s * 16807) % 2147483647; const v = s % 256; id.data[i] = id.data[i+1] = id.data[i+2] = v; id.data[i+3] = 255; }
+    g.putImageData(id, 0, 0); return c;
+  }
+  function layer(g, src, W, H, op, alpha) { g.save(); g.globalCompositeOperation = op; g.globalAlpha = alpha; g.imageSmoothingEnabled = true; g.imageSmoothingQuality = "high"; g.drawImage(src, 0, 0, W, H); g.restore(); }
+  function texture(W, H) {
+    const key = mat + W + "x" + H;
+    if (texCache.key === key) return texCache.c;
+    const c = document.createElement("canvas"); c.width = W; c.height = H;
+    const g = c.getContext("2d"), m = MATS[mat], k = KIND[mat] || "mdf";
+    g.fillStyle = m.base; g.fillRect(0, 0, W, H);
+    if (k === "wood") {
+      layer(g, rnd(5, 90, 7), W, H, "overlay", .55);
+      layer(g, rnd(12, 260, 3), W, H, "overlay", .35);
+      layer(g, rnd(40, 700, 11), W, H, "soft-light", .35);
+      const gr = g.createLinearGradient(0, 0, W, 0); gr.addColorStop(0, "rgba(90,50,20,.12)"); gr.addColorStop(.5, "rgba(255,255,255,.04)"); gr.addColorStop(1, "rgba(90,50,20,.14)");
+      g.fillStyle = gr; g.fillRect(0, 0, W, H);
+    } else if (k === "mdf") { layer(g, rnd(W >> 1, H >> 1, 5), W, H, "overlay", .18); layer(g, rnd(30, 30, 9), W, H, "soft-light", .3); }
+    else if (k === "slate") { layer(g, rnd(W >> 1, H >> 1, 4), W, H, "overlay", .35); layer(g, rnd(18, 60, 8), W, H, "soft-light", .6); layer(g, rnd(70, 20, 2), W, H, "overlay", .2); }
+    else if (k === "tile" || k === "acrylic") {
+      layer(g, rnd(20, 20, 6), W, H, "soft-light", .12);
+      const gr = g.createLinearGradient(0, 0, W, H); gr.addColorStop(0, "rgba(255,255,255,.14)"); gr.addColorStop(.45, "rgba(255,255,255,0)"); gr.addColorStop(.55, "rgba(255,255,255,.06)"); gr.addColorStop(1, "rgba(255,255,255,0)");
+      g.fillStyle = gr; g.fillRect(0, 0, W, H);
+    } else if (k === "leather") { layer(g, rnd(W >> 1, H >> 1, 3), W, H, "overlay", .3); layer(g, rnd(16, 16, 12), W, H, "soft-light", .5); }
+    else if (k === "metal") { layer(g, rnd(3, H >> 1, 10), W, H, "overlay", .4); const gr = g.createLinearGradient(0, 0, W, 0); gr.addColorStop(0, "rgba(255,255,255,.12)"); gr.addColorStop(.5, "rgba(255,255,255,0)"); gr.addColorStop(1, "rgba(255,255,255,.1)"); g.fillStyle = gr; g.fillRect(0, 0, W, H); }
+    else if (k === "cork") { layer(g, rnd(W >> 2, H >> 2, 13), W, H, "overlay", .65); layer(g, rnd(W >> 1, H >> 1, 14), W, H, "overlay", .35); }
+    else if (k === "paper") { layer(g, rnd(W >> 1, H >> 1, 15), W, H, "overlay", .15); layer(g, rnd(90, 8, 16), W, H, "soft-light", .4); }
+    else if (k === "canvas") {
+      const t = document.createElement("canvas"); t.width = t.height = 6; const tg = t.getContext("2d");
+      tg.fillStyle = "rgba(0,0,0,.22)"; tg.fillRect(0, 0, 6, 1); tg.fillRect(0, 3, 6, 1); tg.fillStyle = "rgba(255,255,255,.12)"; tg.fillRect(0, 0, 1, 6); tg.fillRect(3, 0, 1, 6);
+      g.save(); g.globalCompositeOperation = "overlay"; g.fillStyle = g.createPattern(t, "repeat"); g.fillRect(0, 0, W, H); g.restore();
+      layer(g, rnd(W >> 1, H >> 1, 17), W, H, "overlay", .15);
+    }
+    texCache = { key, c }; return c;
+  }
+  function burnMask(W, H) {
+    // Opacité de la marque laser : 1 = gravé
+    const c = document.createElement("canvas"); c.width = W; c.height = H;
+    const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0, 0, W, H);
+    if (mode === "svg") {
+      g.save(); g.scale(W / outW, H / outH); g.fillStyle = "#000"; g.strokeStyle = "#000";
+      const p = new Path2D(svgPath);
+      if (els.outline.checked) { g.lineWidth = Math.max(1, outW / 400); g.stroke(p); } else g.fill(p, "evenodd");
+      g.restore();
+    } else {
+      const b = document.createElement("canvas"); b.width = outW; b.height = outH;
+      const bg = b.getContext("2d"), id = bg.createImageData(outW, outH);
+      for (let i = 0, j = 0; i < outBW.length; i++, j += 4) { id.data[j] = id.data[j+1] = id.data[j+2] = outBW[i]; id.data[j+3] = 255; }
+      bg.putImageData(id, 0, 0);
+      g.imageSmoothingEnabled = true; g.imageSmoothingQuality = "high";
+      g.filter = "blur(" + Math.max(0.3, 0.5 * W / outW) + "px)";
+      g.drawImage(b, 0, 0, W, H); g.filter = "none";
+    }
+    return c;
+  }
+  function renderSim(W, H) {
+    const m = MATS[mat], tex = texture(W, H), mask = burnMask(W, H);
+    const out = document.createElement("canvas"); out.width = W; out.height = H;
+    const g = out.getContext("2d"); g.drawImage(tex, 0, 0);
+    // couche de brûlure teintée par la matière
+    const L = document.createElement("canvas"); L.width = W; L.height = H;
+    const lg = L.getContext("2d"); lg.fillStyle = m.burn; lg.fillRect(0, 0, W, H);
+    lg.globalCompositeOperation = "overlay"; lg.globalAlpha = .35; lg.drawImage(tex, 0, 0); lg.globalAlpha = 1; lg.globalCompositeOperation = "source-over";
+    const md = mask.getContext("2d").getImageData(0, 0, W, H).data, ld = lg.getImageData(0, 0, W, H);
+    for (let i = 0, j = 0; i < W * H; i++, j += 4) ld.data[j+3] = Math.min(255, (255 - md[j]) * 1.08);
+    lg.putImageData(ld, 0, 0);
+    // léger creux : ombre décalée d'un pixel sous la marque
+    g.save(); g.globalAlpha = .22; g.globalCompositeOperation = "multiply"; g.drawImage(L, .8, .8); g.restore();
+    g.drawImage(L, 0, 0);
+    return out;
+  }
+  function simSize() { const k = Math.min(1, 1400 / Math.max(outW, outH)); return [Math.max(8, Math.round(outW * k)), Math.max(8, Math.round(outH * k))]; }
+  function paintSim() {
+    stopAnim();
+    const [W, H] = simSize(), c = $("cOut"); c.width = W; c.height = H;
+    c.getContext("2d").drawImage(renderSim(W, H), 0, 0);
+  }
+  let anim = 0;
+  function stopAnim() { if (anim) { cancelAnimationFrame(anim); anim = 0; } $("playBtn").textContent = "▶ Graver"; }
+  function playEngrave() {
+    if (anim) { paintSim(); return; }
+    if (view !== "sim") setView("sim");
+    const [W, H] = simSize(), c = $("cOut"); c.width = W; c.height = H;
+    const g = c.getContext("2d"), tex = texture(W, H), fin = renderSim(W, H);
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) { g.drawImage(fin, 0, 0); return; }
+    $("playBtn").textContent = "■ Arrêter";
+    const dur = 7000, t0 = performance.now();
+    const step = t => {
+      const p = Math.min(1, (t - t0) / dur), y = Math.floor(p * H);
+      g.drawImage(tex, 0, 0);
+      if (y > 0) g.drawImage(fin, 0, 0, W, y, 0, 0, W, y);
+      if (p < 1) {
+        const x = (Math.sin(t / 45) * .5 + .5) * W;
+        const gl = g.createRadialGradient(x, y, 0, x, y, Math.max(10, W / 40));
+        gl.addColorStop(0, "rgba(255,255,255,1)"); gl.addColorStop(.15, "rgba(255,140,140,.95)"); gl.addColorStop(1, "rgba(229,37,47,0)");
+        g.fillStyle = gl; g.beginPath(); g.arc(x, y, Math.max(10, W / 40), 0, Math.PI * 2); g.fill();
+        g.fillStyle = "rgba(255,140,140,.35)"; g.fillRect(0, y, W, Math.max(1, H / 400));
+        anim = requestAnimationFrame(step);
+      } else { anim = 0; $("playBtn").textContent = "▶ Graver"; }
+    };
+    anim = requestAnimationFrame(step);
+  }
+
+
+  // ---------- Calcul de la vitesse et de la puissance
+  // Références : laser diode 20 W, 10 lignes/mm (254 DPI), gravure tramée. Découpe : vitesse à 100 % pour une épaisseur donnée.
+  const LREF = {
+    peuplier: { v: 250, p: 45, cut: { t: 3, v: 6 } },   boisdur: { v: 200, p: 55, cut: { t: 3, v: 4 } },
+    mdf: { v: 250, p: 40, cut: { t: 3, v: 3 } },        ardoise: { v: 150, p: 20, cut: null },
+    carreau: { v: 200, p: 30, cut: null },              acry: { v: 150, p: 40, cut: { t: 3, v: 1.5 } },
+    cuir: { v: 150, p: 30, cut: { t: 2, v: 8 } },       alu: { v: 150, p: 60, cut: null },
+    liege: { v: 300, p: 25, cut: { t: 3, v: 10 } },     carton: { v: 200, p: 30, cut: { t: 2, v: 20 } },
+    toilenoir: { v: 300, p: 20, cut: null },            toile: { v: 250, p: 30, cut: { t: .5, v: 20 } },
+  };
+  const TECH = { diode: { w: 20, vmax: 600, minP: 5, cutP: 100, name: "laser diode" }, co2: { w: 50, vmax: 800, minP: 10, cutP: 70, name: "laser CO2" }, fibre: { w: 30, vmax: 7000, minP: 5, cutP: 100, name: "laser fibre" } };
+  const EFF = {
+    co2: { wood: 1.6, mdf: 1.6, leather: 1.6, cork: 1.6, paper: 1.6, canvas: 1.4, acrylic: 2, slate: 1, tile: 1, metal: .7 },
+    fibre: { wood: .35, mdf: .35, leather: .5, cork: .3, paper: .3, canvas: .4, acrylic: .25, slate: 1.1, tile: .9, metal: 3 },
+  };
+  const WARN = {
+    diode: { acry: "Le laser diode ne grave que l'acrylique opaque et foncé, pas le transparent ni le bleu.", alu: "Grave l'alu anodisé (couche colorée), pas l'alu nu." },
+    co2: { alu: "Le CO2 marque l'alu anodisé mais ne grave pas le métal nu." },
+    fibre: { _organic: "Le laser fibre est fait pour le métal. Sur ce matériau, le résultat est souvent faible ou irrégulier : un laser diode ou CO2 conviendra mieux." },
+  };
+  const lsGet = (k, d) => { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } };
+  const lsSet = (k, v) => { try { v == null ? localStorage.removeItem(k) : localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+  const fmtT = s => { s = Math.round(s); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), r = s % 60; return h ? `${h} h ${String(m).padStart(2, "0")}` : m ? `${m} min ${String(r).padStart(2, "0")} s` : `${r} s`; };
+  const r5 = v => v >= 100 ? Math.round(v / 5) * 5 : v >= 20 ? Math.round(v) : Math.round(v * 10) / 10;
+  function curJob() {
+    if (mode === "svg") return els.outline.checked ? "cut" : "fill";
+    return els.algo.value === "gray" ? "gray" : "photo";
+  }
+  function machineFields(tech) {
+    if ($("lw").dataset.tech === tech) return;
+    const st = lsGet("lp-mach-" + tech, null) || {};
+    $("lw").value = st.w || TECH[tech].w; $("lvmax").value = st.vmax || TECH[tech].vmax; $("lw").dataset.tech = tech;
+  }
+  function calKey(tech, W, job) { return `lp-cal-${tech}-${W}-${mat}-${job === "cut" ? "cut" : "eng"}`; }
+  function laserCalc() {
+    if (!$("pwV")) return;
+    const tech = $("machine").value || "diode"; machineFields(tech);
+    const T = TECH[tech], W = Math.max(1, +$("lw").value || T.w), vmax = Math.max(10, +$("lvmax").value || T.vmax);
+    const job = curJob(), ref = LREF[mat] || LREF.peuplier, kind = KIND[mat] || "wood";
+    const eff = (EFF[tech] || {})[kind] || 1, Weff = W * eff, inten = +$("lint").value || 1;
+    const warn = [];
+    if (WARN[tech]?.[mat]) warn.push(WARN[tech][mat]);
+    if (tech === "fibre" && !["slate", "tile", "metal"].includes(kind)) warn.push(WARN.fibre._organic);
+    $("lthickF").hidden = job !== "cut";
+    const jobName = { photo: "Gravure d'image tramée", gray: "Gravure en niveaux de gris", fill: "Gravure remplie (SVG)", cut: "Découpe (contour SVG)" }[job];
+    $("pwJob").innerHTML = `${jobName} <em>· ${MATS[mat].name} · ${T.name} ${W} W</em>`;
+    const cal = lsGet(calKey(tech, W, job), null);
+    let v, p, passes = 1;
+    $("pwPLbl").textContent = "Puissance"; $("pwPUnit").textContent = "%";
+    if (job === "cut") {
+      const c = ref.cut, t = Math.max(.2, +$("lthick").value || (c ? c.t : 3));
+      $("pwXLbl").textContent = "Épaisseur"; $("pwXUnit").textContent = "mm"; $("pwX").textContent = t;
+      if (!c) {
+        $("pwV").textContent = $("pwP").textContent = $("pwN").textContent = "—";
+        warn.unshift(`${MATS[mat].name} ne se découpe pas au laser : grave-le seulement (décoche « Contour seul »).`);
+        $("pwGrid").textContent = "—"; $("pwTime").textContent = ""; showWarn(warn); $("pwSub").textContent = "découpe impossible"; return;
+      }
+      p = cal ? cal.p : T.cutP;
+      // vitesse en une seule passe ; avec n passes, chaque passe peut aller n fois plus vite
+      const base = cal ? cal.v / (cal.passes || 1) * Math.pow((cal.t || c.t) / t, 1.6) : c.v * (Weff / 20) * Math.pow(c.t / t, 1.6) * (p / 100);
+      const vmin = tech === "diode" ? 2 : 3;
+      while (base * passes < vmin && passes < 12) passes++;
+      v = Math.min(vmax, base * passes);
+      if (passes >= 12) warn.push(`${t} mm est trop épais pour ${W} W : réduis l'épaisseur ou garde la gravure.`);
+      if (tech === "co2") warn.push("Sur un tube CO2, rester vers 70 % de puissance préserve sa durée de vie.");
+      const vs = [.7, .85, 1, 1.15, 1.3].map(k => r5(v * k));
+      $("pwGrid").textContent = `Découpe 5 petits carrés de 10 mm à ${p} % avec ces vitesses :\n${vs.join(" · ")} mm/s (${passes} passe${passes > 1 ? "s" : ""}).\nGarde la plus rapide qui traverse complètement.`;
+      $("pwTime").textContent = "";
+    } else {
+      const dpi = mode === "svg" ? 254 : +els.dpi.value, d = 25.4 / dpi;
+      $("pwXLbl").textContent = "Lignes"; $("pwXUnit").textContent = "/mm"; $("pwX").textContent = (dpi / 25.4).toFixed(1);
+      // énergie nécessaire par mm² (puissance × temps / surface)
+      let E = cal ? (cal.p / 100 * Weff) / (cal.v * (25.4 / (cal.dpi || dpi))) : (ref.p / 100 * 20) / (ref.v * (25.4 / 254));
+      E *= inten;
+      let pT = Math.min(85, Math.max(T.minP, cal ? cal.p : ref.p));
+      v = (pT / 100 * Weff) / (E * d);
+      v = Math.max(5, Math.min(vmax, v));
+      p = E * d * v / Weff * 100;
+      if (p > 100) { p = 100; v = Math.max(5, Weff / (E * d)); }
+      if (p < T.minP) { p = T.minP; warn.push(`Ta machine est très puissante pour ce matériau : même à ${vmax} mm/s il faut ${T.minP} % minimum. Augmente la vitesse max si ta machine le permet, ou fais un essai.`); }
+      if (job === "gray") { $("pwPLbl").textContent = "Puissance max"; }
+      const ps = [.7, .85, 1, 1.15, 1.3].map(k => Math.max(1, Math.min(100, Math.round(p * k))));
+      const vs = [.75, 1, 1.25].map(k => r5(Math.min(vmax, v * k)));
+      $("pwGrid").textContent = `Fais une grille de test (XCS : « Matrice de test matériau », LightBurn : « Outils laser → Test de matériau ») :\nPuissance ${ps[0]} → ${ps[4]} % · Vitesse ${vs[0]} → ${vs[2]} mm/s · ${(dpi / 25.4).toFixed(1)} lignes/mm\nGarde la case la plus fidèle à l'aperçu, puis enregistre-la ci-dessous.` + (job === "gray" ? `\nNiveaux de gris : puissance mini ≈ ${Math.max(1, Math.round(p * .15))} %.` : "");
+      // durée estimée
+      const wmm = Math.min(500, Math.max(5, +els.wmm.value || 100)), hmm = outW ? wmm * outH / outW : wmm;
+      const rows = hmm * dpi / 25.4, t = rows * (wmm / v + 0.08);
+      $("pwTime").textContent = `Durée estimée de la gravure : environ ${fmtT(t)} pour ${wmm.toFixed(0)} × ${hmm.toFixed(0)} mm.`;
+    }
+    $("pwV").textContent = r5(v); $("pwP").textContent = Math.round(p); $("pwN").textContent = passes;
+    $("pwSub").innerHTML = `${r5(v)} mm/s · ${Math.round(p)} %` + (cal ? '<span class="pw-badge">testé</span>' : "");
+    $("calForget").hidden = !cal;
+    if (!$("calV").matches(":focus") && !$("calP").matches(":focus")) { $("calV").value = r5(v); $("calP").value = Math.round(p); }
+    showWarn(warn);
+    window.__laserSettings = { v: r5(v), p: Math.round(p), passes };
+  }
+  function showWarn(w) { $("pwWarn").hidden = !w.length; $("pwWarn").textContent = w.join(" "); }
+  ["lw", "lvmax", "lthick"].forEach(id => $(id).addEventListener("input", () => {
+    const tech = $("machine").value; lsSet("lp-mach-" + tech, { w: +$("lw").value, vmax: +$("lvmax").value }); laserCalc();
+  }));
+  $("lint").addEventListener("change", laserCalc);
+  $("machine").addEventListener("change", () => { $("lw").dataset.tech = ""; laserCalc(); });
+  $("calSave").onclick = () => {
+    const tech = $("machine").value, W = +$("lw").value, job = curJob(), v = +$("calV").value, p = +$("calP").value;
+    if (!(v > 0 && p > 0)) return;
+    lsSet(calKey(tech, W, job), job === "cut" ? { v, p, t: +$("lthick").value, passes: +$("pwN").textContent || 1 } : { v: v / (+$("lint").value || 1), p, dpi: mode === "svg" ? 254 : +els.dpi.value });
+    laserCalc();
+  };
+  $("calForget").onclick = () => { lsSet(calKey($("machine").value, +$("lw").value, curJob()), null); laserCalc(); };
 
   // ---------- Export
   const CRC = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
@@ -880,8 +1414,24 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
 
   let lastSaved = "";
   $("showFile").onclick = () => lastSaved && window.laser.showFile(lastSaved);
+
+  // ---------- Type de graveur
+  const MACH_DPI = { diode: "318", co2: "254", fibre: "508" };
+  $("machine").addEventListener("change", () => { els.dpi.value = MACH_DPI[$("machine").value]; try { localStorage.setItem("lp-machine", $("machine").value); } catch (e) {} schedule(); });
+  try { const m = localStorage.getItem("lp-machine"); if (m && MACH_DPI[m]) $("machine").value = m; } catch (e) {}
+  // ---------- Envoi vers le logiciel du graveur (version Windows)
+  let sendTarget = "";
+  if (window.laser?.sendList) {
+    window.laser.sendList().then(list => {
+      const sel = $("sendTo");
+      list.forEach(s => { const o = document.createElement("option"); o.value = s.id; o.textContent = s.name + (s.installed ? "" : " (à localiser)"); if (s.selected) o.selected = true; sel.appendChild(o); });
+      $("sendRow").hidden = false;
+    });
+    $("sendBtn").onclick = () => { sendTarget = $("sendTo").value; $("export").click(); };
+  }
   $("export").addEventListener("click", async () => {
     if (cropping) showCropper(false);
+    if (erasing) showEraser(false);
     clearTimeout(timer); process();
     if (!outBW) return;
     const svg = mode === "svg";
@@ -897,21 +1447,244 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
     }
     const base = ($("srcName").textContent || "gravure").replace(/\.[^.]+$/, "").replace(/[^\w\- ]+/g, "").trim() || "gravure";
     const name = svg ? `${base}_vecteur_${Math.round(+els.wmm.value)}mm.svg` : `${base}_${MATS[mat].name.replace(/[^\w]+/g, "-")}_${dpi}dpi.png`;
-    if (!window.laser) { setStatus("Lance l'application Image Laser pour enregistrer.", true); return; }
+    if (!window.laser) { setStatus("Lance l'application Laser Pix pour enregistrer.", true); return; }
     const st = await window.laser.status();
     if (!st.pro && st.remaining <= 0) { window.openPlan("limit"); return; }
-    const res = await window.laser.saveFile(name, new Uint8Array(await blob.arrayBuffer()));
+    const target = sendTarget; sendTarget = "";
+    const bytes = new Uint8Array(await blob.arrayBuffer());
+    const res = target ? await window.laser.sendTo(target, name, bytes) : await window.laser.saveFile(name, bytes);
     window.renderPlan(res.state);
     if (res.result === "saved") {
       const left = res.state.pro ? "" : ` · ${res.state.remaining} export${res.state.remaining > 1 ? "s" : ""} gratuit${res.state.remaining > 1 ? "s" : ""} restant${res.state.remaining > 1 ? "s" : ""} aujourd'hui`;
       setStatus("Enregistré : " + res.path.split(/[\\/]/).pop() + left);
       lastSaved = res.path; $("showFile").hidden = false;
-    } else if (res.result === "limit") window.openPlan("limit");
+    } else if (res.result === "sent") {
+      const left = res.state.pro ? "" : ` · ${res.state.remaining} export${res.state.remaining > 1 ? "s" : ""} gratuit${res.state.remaining > 1 ? "s" : ""} restant${res.state.remaining > 1 ? "s" : ""}`;
+      setStatus(`Ouvert dans ${res.app}${left}. Si l'image n'apparaît pas, glisse le fichier depuis l'Explorateur dans le logiciel.`);
+      lastSaved = res.path; $("showFile").hidden = false;
+    } else if (res.result === "notfound") setStatus(`${res.app} est introuvable sur ce PC. Choisis son fichier .exe pour l'ajouter.`, true);
+    else if (res.result === "error") setStatus(res.message || "Impossible d'ouvrir le logiciel.", true);
+    else if (res.result === "limit") window.openPlan("limit");
     else setStatus("Enregistrement annulé.");
   });
 
+
+  // ---------- Modification IA
+  (() => {
+    let S = null, canImages = false, undoSnap = null, busy = false;
+    const out = $("aiOut"), go = $("aiGo");
+    const say = (t, err) => { out.textContent = t; out.classList.toggle("err", !!err); };
+    let tried = null;
+    async function getS() {
+      if (S) return S;
+      if (!tried) tried = (async () => {
+        for (let i = 0; i < 30 && !window.claude?.use; i++) await new Promise(r => setTimeout(r, 100));
+        try { S = window.claude?.use ? await window.claude.use("sample") : null; } catch (e) { S = null; }
+        if (S) { try { canImages = !!(await S.limits())?.images; } catch (e) { canImages = false; } }
+        $("aiState").textContent = S ? (canImages ? "IA · voit ta photo" : "IA") : "Assistant intégré";
+        return S;
+      })();
+      await tried; if (!S) tried = null; return S;
+    }
+    getS();
+    $("aiChips").addEventListener("click", e => { if (e.target.classList.contains("chip")) { $("aiPrompt").value = e.target.textContent; } });
+    function snapshot() {
+      return { mat, mode, box: { ...box }, strokes: JSON.parse(JSON.stringify(strokes)), eMode,
+        v: Object.fromEntries(["bri","con","gam","shp","thr","spk","tol","wmm","dpi","algo","ratio","shape"].map(k => [k, els[k].value])),
+        c: Object.fromEntries(["inv","serp","bgw","bgOn","smooth","outline"].map(k => [k, els[k].checked])) };
+    }
+    function restore(s) {
+      mat = s.mat; document.querySelectorAll(".mat").forEach(b => b.setAttribute("aria-pressed", b.id === "mat-" + mat));
+      Object.entries(s.v).forEach(([k, v]) => els[k].value = v); Object.entries(s.c).forEach(([k, v]) => els[k].checked = v);
+      box = s.box; strokes = s.strokes; eMode = s.eMode; drawBox(); eraseInfo();
+      if (mode !== s.mode) setMode(s.mode); else schedule();
+    }
+    const clamp = (v, a, b) => Math.max(a, Math.min(b, Number(v)));
+    const isNum = v => typeof v === "number" && isFinite(v);
+    function apply(r) {
+      const s = r.reglages || {};
+      if (s.materiau && MATS[s.materiau] && s.materiau !== mat) { mat = s.materiau; applyPreset(); }
+      if (s.mode === "png" || s.mode === "svg") { if (s.mode !== mode) setMode(s.mode); }
+      const num = { luminosite: ["bri", -100, 100], contraste: ["con", -100, 100], nettete: ["shp", 0, 300], seuil: ["thr", 1, 254], tolerance_fond: ["tol", 5, 140], largeur_mm: ["wmm", 5, 500] };
+      for (const [k, [id, a, b]] of Object.entries(num)) if (isNum(s[k])) els[id].value = Math.round(clamp(s[k], a, b));
+      if (isNum(s.gamma)) els.gam.value = Math.round(clamp(s.gamma, .3, 3) * 100);
+      if (isNum(s.nettete_x)) els.shp.value = Math.round(clamp(s.nettete_x, 0, 3) * 100);
+      if (typeof s.tramage === "string" && [...els.algo.options].some(o => o.value === s.tramage)) els.algo.value = s.tramage;
+      const bools = { inverser: "inv", blanc_pur: "bgw", supprimer_fond: "bgOn", contour_seul: "outline", lisser: "smooth" };
+      for (const [k, id] of Object.entries(bools)) if (typeof s[k] === "boolean") els[id].checked = s[k];
+      if (s.forme === "rect" || s.forme === "round") els.shape.value = s.forme;
+      const c = s.recadrage;
+      if (c && [c.x, c.y, c.w, c.h].every(isNum)) {
+        const x = clamp(c.x, 0, .95), y = clamp(c.y, 0, .95);
+        box = { x, y, w: clamp(c.w, .05, 1 - x), h: clamp(c.h, .05, 1 - y) }; els.ratio.value = "0";
+      } else if (c === "entier") box = { x: 0, y: 0, w: 1, h: 1 };
+      if (Array.isArray(s.gomme)) {
+        s.gomme.slice(0, 20).forEach(z => { if ([z.x, z.y, z.r].every(isNum)) strokes.push({ r: clamp(z.r, .005, .3), pts: [[clamp(z.x, 0, 1), clamp(z.y, 0, 1)]] }); });
+        if (s.gomme_mode === "fill" || s.gomme_mode === "blank") eMode = s.gomme_mode;
+        $("eFill").setAttribute("aria-pressed", eMode === "fill"); $("eBlank").setAttribute("aria-pressed", eMode === "blank");
+      }
+      drawBox(); eraseInfo(); updCropSub();
+      schedule();
+    }
+
+    // ---- Assistant intégré (sans Claude, hors ligne)
+    function subjectBox() {
+      const o = getOrient(), k = Math.min(1, 220 / Math.max(o.width, o.height)), W = Math.max(8, Math.round(o.width * k)), H = Math.max(8, Math.round(o.height * k));
+      const c = document.createElement("canvas"); c.width = W; c.height = H; const g = c.getContext("2d", { willReadFrequently: true }); g.drawImage(o, 0, 0, W, H);
+      const d = g.getImageData(0, 0, W, H).data, L = new Float32Array(W * H);
+      for (let i = 0, j = 0; i < L.length; i++, j += 4) L[i] = .299*d[j] + .587*d[j+1] + .114*d[j+2];
+      // couleur du fond = médiane des bords ; saillance = contours + écart au fond, pondérée vers le centre
+      const edge = []; for (let x = 0; x < W; x++) { edge.push(L[x], L[(H-1)*W + x]); } for (let y = 0; y < H; y++) { edge.push(L[y*W], L[y*W + W - 1]); }
+      edge.sort((a, b) => a - b); const bg = edge[edge.length >> 1];
+      const ex = new Float64Array(W), ey = new Float64Array(H); let tot = 0;
+      for (let y = 1; y < H - 1; y++) for (let x = 1; x < W - 1; x++) {
+        const i = y*W + x, gx = L[i+1] - L[i-1], gy = L[i+W] - L[i-W];
+        const cx = (x / W - .5), cy = (y / H - .5), wgt = 1 - Math.min(.7, Math.hypot(cx, cy));
+        const e = (Math.hypot(gx, gy) + .6 * Math.abs(L[i] - bg)) * wgt;
+        ex[x] += e; ey[y] += e; tot += e;
+      }
+      if (!tot) return { x: 0, y: 0, w: 1, h: 1 };
+      const span = (arr, n) => { let a = 0, lo = 0, hi = n - 1; for (let i = 0; i < n; i++) { a += arr[i]; if (a >= tot * .08) { lo = i; break; } } a = 0; for (let i = n - 1; i >= 0; i--) { a += arr[i]; if (a >= tot * .08) { hi = i; break; } } return [lo / n, (hi + 1) / n]; };
+      let [x0, x1] = span(ex, W), [y0, y1] = span(ey, H);
+      const px = (x1 - x0) * .08, py = (y1 - y0) * .08;
+      x0 = Math.max(0, x0 - px); x1 = Math.min(1, x1 + px); y0 = Math.max(0, y0 - py); y1 = Math.min(1, y1 + py);
+      return { x: x0, y: y0, w: Math.max(.1, x1 - x0), h: Math.max(.1, y1 - y0) };
+    }
+    function squareAround(b) {
+      const o = getOrient(), ar = o.width / o.height;
+      const cx = b.x + b.w / 2, cy = b.y + b.h / 2;
+      let side = Math.max(b.w * o.width, b.h * o.height); side = Math.min(side, o.width, o.height);
+      const w = side / o.width, h = side / o.height;
+      return { x: Math.min(1 - w, Math.max(0, cx - w / 2)), y: Math.min(1 - h, Math.max(0, cy - h / 2)), w, h };
+    }
+    function localAI(ask) {
+      const t = ask.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+      const r = {}, done = [];
+      const cur = k => +els[k].value;
+      const has = re => re.test(t);
+      // matériau
+      const MK = [[/toile.*(noir|peint)|(noir|peint).*toile/, "toilenoir"], [/toile/, "toile"], [/contreplaq|peuplier|bouleau/, "peuplier"], [/bois dur|chene|noyer|hetre|bambou/, "boisdur"], [/\bmdf\b/, "mdf"], [/ardoise/, "ardoise"], [/carreau|carrelage|faience/, "carreau"], [/acryl|plexi/, "acry"], [/cuir/, "cuir"], [/\balu|anodis/, "alu"], [/liege/, "liege"], [/carton|papier/, "carton"]];
+      for (const [re, k] of MK) if (has(re)) { r.materiau = k; done.push("matériau " + MATS[k].name.toLowerCase()); break; }
+      // mode
+      if (has(/logo|texte|lettr|vector|\bsvg\b|decoup/)) { r.mode = "svg"; done.push("mode SVG pour un tracé net"); if (has(/decoup|contour/)) { r.contour_seul = true; done.push("contour seul pour la découpe"); } }
+      else if (has(/\bphoto\b|\bpng\b|trame/)) { r.mode = "png"; }
+      // fond
+      if (has(/(enleve|enlever|supprime|supprimer|retire|retirer|efface|effacer|sans).{0,15}(fond|arriere)/)) { r.supprimer_fond = true; r.blanc_pur = true; done.push("fond supprimé"); }
+      if (has(/garde.{0,10}fond/)) r.supprimer_fond = false;
+      // cadrage
+      const wantRound = has(/rond|cercle|circulaire|medaillon|dessous de verre|ovale/), wantSquare = has(/carre/);
+      if (has(/recadr|cadr|centre|sujet|visage|zoom/) || wantRound || wantSquare) {
+        let b = subjectBox(); if (wantRound || wantSquare) b = squareAround(b);
+        r.recadrage = b; done.push("recadrage sur le sujet");
+      }
+      if (has(/image entiere|tout l.image|sans recadr/)) { r.recadrage = "entier"; done.push("image entière"); }
+      if (wantRound) { r.forme = "round"; done.push("forme ronde"); } else if (has(/rectangl/)) r.forme = "rect";
+      // tons
+      const moreC = has(/plus (de )?contrast|contraste(e|r)?\b(?!.*moins)|percutant|punch/), lessC = has(/moins (de )?contrast|doux|douce|adouci/);
+      if (moreC && !lessC) { r.contraste = Math.min(100, cur("con") + 20); done.push("contraste +20"); }
+      if (lessC) { r.contraste = Math.max(-100, cur("con") - 15); done.push("contraste −15"); }
+      if (has(/plus clair|eclairc|lumineu|trop (sombre|fonce|noir)|brule/)) { r.luminosite = Math.min(100, cur("bri") + 15); r.gamma = Math.min(3, cur("gam") / 100 * 1.15); done.push("image éclaircie"); }
+      if (has(/plus (fonce|sombre)|assombri|trop (clair|pale|blanc)|fade/)) { r.luminosite = Math.max(-100, cur("bri") - 15); r.gamma = Math.max(.3, cur("gam") / 100 * .87); done.push("image assombrie"); }
+      if (has(/ombre/)) { r.gamma = Math.min(3, (r.gamma || cur("gam") / 100) * 1.2); done.push("plus de détails dans les ombres"); }
+      // netteté
+      if (has(/plus net|nettet|precis|detail|piqu/)) { r.nettete = Math.min(300, cur("shp") + 60); done.push("netteté renforcée"); }
+      if (has(/flou|lisse|peau|portrait|doux|douce/)) { r.nettete = Math.max(0, cur("shp") - 50); if (!r.tramage && r.mode !== "svg") r.tramage = "sierra"; done.push("rendu plus doux"); }
+      // tramage
+      const TK = [[/atkinson/, "atkinson"], [/floyd/, "floyd"], [/jarvis/, "jarvis"], [/stucki/, "stucki"], [/sierra/, "sierra"], [/burkes/, "burkes"], [/bayer.*8|demi.?teinte/, "bayer8"], [/bayer/, "bayer4"], [/niveaux? de gris|gris/, "gray"]];
+      for (const [re, k] of TK) if (has(re)) { r.tramage = k; done.push("tramage " + k); break; }
+      if (has(/invers|negatif/)) { r.inverser = !els.inv.checked; done.push(r.inverser ? "image inversée" : "inversion retirée"); }
+      // taille
+      const m = t.match(/(\d+(?:[.,]\d+)?)\s*(mm|cm|millim|centim)/);
+      if (m) { let v = parseFloat(m[1].replace(",", ".")); if (/^c/.test(m[2])) v *= 10; r.largeur_mm = Math.round(v); done.push(`largeur ${Math.round(v)} mm`); }
+      const auto = has(/auto|optimis|meilleur|ameliore|parfait|realiste/);
+      let explication;
+      if (has(/(enleve|retire|efface|supprime).{0,20}(personne|objet|fil|tache|logo|texte|element|chose)/)) explication = "Je ne vois pas la photo, donc je ne peux pas localiser cet élément. Utilise la Gomme au-dessus de l'image et passe dessus avec « Faire disparaître ».";
+      if (!done.length && !auto) return { reglages: {}, explication: explication || "Je n'ai pas compris la demande. Essaie par exemple : « enlève le fond », « recadre en rond », « plus de contraste », « plus clair », « logo en SVG », « largeur 120 mm »." };
+      return { reglages: r, auto, explication: (explication ? explication + " " : "") + (done.length ? "J'ai appliqué : " + done.join(", ") + "." : "J'ai optimisé les réglages pour ce matériau.") };
+    }
+    async function imageBlob() {
+      const o = getOrient(), k = Math.min(1, 900 / Math.max(o.width, o.height));
+      const c = document.createElement("canvas"); c.width = Math.round(o.width * k); c.height = Math.round(o.height * k);
+      c.getContext("2d").drawImage(o, 0, 0, c.width, c.height);
+      return new Promise(r => c.toBlob(r, "image/jpeg", .86));
+    }
+    go.addEventListener("click", async () => {
+      const ask = $("aiPrompt").value.trim();
+      if (!ask) { say("Écris ce que tu veux modifier, ou touche une suggestion.", true); $("aiPrompt").focus(); return; }
+      if (busy) return;
+      busy = true; go.disabled = true; go.textContent = "Connexion à l'IA…"; say("");
+      await getS();
+      go.textContent = S ? "L'IA regarde ta photo…" : "Analyse…";
+      const cur = snapshot();
+      const prompt = `Tu es l'assistant de Laser Pix, un logiciel qui prépare des photos pour graveur laser (type de machine : ${$("machine").value}).
+${canImages ? "L'image jointe est la photo complète de l'utilisateur (avant recadrage)." : "Tu ne vois pas la photo : base-toi sur la demande seule."}
+Demande de l'utilisateur : « ${ask} »
+
+Réglages actuels : ${JSON.stringify({ materiau: cur.mat, mode: cur.mode, recadrage: cur.box, forme: cur.v.shape, luminosite: +cur.v.bri, contraste: +cur.v.con, gamma: cur.v.gam / 100, nettete: +cur.v.shp, tramage: cur.v.algo, seuil: +cur.v.thr, inverser: cur.c.inv, blanc_pur: cur.c.bgw, supprimer_fond: cur.c.bgOn, largeur_mm: +cur.v.wmm })}
+
+Réponds UNIQUEMENT avec un objet JSON de cette forme (mets seulement les clés à changer dans "reglages") :
+{"reglages": {
+  "materiau": un de ${JSON.stringify(Object.keys(MATS))},
+  "mode": "png" (photo tramée) ou "svg" (texte/logo vectoriel),
+  "luminosite": -100..100, "contraste": -100..100, "gamma": 0.3..3 (plus grand = plus clair), "nettete": 0..300,
+  "tramage": un de ${JSON.stringify([...els.algo.options].map(o => o.value))},
+  "seuil": 1..254 (mode svg ou tramage threshold), "inverser": bool, "blanc_pur": bool,
+  "supprimer_fond": bool (efface la couleur unie qui touche les bords), "tolerance_fond": 5..140,
+  "recadrage": {"x","y","w","h"} en fractions 0..1 de la photo complète, ou "entier",
+  "forme": "rect" ou "round",
+  "gomme": [{"x","y","r"}] cercles à effacer en fractions 0..1 (r relatif à la largeur), "gomme_mode": "fill" (remplacer par l'entourage) ou "blank" (ne pas graver),
+  "largeur_mm": 5..500
+ },
+ "explication": "une à deux phrases en français, tutoiement, qui disent ce que tu as changé et pourquoi"}
+Règles : la gravure assombrit le bois, donc garde des tons moyens plutôt clairs sur bois. Les matériaux sombres (ardoise, carreau, acry, alu, toilenoir) utilisent inverser=true. Ne change que ce que la demande justifie. Si la demande est impossible (ex. ajouter un objet, changer une couleur), ne change rien et explique ce que tu peux faire à la place.`;
+      const ctrl = new AbortController(), timer = setTimeout(() => ctrl.abort(), 90000);
+      // Sans Claude : IA en ligne du logiciel (abonnés Pro) ou assistant intégré
+      if (!S) {
+        try {
+          let r = null;
+          if (window.laser?.ai) {
+            const b = await imageBlob(), buf = new Uint8Array(await b.arrayBuffer());
+            let bin = ""; for (let i = 0; i < buf.length; i += 0x8000) bin += String.fromCharCode.apply(null, buf.subarray(i, i + 0x8000));
+            const res = await window.laser.ai(prompt, btoa(bin));
+            if (res && res.ok) r = res.data;
+            else if (res && res.reason === "pro") say("L'IA qui voit la photo est réservée à Laser Pix Pro. J'utilise l'assistant intégré.");
+          }
+          if (!r) r = localAI(ask);
+          undoSnap = cur; $("aiUndo").hidden = false;
+          apply(r); if (r.auto) autoTune();
+          say(typeof r.explication === "string" ? r.explication : "Réglages appliqués.");
+        } catch (e) { say("La modification n'a pas abouti. Réessaie.", true); }
+        finally { clearTimeout(timer); busy = false; go.disabled = false; go.textContent = "Appliquer avec l'IA"; }
+        return;
+      }
+      try {
+        const opts = { modelTier: "default", signal: ctrl.signal, onText: () => { go.textContent = "L'IA répond…"; } };
+        if (canImages) opts.images = [await imageBlob()];
+        let r;
+        try { r = await S.json(prompt, opts); }
+        catch (e) {
+          if (e && (e.code === "images_unavailable" || e.code === "image_rejected")) { delete opts.images; r = await S.json(prompt.replace("L'image jointe est la photo complète de l'utilisateur (avant recadrage).", "Tu ne vois pas la photo : base-toi sur la demande seule."), opts); }
+          else throw e;
+        }
+        if (!r || typeof r !== "object") throw { code: "invalid_json" };
+        undoSnap = cur; $("aiUndo").hidden = false;
+        apply(r);
+        say(typeof r.explication === "string" ? r.explication : "Réglages appliqués.");
+      } catch (e) {
+        const code = e && e.code;
+        if (code === "not_granted") say("L'accès à l'IA a été refusé pour cette page. Tu peux l'autoriser depuis le menu Autorisations de l'artefact.", true);
+        else if (code === "rate_limited") say("Trop de demandes d'un coup. Attends quelques secondes puis réessaie.", true);
+        else if (code === "invalid_json") say("L'IA n'a pas donné de réglages utilisables. Reformule ta demande plus simplement.", true);
+        else if (ctrl.signal.aborted || code === "aborted") say("L'IA a mis trop de temps à répondre. Réessaie avec une demande plus courte.", true);
+        else say(`La modification IA n'a pas abouti (${code || (e && e.message) || "erreur inconnue"}). Réessaie dans un instant.`, true);
+      } finally { clearTimeout(timer); busy = false; go.disabled = false; go.textContent = "Appliquer avec l'IA"; }
+    });
+    $("aiUndo").onclick = () => { if (undoSnap) { restore(undoSnap); undoSnap = null; $("aiUndo").hidden = true; say("Modification IA annulée."); } };
+  })();
+
   const sampleCanvas = sample();
   applyPreset();
+  autoTune();
   updateSplit();
 })();
   document.getElementById("exportTop").addEventListener("click", () => document.getElementById("export").click());

@@ -6,5 +6,7 @@
   "portalUrl": "https://app.lemonsqueezy.com/my-orders",
   "priceLabel": "9,99 € / mois",
   "freeExportsPerDay": 3,
-  "offlineGraceDays": 7
+  "offlineGraceDays": 7,
+  "anthropicApiKey": "",
+  "aiModel": "claude-sonnet-5-5"
 }

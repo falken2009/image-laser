@@ -1,4 +1,4 @@
-// Image Laser — processus principal Electron
+// Laser Pix — processus principal Electron
 // Gère la fenêtre, l'enregistrement des fichiers, la licence Lemon Squeezy et le quota gratuit.
 const { app, BrowserWindow, ipcMain, dialog, shell, safeStorage, Menu } = require("electron");
 const path = require("path");
@@ -62,7 +62,7 @@ async function activate(rawKey) {
   const key = String(rawKey || "").trim();
   if (!key) return { ok: false, message: "Saisis ta clé de licence." };
   let r;
-  try { r = await lsCall("activate", { license_key: key, instance_name: `Image Laser – ${os.hostname()}` }); }
+  try { r = await lsCall("activate", { license_key: key, instance_name: `Laser Pix – ${os.hostname()}` }); }
   catch { return { ok: false, message: "Pas de connexion Internet. Vérifie ta connexion puis réessaie." }; }
   const j = r.json;
   if (!j.activated) {
@@ -72,7 +72,7 @@ async function activate(rawKey) {
   }
   if (!belongsToUs(j.meta)) {
     lsCall("deactivate", { license_key: key, instance_id: j.instance?.id }).catch(() => {});
-    return { ok: false, message: "Cette clé ne correspond pas à Image Laser." };
+    return { ok: false, message: "Cette clé ne correspond pas à Laser Pix." };
   }
   saveLicense({
     key: encrypt(key),
@@ -137,9 +137,9 @@ function status() {
 // ---------- Fenêtre
 function createWindow() {
   const win = new BrowserWindow({
-    width: 1280, height: 860, minWidth: 420, minHeight: 600,
-    backgroundColor: "#0a1838",
-    title: "Image Laser",
+    width: 1440, height: 900, minWidth: 420, minHeight: 600,
+    backgroundColor: "#09090b",
+    title: "Laser Pix",
     icon: path.join(__dirname, "..", "build", "icon.png"),
     webPreferences: { preload: path.join(__dirname, "preload.js"), contextIsolation: true, nodeIntegration: false, sandbox: true },
   });
@@ -173,6 +173,97 @@ ipcMain.handle("file:save", async (e, { filename, bytes }) => {
   fs.writeFileSync(filePath, Buffer.from(bytes));
   if (!st.pro) { const u = usage(); u.count += 1; writeJson("usage.json", u); }
   return { result: "saved", path: filePath, state: status() };
+});
+// ---------- IA en ligne (API Anthropic), réservée aux abonnés Pro
+function extractJson(text) {
+  const a = text.indexOf("{"), b = text.lastIndexOf("}");
+  if (a < 0 || b <= a) return null;
+  try { return JSON.parse(text.slice(a, b + 1)); } catch { return null; }
+}
+ipcMain.handle("ai:ask", async (_e, { prompt, imageBase64 }) => {
+  if (!CONFIG.anthropicApiKey) return { ok: false, reason: "nokey" };
+  if (!isPro()) return { ok: false, reason: "pro" };
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "x-api-key": CONFIG.anthropicApiKey, "anthropic-version": "2023-06-01", "content-type": "application/json" },
+      body: JSON.stringify({
+        model: CONFIG.aiModel || "claude-sonnet-5-5",
+        max_tokens: 900,
+        messages: [{ role: "user", content: [
+          ...(imageBase64 ? [{ type: "image", source: { type: "base64", media_type: "image/jpeg", data: imageBase64 } }] : []),
+          { type: "text", text: prompt },
+        ] }],
+      }),
+    });
+    const j = await res.json().catch(() => ({}));
+    if (!res.ok) return { ok: false, reason: "api", message: j?.error?.message || String(res.status) };
+    const text = (j.content || []).filter(c => c.type === "text").map(c => c.text).join("\n");
+    const data = extractJson(text);
+    return data ? { ok: true, data } : { ok: false, reason: "json" };
+  } catch (err) {
+    return { ok: false, reason: "offline" };
+  }
+});
+// ---------- Envoi vers le logiciel du graveur
+const { spawn } = require("child_process");
+const PF = process.env["ProgramFiles"] || "C:\\Program Files";
+const PF86 = process.env["ProgramFiles(x86)"] || "C:\\Program Files (x86)";
+const LAD = process.env["LOCALAPPDATA"] || path.join(os.homedir(), "AppData", "Local");
+const SOFTWARE = {
+  xcs: { name: "xTool Creative Space", paths: [
+    path.join(PF, "xTool Creative Space", "xTool Creative Space.exe"),
+    path.join(LAD, "Programs", "xTool Creative Space", "xTool Creative Space.exe"),
+    path.join(LAD, "Programs", "xtool-creative-space", "xTool Creative Space.exe"),
+    path.join(PF, "xTool", "xTool Creative Space", "xTool Creative Space.exe") ] },
+  lightburn: { name: "LightBurn", paths: [path.join(PF, "LightBurn", "LightBurn.exe"), path.join(PF86, "LightBurn", "LightBurn.exe")] },
+  lasergrbl: { name: "LaserGRBL", paths: [path.join(PF86, "LaserGRBL", "LaserGRBL.exe"), path.join(PF, "LaserGRBL", "LaserGRBL.exe")] },
+  custom: { name: "Autre logiciel…", paths: [] },
+};
+function settings() { return readJson("reglages.json", { software: "xcs", custom: {} }); }
+function findExe(id) {
+  const st = settings();
+  if (st.custom?.[id] && fs.existsSync(st.custom[id])) return st.custom[id];
+  return (SOFTWARE[id]?.paths || []).find(p => fs.existsSync(p)) || "";
+}
+ipcMain.handle("send:list", () => {
+  const st = settings();
+  return Object.entries(SOFTWARE).map(([id, s]) => ({
+    id, installed: !!findExe(id), selected: st.software === id,
+    name: id === "custom" && st.custom?.custom ? path.basename(st.custom.custom, ".exe") : s.name,
+  }));
+});
+ipcMain.handle("send:open", async (e, { software, filename, bytes }) => {
+  const st0 = status();
+  if (!st0.pro && st0.remaining <= 0) return { result: "limit", state: st0 };
+  const win = BrowserWindow.fromWebContents(e.sender);
+  const appName = SOFTWARE[software]?.name || "le logiciel";
+  let exe = findExe(software);
+  if (!exe) {
+    const pick = await dialog.showOpenDialog(win, {
+      title: software === "custom" ? "Choisis le logiciel de ton graveur" : `Où se trouve ${appName} ?`,
+      defaultPath: PF, properties: ["openFile"], filters: [{ name: "Programme", extensions: ["exe"] }],
+    });
+    if (pick.canceled || !pick.filePaths[0]) return { result: "notfound", app: appName, state: status() };
+    exe = pick.filePaths[0];
+    const s = settings(); s.custom = { ...(s.custom || {}), [software]: exe }; writeJson("reglages.json", s);
+  }
+  const s = settings(); s.software = software; writeJson("reglages.json", s);
+  const dir = path.join(app.getPath("pictures"), "Laser Pix");
+  fs.mkdirSync(dir, { recursive: true });
+  const file = path.join(dir, filename);
+  fs.writeFileSync(file, Buffer.from(bytes));
+  try {
+    const child = spawn(exe, [file], { detached: true, stdio: "ignore", cwd: path.dirname(exe) });
+    child.on("error", () => {});
+    child.unref();
+  } catch (err) {
+    return { result: "error", message: `Impossible de lancer ${appName}.`, state: status() };
+  }
+  shell.showItemInFolder(file);
+  if (!st0.pro) { const u = usage(); u.count += 1; writeJson("usage.json", u); }
+  const shown = software === "custom" ? path.basename(exe, ".exe") : appName;
+  return { result: "sent", app: shown, path: file, state: status() };
 });
 ipcMain.handle("file:show", (_e, p) => shell.showItemInFolder(p));
 
