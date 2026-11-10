@@ -52,7 +52,31 @@ function belongsToUs(meta) {
 function saveLicense(l) { license = l; writeJson("licence.json", l); }
 function clearLicense() { license = null; try { fs.unlinkSync(dataFile("licence.json")); } catch {} }
 
+// ---------- Licences à vie (signées avec la clé privée du propriétaire, vérifiées hors ligne)
+const LIFETIME_PUBLIC_KEY = `-----BEGIN PUBLIC KEY-----
+MCowBQYDK2VwAyEAF2fqW6U33V9o3QeHGGyHtZ5oifZOEpZVkhCCeF1cQig=
+-----END PUBLIC KEY-----`;
+const crypto = require("crypto");
+const fromB64u = s => Buffer.from(String(s).replace(/-/g, "+").replace(/_/g, "/"), "base64");
+function checkLifetime(key) {
+  const m = /^LP1-([A-Za-z0-9_-]+)\.([A-Za-z0-9_-]+)$/.exec(String(key || "").replace(/\s+/g, ""));
+  if (!m) return null;
+  try {
+    const payload = fromB64u(m[1]), sig = fromB64u(m[2]);
+    if (!crypto.verify(null, payload, crypto.createPublicKey(LIFETIME_PUBLIC_KEY), sig)) return null;
+    const data = JSON.parse(payload.toString("utf8"));
+    return data && data.t === "vie" ? data : null;
+  } catch { return null; }
+}
+let lifetimeOk = null;
+function isLifetime() {
+  if (!license || !license.lifetime) return false;
+  if (lifetimeOk === null) lifetimeOk = !!checkLifetime(decrypt(license.key));
+  return lifetimeOk;
+}
+
 function isPro() {
+  if (isLifetime()) return true;
   if (!license || license.status !== "active") return false;
   // Hors ligne : l'abonnement reste valable quelques jours après la dernière vérification
   return Date.now() - (license.checkedAt || 0) < CONFIG.offlineGraceDays * DAY;
@@ -61,6 +85,14 @@ function isPro() {
 async function activate(rawKey) {
   const key = String(rawKey || "").trim();
   if (!key) return { ok: false, message: "Saisis ta clé de licence." };
+  if (/^LP1-/.test(key.replace(/\s+/g, ""))) {
+    const data = checkLifetime(key);
+    if (!data) return { ok: false, message: "Cette licence à vie n'est pas valide. Copie-la en entier, sans espace." };
+    const clean = key.replace(/\s+/g, "");
+    saveLicense({ key: encrypt(clean), lifetime: true, status: "active", checkedAt: Date.now(), customer: data.n || "", variant: "Licence à vie", last4: clean.slice(-4) });
+    lifetimeOk = true;
+    return { ok: true, message: `Licence à vie activée${data.n ? " pour " + data.n : ""}. Exports illimités, sans abonnement.` };
+  }
   let r;
   try { r = await lsCall("activate", { license_key: key, instance_name: `Laser Pix – ${os.hostname()}` }); }
   catch { return { ok: false, message: "Pas de connexion Internet. Vérifie ta connexion puis réessaie." }; }
@@ -87,7 +119,7 @@ async function activate(rawKey) {
 }
 
 async function revalidate() {
-  if (!license) return;
+  if (!license || license.lifetime) return;
   const key = decrypt(license.key);
   if (!key) { clearLicense(); return; }
   try {
@@ -106,6 +138,7 @@ async function revalidate() {
 
 async function deactivate() {
   if (!license) return { ok: true };
+  if (license.lifetime) { clearLicense(); lifetimeOk = null; return { ok: true, message: "Licence à vie retirée de cet ordinateur. Tu peux la réactiver à tout moment avec la même clé." }; }
   const key = decrypt(license.key);
   try { await lsCall("deactivate", { license_key: key, instance_id: license.instanceId }); } catch {}
   clearLicense();
@@ -127,6 +160,7 @@ function status() {
     last4: license?.last4 || "",
     customer: license?.customer || "",
     variant: license?.variant || "",
+    lifetime: isLifetime(),
     used: u.count,
     limit: CONFIG.freeExportsPerDay,
     remaining: Math.max(0, CONFIG.freeExportsPerDay - u.count),

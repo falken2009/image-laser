@@ -568,7 +568,7 @@ button:focus-visible, input:focus-visible, select:focus-visible, .drop:focus-vis
     <div class="price" id="planPrice">—</div>
     <button class="btn primary" id="buyBtn">S'abonner</button>
     <div class="sep">Déjà abonné ?</div>
-    <div class="keyrow"><input id="keyInput" placeholder="Clé de licence reçue par e-mail" autocomplete="off" spellcheck="false"><button class="btn" id="activateBtn">Activer</button></div>
+    <div class="keyrow"><input id="keyInput" placeholder="Clé de licence (abonnement ou licence à vie)" autocomplete="off" spellcheck="false"><button class="btn" id="activateBtn">Activer</button></div>
     <div id="planPro" hidden>
       <ul><li id="proLine">Abonnement actif</li></ul>
       <div class="tools" style="margin-top:12px"><button class="btn" id="portalBtn">Gérer mon abonnement</button><button class="btn" id="deactBtn">Désactiver sur ce PC</button></div>
@@ -1724,7 +1724,9 @@ Règles : la gravure assombrit le bois, donc garde des tons moyens plutôt clair
       $("planFree").hidden = st.pro; $("planFeatures").hidden = st.pro; $("planPrice").hidden = st.pro; $("buyBtn").hidden = st.pro;
       document.querySelector(".sep").hidden = st.pro; document.querySelector(".keyrow").hidden = st.pro;
       $("planPro").hidden = !st.pro;
-      if (st.pro) $("proLine").textContent = `Abonnement actif${st.variant ? " · " + st.variant : ""} · clé ••••${st.last4}`;
+      if (st.pro) $("proLine").textContent = st.lifetime ? `Licence à vie${st.customer ? " · " + st.customer : ""} · exports illimités` : `Abonnement actif${st.variant ? " · " + st.variant : ""} · clé ••••${st.last4}`;
+      $("portalBtn").hidden = !!st.lifetime;
+      $("planTxt").textContent = st.pro ? (st.lifetime ? "Pro à vie" : "Pro") : `Gratuit · ${st.remaining}/${st.limit} aujourd'hui`;
     };
     window.openPlan = reason => {
       $("planLead").textContent = reason === "limit" ? `Tu as utilisé tes ${state ? state.limit : 3} exports gratuits du jour. Ils reviennent demain, ou passe en illimité.` : "Exporte sans limite pour toutes tes gravures et tes ventes.";

@@ -98,6 +98,15 @@ Crée la clé sur https://console.anthropic.com, rubrique *API Keys*, et ajoute 
 
 ⚠️ Une clé placée dans le .exe peut être extraite par une personne qui fouille le fichier. Pour une vente à grande échelle, il faut faire passer les demandes par un petit serveur à toi qui garde la clé. Limite aussi les dépenses dans la console Anthropic (*Limits*).
 
+## Licences à vie (gratuites)
+
+L'appli accepte aussi des **licences à vie** qui commencent par `LP1-`. Elles sont vérifiées sans Internet ni Lemon Squeezy et ne s'arrêtent jamais.
+
+- Elles sont signées avec une **clé privée** que seul le propriétaire possède (`cle-privee-NE-PAS-PARTAGER.pem`). L'appli ne contient que la clé publique, qui sert à vérifier la signature mais pas à en créer.
+- Pour en créer une nouvelle, par exemple pour un ami : `node generer-cle.js "Prénom"`, dans le dossier qui contient la clé privée.
+- **Ne mets jamais la clé privée sur GitHub.** Si elle fuite, change la paire de clés : génère-en une nouvelle et remplace `LIFETIME_PUBLIC_KEY` dans `src/main.js`. Les anciennes licences ne marcheront plus.
+- Une licence à vie partagée publiquement marchera chez tout le monde. Ne la donne qu'aux personnes de confiance.
+
 ## Bon à savoir
 
 - **Signature de code** : pour supprimer l'alerte SmartScreen, il faut un certificat de signature (environ 100 à 300 € par an, ou Azure Trusted Signing pour moins cher). Ce n'est pas obligatoire pour démarrer.
