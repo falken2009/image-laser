@@ -1,152 +1,98 @@
-# Laser Pix — version Windows avec abonnement
+# Falken IPTV pour Fire TV
 
-Application Windows (.exe) de préparation d'images pour tous les graveurs laser (diode, CO2, fibre) : tramage par matériau, recadrage, gomme, suppression du fond, export PNG avec DPI ou SVG en mm, et envoi direct vers xTool Creative Space, LightBurn, LaserGRBL ou un autre logiciel.
+Version Fire TV (Android) de Falken IPTV, pilotable entièrement à la télécommande.
 
-- **Gratuit** : toutes les fonctions, 3 exports par jour.
-- **Pro (abonnement)** : exports illimités. Paiement et clés de licence gérés par **Lemon Squeezy**, sans serveur à héberger.
+## Fonctions
 
----
+- Intro animée « FALKEN IPTV » avec le faucon avec son d'ouverture
+- Connexion **Xtream Codes** (serveur, utilisateur, mot de passe) ou **lien M3U** (chaînes en direct uniquement)
+- Réseau robuste : redirections http ↔ https, nouvelles tentatives automatiques, identifiant d'appli réglable (Falken IPTV, IPTV Smarters, VLC, TiviMate), messages d'erreur clairs
+- Accueil noir et rouge : TV en direct, Guide, Films, Séries + Favoris, Replay, Recherche, Compte, Réglages
+- **Profils** (« Qui regarde ? »), **plusieurs abonnements**, **choix du thème**
+- **Continuer à regarder** sur l'accueil, **Ma liste**, **filtres** des films (année, note, genre)
+- **Grille du guide** sur 3 heures et **rappels** (notification 5 min avant)
+- **Lecteur** : épisode suivant automatique ; en direct, haut/bas pour zapper, boutons ▲ ▼ à droite quand le menu de la vidéo est affiché ; ≡ pour le minuteur de veille (30 / 60 / 90 min)
+- **État de la connexion** dans Réglages, **images de fond** dans Films et Séries, **derniers ajouts**, une seule copie par titre (la meilleure qualité)
+- **Contrôle parental** (code à 4 chiffres, ≡ sur une catégorie pour la verrouiller) et **multi-écran** (2 ou 4 chaînes)
+- **TV en direct** : catégories à gauche, chaînes au centre, programme en cours et suivant à droite
+- **Guide** : chaque chaîne avec son programme en cours (barre de progression) et le suivant
+- **Favoris** : bouton ≡ (menu) de la télécommande sur une chaîne
+- **Replay** : programmes déjà diffusés, par jour
+- **Films et Séries en rangées** façon Netflix : une rangée d'affiches par catégorie (Derniers ajouts en premier), image de fond et titre de l'affiche sélectionnée en haut, « Tout voir » au bout de chaque rangée
+- **Sagas et jaquettes depuis Internet (TMDB)** : avec une clé gratuite de themoviedb.org (Réglages)
+- **Films** : tri A→Z / Z→A / notes, sagas regroupées, fiche, reprise de lecture
+- **Séries** : saisons, épisodes, reprise automatique, épisodes vus cochés
+- **Recherche** dans tout le catalogue, au clavier
+- **Lecteur** ExoPlayer : MP4, MKV, AVI, TS, HLS ; langues et sous-titres (bouton réglages du lecteur) ;
+  commandes vocales Alexa « Alexa, pause », « Alexa, reprends », « Alexa, avance de 30 secondes »
 
-## 1. Créer l'abonnement sur Lemon Squeezy
+## Compilation (GitHub, gratuit)
 
-1. Crée un compte sur https://www.lemonsqueezy.com puis une boutique (Store). Renseigne tes infos de paiement pour pouvoir encaisser.
-2. **Products → New product**
-   - Nom : *Laser Pix Pro*
-   - Prix : **Subscription**, par exemple 9,99 € par mois. Tu peux ajouter une variante annuelle.
-   - Section **License keys** : active *Generate license keys*.
-     - *Activation limit* : 2 (nombre de PC par abonné).
-     - *License length* : laisse lié à l'abonnement. La clé expire quand l'abonnement s'arrête.
-3. Publie le produit.
-4. Note trois informations :
-   - **Store ID** : *Settings → Stores*, le numéro de ta boutique.
-   - **Product ID** : dans l'adresse de la page du produit, ou via *Share → API*.
-   - **Lien de paiement** : bouton *Share* du produit, lien `https://…lemonsqueezy.com/buy/…`.
+1. Crée un **nouveau dépôt** sur GitHub, par exemple `falken-iptv-fire`.
+   - **Public** : le Fire Stick peut télécharger l'APK tout seul avec l'appli Downloader (le plus simple).
+   - **Privé** : il faudra passer par le PC et adb.
+2. Envoie le contenu de ce dossier (`app`, `build.gradle.kts`, `settings.gradle.kts`, `gradle.properties`).
+3. Crée le fichier `.github/workflows/build.yml` avec **Add file → Create new file**
+   (le navigateur n'envoie pas les dossiers qui commencent par un point) et colle son contenu.
+4. Onglet **Actions** → **Build Fire TV APK** : environ 5 à 10 minutes.
+5. L'APK `Falken-IPTV.apk` est publié dans **Releases** (à droite de la page du dépôt),
+   et aussi en bas de la page du build (**Falken-IPTV-apk**).
 
-## 2. Configurer l'appli
-
-Ouvre `config.json` et remplace les valeurs :
-
-```json
-{
-  "storeId": 12345,
-  "productId": 67890,
-  "checkoutUrl": "https://ta-boutique.lemonsqueezy.com/buy/xxxxxxxx",
-  "portalUrl": "https://app.lemonsqueezy.com/my-orders",
-  "priceLabel": "9,99 € / mois",
-  "freeExportsPerDay": 3,
-  "offlineGraceDays": 7
-}
-```
-
-- `storeId` et `productId` empêchent l'utilisation d'une clé venant d'une autre boutique. Ne les laisse pas à 0 avant de vendre.
-- `freeExportsPerDay` fixe le nombre d'exports gratuits par jour.
-- `offlineGraceDays` fixe combien de jours un abonné peut travailler sans Internet avant une nouvelle vérification.
-
-## 3. Compiler le .exe avec GitHub
-
-1. Crée un **dépôt privé** sur GitHub, par exemple `laser-pix`.
-2. **Add file → Upload files** : dépose tout le contenu du dossier, y compris le dossier `.github`.
-   - Si Windows ne montre pas le dossier `.github`, fais **Add file → Create new file**, tape le nom `.github/workflows/build.yml` et colle le contenu du fichier du même nom.
-3. Valide (Commit). La compilation démarre seule : onglet **Actions → Compiler Laser Pix (Windows)**. Elle prend environ 5 minutes.
-4. Quand la pastille est verte, ouvre la compilation et télécharge **Laser-Pix-Windows** en bas de page. Le zip contient `Laser-Pix-Setup-1.0.0.exe`.
-
-Pour relancer une compilation sans rien modifier : **Actions → Compiler Laser Pix (Windows) → Run workflow**.
-
-## 4. Installer et tester
-
-1. Lance `Laser-Pix-Setup-1.0.0.exe`.
-2. Windows SmartScreen peut afficher « Windows a protégé votre ordinateur » : clique **Informations complémentaires → Exécuter quand même**. Ce message vient de l'absence de certificat de signature (voir plus bas).
-3. Teste la version gratuite : 3 exports, puis la fenêtre d'abonnement s'ouvre.
-4. Teste l'abonnement avec le **mode test** de Lemon Squeezy (*Test mode* en bas à gauche du tableau de bord). Fais un achat avec la carte de test `4242 4242 4242 4242`, puis colle la clé reçue dans **Gratuit → Déjà abonné ? → Activer**.
-5. Repasse Lemon Squeezy en mode réel avant de vendre. Les clés de test ne marchent pas en production.
-
-## Fonctionnement de la licence
-
-| Moment | Ce que fait l'appli |
-|---|---|
-| Activation | Envoie la clé à Lemon Squeezy, vérifie qu'elle vient de ta boutique et de ton produit, puis enregistre ce PC. |
-| Chaque démarrage, puis toutes les 6 h | Revérifie la clé. Si l'abonnement est arrêté ou expiré, l'appli repasse en version gratuite. |
-| Sans Internet | L'abonnement reste actif pendant `offlineGraceDays` jours depuis la dernière vérification. |
-| Désactiver sur ce PC | Libère la place pour un autre ordinateur. |
-
-La clé est chiffrée avec le coffre de Windows (`safeStorage`) dans `%APPDATA%\Laser Pix\`.
+Le fichier `app/king365.keystore` signe toujours l'appli avec la même clé :
+les mises à jour s'installent par-dessus sans perdre tes réglages. Garde-le.
 
 ## Mises à jour automatiques
 
-L'appli se met à jour toute seule à partir des **Releases** de ton dépôt GitHub.
+Une fois l'appli installée, plus besoin de Downloader : à chaque envoi sur GitHub, une nouvelle version
+est compilée et publiée. Au démarrage, Falken IPTV la détecte et propose **Installer** (réglages conservés).
+La première fois, autorise Falken IPTV à installer des applis (Options pour les développeurs →
+Installer des applis inconnues). Réglages → **Rechercher une mise à jour** pour vérifier à la main.
 
-- À chaque envoi de fichiers sur GitHub (commit sur `main`), la compilation crée une nouvelle version numérotée (1.0.12, 1.0.13…) et la publie dans **Releases**.
-- Les applis déjà installées vérifient au démarrage, puis toutes les 4 heures. Elles téléchargent la nouvelle version en arrière-plan et affichent un bandeau rouge **Redémarrer et installer**. Sinon, l'installation se fait à la prochaine fermeture de l'appli.
-- Le numéro de version s'affiche à côté du nom « Laser Pix ».
+## Installation sur le Fire Stick sans PC (dépôt public)
 
-À savoir :
+1. Sur le Fire Stick : **Paramètres → Ma Fire TV → À propos**, clique 7 fois sur le nom de l'appareil
+   pour afficher les **Options pour les développeurs**.
+2. Installe l'appli **Downloader** (gratuite, dans l'Appstore Amazon).
+3. **Paramètres → Ma Fire TV → Options pour les développeurs → Installer des applis inconnues** : autorise **Downloader**.
+4. Dans Downloader, tape l'adresse :
+   `https://github.com/falken2009/falken-iptv-fire/releases/latest/download/Falken-IPTV.apk`
+   puis **Installer**. Pour mettre à jour plus tard : même adresse, elle donne toujours la dernière version.
 
-- Le dépôt indiqué dans `package.json` (`build.publish`) est `falken2009/image-laser`. Si tu renommes le dépôt, change-le ici aussi.
-- **Le dépôt doit rester public** pour que les applis puissent télécharger les mises à jour sans mot de passe. Si tu veux cacher le code, garde le code dans un dépôt privé et publie les Releases dans un second dépôt public vide (change alors `repo` dans `package.json`).
-- La première version avec mise à jour automatique doit être installée à la main une fois. Les suivantes arrivent toutes seules.
-- Dans GitHub : **Settings → Actions → General → Workflow permissions** doit être sur **Read and write permissions**, sinon la publication échoue.
+## Installation depuis Windows avec adb (dépôt privé)
 
-## Bibliothèque
+1. Options pour les développeurs (voir ci-dessus) : active **Débogage ADB**.
+2. Note l'adresse IP : **Paramètres → Ma Fire TV → À propos → Réseau**.
+3. Sur le PC, télécharge **SDK Platform-Tools** pour Windows (developer.android.com),
+   décompresse-le, ouvre le dossier, tape `cmd` dans la barre d'adresse puis Entrée.
+4. Tape :
+   ```
+   adb connect 192.168.1.XX
+   adb install -r C:\chemin\vers\Falken-IPTV.apk
+   ```
+   La première fois, accepte l'autorisation qui s'affiche sur la télé.
+5. Falken IPTV apparaît dans **Applications**.
 
-Le bouton **Bibliothèque**, en haut, contient deux rubriques :
+## Télécommande
 
-- **Mes supports** : tes réglages enregistrés par support (matériau, machine, vitesse, puissance, résolution, réglages d'image, avec une note). Enregistre-les avec « ★ Enregistrer ces réglages comme support » sous le bouton d'export. Retrouve-les aussi dans la liste en haut de la carte Matériau.
-- **Mes gravures** : une copie de chaque fichier exporté, avec son aperçu, sa photo d'origine et ses réglages. « Rouvrir » recharge tout pour retoucher. « Enregistrer le fichier » le réenregistre sans compter un nouvel export.
+- Flèches et OK : se déplacer, ouvrir
+- ≡ (menu) sur une chaîne : ajouter ou retirer des favoris
+- Retour : écran précédent
+- Lecture/pause et avance/retour de la télécommande : pilotent la vidéo
 
-Tout est gardé sur le PC, dans `%APPDATA%\Laser Pix\`.
+## Version Premium (Amazon Appstore)
 
-## Envoi vers le logiciel du graveur
+Chaque compilation produit deux applis :
+- **Falken-IPTV.apk** (version perso) : tout est débloqué, mises à jour depuis GitHub. C'est celle de Downloader.
+- **Falken-IPTV-Store.apk** (version boutique, onglet Actions → Falken-IPTV-Store-apk) : à envoyer sur l'Amazon Appstore.
+  - 7 jours d'essai gratuit avec tout débloqué, puis version gratuite + Premium par abonnement (achats intégrés Amazon).
+  - Gratuit : direct, films et séries (liste de catégories), recherche, favoris, reprise, 1 profil, 1 abonnement, contrôle parental, lecteur VLC de secours.
+  - Premium : profils et abonnements multiples, guide en grille et rappels, replay, multi-écran, rangées façon Netflix,
+    épisode suivant automatique, minuteur de veille, thèmes de couleur.
+  - TMDB est désactivé (la clé gratuite est réservée à l'usage non commercial) ; mises à jour par l'Appstore, pas par GitHub.
 
-Sous le bouton d'enregistrement, choisis ton logiciel puis touche **Envoyer vers le logiciel** :
-
-- Laser Pix enregistre le fichier dans `Images\Laser Pix\`, ouvre le logiciel avec ce fichier et affiche le fichier dans l'Explorateur.
-- Laser Pix cherche xTool Creative Space, LightBurn et LaserGRBL dans leurs dossiers d'installation habituels. S'il ne les trouve pas, il te demande où est leur fichier `.exe`, une seule fois.
-- **Autre logiciel…** permet d'ajouter n'importe quel logiciel : celui d'Atomstack, de Glowforge, RDWorks…
-- Certains logiciels, comme xTool Creative Space, s'ouvrent sans charger l'image : ils n'acceptent pas les fichiers envoyés par un autre programme. Dans ce cas, utilise la case rouge **Glisse-moi dans le logiciel du graveur** : maintiens le clic dessus et dépose-la dans la fenêtre du logiciel. Le fichier arrive à la bonne taille.
-
-Un envoi compte comme un export dans la version gratuite. La puissance, la vitesse et le lancement de la gravure restent dans le logiciel du graveur.
-
-## Modification IA
-
-La carte « Modification IA » fonctionne de deux façons :
-
-- **Assistant intégré** : gratuit, hors ligne, pour tout le monde. Il comprend les demandes courantes (« enlève le fond », « recadre en rond », « plus de contraste », « plus clair », « logo en SVG », « largeur 120 mm », un nom de matériau…) et repère le sujet de la photo pour le recadrage.
-- **IA qui voit la photo** : réservée aux abonnés Pro. Elle comprend des demandes libres et peut placer la gomme toute seule. Pour l'activer, colle ta clé API Anthropic dans `config.json` :
-
-```json
-"anthropicApiKey": "sk-ant-...",
-"aiModel": "claude-sonnet-5-5"
-```
-
-Crée la clé sur https://console.anthropic.com, rubrique *API Keys*, et ajoute du crédit. Chaque demande coûte environ un centime. Sans clé, l'appli utilise seulement l'assistant intégré.
-
-⚠️ Une clé placée dans le .exe peut être extraite par une personne qui fouille le fichier. Pour une vente à grande échelle, il faut faire passer les demandes par un petit serveur à toi qui garde la clé. Limite aussi les dépenses dans la console Anthropic (*Limits*).
-
-## Licences à vie (gratuites)
-
-L'appli accepte aussi des **licences à vie** qui commencent par `LP1-`. Elles sont vérifiées sans Internet ni Lemon Squeezy et ne s'arrêtent jamais.
-
-- Elles sont signées avec une **clé privée** que seul le propriétaire possède (`cle-privee-NE-PAS-PARTAGER.pem`). L'appli ne contient que la clé publique, qui sert à vérifier la signature mais pas à en créer.
-- Pour en créer une nouvelle, par exemple pour un ami : `node generer-cle.js "Prénom"`, dans le dossier qui contient la clé privée.
-- **Ne mets jamais la clé privée sur GitHub.** Si elle fuite, change la paire de clés : génère-en une nouvelle et remplace `LIFETIME_PUBLIC_KEY` dans `src/main.js`. Les anciennes licences ne marcheront plus.
-- Une licence à vie partagée publiquement marchera chez tout le monde. Ne la donne qu'aux personnes de confiance.
-
-## Bon à savoir
-
-- **Signature de code** : pour supprimer l'alerte SmartScreen, il faut un certificat de signature (environ 100 à 300 € par an, ou Azure Trusted Signing pour moins cher). Ce n'est pas obligatoire pour démarrer.
-- **Compteur gratuit** : il est stocké sur le PC. Un utilisateur averti peut le remettre à zéro. Pour une limite impossible à contourner, il faudrait un petit serveur, ce que l'on peut ajouter plus tard.
-- **Polices** : elles se chargent depuis Google Fonts quand Internet est disponible. Hors ligne, l'appli utilise les polices de Windows.
-- **Lancer sans compiler** (si Node.js est installé) : `npm install` puis `npm start` dans le dossier.
-
-## Structure
-
-```
-laser-pix/
-├─ config.json              ← réglages boutique et abonnement
-├─ package.json             ← dépendances et réglages de l'installateur
-├─ build/icon.png           ← icône de l'appli
-├─ src/main.js              ← fenêtre, licence, quota, enregistrement
-├─ src/preload.js           ← pont sécurisé interface ↔ Windows
-├─ src/renderer/index.html  ← interface et traitement d'image
-└─ .github/workflows/build.yml ← compilation automatique du .exe
-```
+À faire dans la console développeur Amazon (developer.amazon.com, compte gratuit) :
+1. Créer l'appli, puis dans **In-App Items** un abonnement parent (ex. `falken.premium`) avec deux durées :
+   `falken.premium.mensuel` (1 mois) et `falken.premium.annuel` (1 an) — les références doivent être identiques.
+2. Télécharger la clé **AppstoreAuthenticationKey.pem** (rubrique Appstore SDK) et la placer dans
+   `app/src/store/assets/` avant de compiler la version boutique.
+3. Tester les achats avec l'appli **Amazon App Tester** avant de soumettre.

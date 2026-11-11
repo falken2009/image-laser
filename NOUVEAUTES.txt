@@ -1,0 +1,4 @@
+• Films plus rapides à démarrer : la lecture reprend directement au bon endroit.
+• Les formats AVI, WMV, DivX, MPEG… partent directement avec VLC.
+• Un film bloqué plus de 15 secondes passe tout seul sur VLC.
+• Les nouveautés de chaque version s'affichent maintenant ici, au moment de la mise à jour.
